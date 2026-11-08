@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f3ef">
+<title>하루결 · 오늘</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f3ef;--cream:#fbfaf6;--ink:#131311;--bg2:#ebe9e2;--soft:#6b6b66;
+  --orange:#ff5a36;--lime:#d4ff52;--violet:#8e6cff;--blue:#2456f0;
+  --line:rgba(19,19,17,.08);--error:#c2321a;
+  --sans:'Inter','Apple SD Gothic Neo','Pretendard','Noto Sans KR',system-ui,sans-serif;
+  --mono:'IBM Plex Mono','SF Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+button:focus-visible,input:focus-visible,summary:focus-visible,label:focus-within{outline:2px solid var(--blue);outline-offset:2px}
+.hidden{display:none!important}
+
+.app{max-width:1120px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 40px)}
+
+/* type */
+.mono{font-family:var(--mono)}
+.label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;font-weight:500}
+.h-screen{font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1.15}
+.sub{font-size:13px;opacity:.6;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:3px 8px;border-radius:5px;background:var(--bg2);white-space:nowrap;font-weight:500}
+.chip.ink{background:var(--ink);color:var(--bg)}
+.chip.lime{background:var(--lime);color:var(--ink)}
+.chip.ghost{background:transparent;border:1px dashed rgba(19,19,17,.35)}
+.chip.onDark{background:rgba(244,243,239,.14);color:var(--bg)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+
+/* header */
+.top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;gap:12px}
+.brand{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.brand + .mono{font-size:12px;opacity:.55;margin-top:2px;letter-spacing:.04em}
+
+/* bento */
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:8px;grid-template-areas:"mood mood" "caf last" "fav fav" "sleep water" "flow flow" "more more"}
+.card{background:var(--cream);border-radius:18px;padding:16px;min-width:0;position:relative}
+.card .big{font-family:var(--mono);font-weight:500;font-size:34px;letter-spacing:-.04em;line-height:1;margin-top:10px}
+.card .big small{font-size:14px;letter-spacing:0;margin-left:3px;font-weight:500}
+.card .meta{font-size:12.5px;opacity:.65;margin-top:6px;line-height:1.45}
+.cardhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+
+.mood{grid-area:mood;background:var(--ink);color:var(--bg);padding:18px}
+.mood h2{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:12px;line-height:1.3}
+.mood p{font-size:13px;opacity:.65;margin-top:6px}
+.mood .soon{margin-top:14px;width:100%;min-height:48px;border-radius:12px;border:1px dashed rgba(244,243,239,.35);color:rgba(244,243,239,.6);font-size:14px;cursor:not-allowed}
+
+.caf{grid-area:caf;background:var(--orange);color:#fff}
+.caf .label{opacity:.8}
+.caf .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.caf .chip{background:rgba(255,255,255,.2);color:#fff}
+.last{grid-area:last;background:var(--lime)}
+.big .word{font-family:var(--sans);font-size:24px;font-weight:600;letter-spacing:-.02em}
+
+.fav{grid-area:fav}
+.addbtn{font-size:13px;font-weight:600;min-height:44px;padding:0 12px;margin:-10px -8px -10px 0;border-radius:10px}
+.addbtn:hover{background:var(--bg2)}
+.favlist{margin-top:10px;display:grid;gap:6px}
+.favitem{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg);border-radius:14px;padding:13px 14px;min-height:64px;transition:background .15s}
+.favitem:hover{background:var(--bg2)}
+.favitem .cup{width:36px;height:36px;border-radius:10px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:600;flex-shrink:0}
+.favitem strong{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.favitem .d{display:block;font-size:12.5px;opacity:.6;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.favitem .txt{flex:1;min-width:0}
+.favitem .go{font-family:var(--mono);font-size:16px;opacity:.45}
+.empty{padding:14px 0 4px}
+.empty strong{display:block;font-size:16px;font-weight:600}
+.empty span{display:block;font-size:13px;opacity:.6;margin-top:3px}
+
+.sleep{grid-area:sleep}.water{grid-area:water}
+.pending .big{opacity:.22}
+.pending .chip{margin-top:12px}
+
+.flow{grid-area:flow}
+.rec{display:flex;gap:12px;width:100%;text-align:left;padding:13px 0;border-top:1px solid var(--line);align-items:stretch;min-height:56px}
+.rec:first-child{border-top:0}
+.rec:hover .rname{text-decoration:underline;text-underline-offset:3px}
+.rtime{width:46px;flex-shrink:0;font-family:var(--mono);font-size:13px;font-weight:600;padding-top:1px}
+.rbar{width:3px;border-radius:2px;background:var(--orange);flex-shrink:0}
+.rbody{flex:1;min-width:0}
+.rname{font-size:14.5px;font-weight:500;display:block}
+.rdet{font-size:12.5px;opacity:.6;display:block;margin-top:1px}
+.rbody .chip{margin-top:7px}
+.notice{background:var(--bg);border-radius:12px;padding:12px 14px;margin-top:10px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.notice button{font-weight:600;min-height:40px;padding:0 4px;text-decoration:underline;text-underline-offset:3px;flex-shrink:0}
+
+.more{grid-area:more;padding:0}
+.more summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:16px;min-height:56px;cursor:pointer;gap:10px}
+.more summary::-webkit-details-marker{display:none}
+.more summary .t{font-size:15px;font-weight:600}
+.more summary .arr{font-family:var(--mono);opacity:.5;transition:transform .2s}
+.more[open] summary .arr{transform:rotate(90deg)}
+.more .rows{padding:0 16px 8px}
+.mrow{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--line)}
+.mrow .n{font-size:14px;font-weight:500}
+.mrow .s{font-size:12.5px;opacity:.6;margin-top:2px}
+.mrow > div{flex:1}
+
+.scope{margin-top:20px;font-size:12.5px;line-height:1.6}
+.scope summary{cursor:pointer;opacity:.7;min-height:44px;display:flex;align-items:center;font-weight:500}
+.scope p{opacity:.65;margin-top:8px}
+.foot{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;opacity:.45;margin-top:14px;line-height:1.6}
+
+/* form screens */
+.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:8px}
+.back{font-size:14px;font-weight:600;min-height:44px;padding:0 12px 0 0;display:inline-flex;align-items:center;gap:6px}
+.steps{display:flex;gap:4px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em}
+.steps span{padding:4px 8px;border-radius:5px;background:var(--bg2);opacity:.55}
+.steps span.on{background:var(--ink);color:var(--bg);opacity:1}
+.steps span.done{opacity:.85}
+.formhead{margin-bottom:16px}
+.fgrid{display:grid;gap:8px}
+.fcol{display:grid;gap:8px;align-content:start}
+.fcard{background:var(--cream);border-radius:18px;padding:16px}
+.fcard > .label{display:block;margin-bottom:10px}
+.field + .field{margin-top:16px}
+.field > label,.field > .flabel{display:block;font-size:13px;font-weight:600;margin-bottom:8px}
+.field > label .opt,.flabel .opt{font-weight:400;opacity:.5;margin-left:4px}
+input[type=text],input[type=number],input[type=datetime-local]{width:100%;min-height:50px;padding:12px 14px;border:1px solid transparent;border-radius:12px;background:var(--bg);font-size:16px;min-width:0;-webkit-appearance:none;appearance:none}
+input:focus{border-color:var(--ink);outline:none;background:#fff}
+input::placeholder{color:rgba(19,19,17,.38)}
+.help{font-size:12.5px;opacity:.6;margin-top:7px;line-height:1.5}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;padding:0 14px;border-radius:11px;background:var(--bg);font-size:14px;cursor:pointer;transition:background .12s,color .12s}
+.seg input:checked + span{background:var(--ink);color:var(--bg);font-weight:600}
+.seg label:hover span{background:var(--bg2)}
+.seg input:checked + span:hover{background:var(--ink)}
+.seg label:focus-within{outline:2px solid var(--blue);outline-offset:2px;border-radius:11px}
+.seg.fill label{flex:1}.seg.fill span{width:100%}
+.mgwrap{position:relative}
+.mgwrap input{padding-right:46px;font-family:var(--mono)}
+.mgwrap::after{content:'mg';position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:13px;opacity:.45;pointer-events:none}
+
+.order{background:var(--ink);color:var(--bg);border-radius:18px;padding:18px}
+.order .label{opacity:.6}
+.order strong{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:10px;line-height:1.25}
+.order .d{font-size:13px;opacity:.65;margin-top:4px}
+.order .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}
+
+.change{background:var(--cream);border-radius:18px}
+.change summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:16px;min-height:56px;cursor:pointer}
+.change summary::-webkit-details-marker{display:none}
+.change summary .t{font-size:15px;font-weight:600}
+.change summary .t small{display:block;font-size:12.5px;font-weight:400;opacity:.6;margin-top:1px}
+.change summary .arr{font-family:var(--mono);opacity:.5;transition:transform .2s}
+.change[open] summary .arr{transform:rotate(90deg)}
+.change .inner{padding:0 16px 16px}
+
+.est{border-radius:18px;padding:18px;background:var(--orange);color:#fff;transition:background .2s,color .2s}
+.est.unknown{background:var(--cream);color:var(--ink);outline:1.5px dashed rgba(19,19,17,.25);outline-offset:-1.5px}
+.est.estimated{background:var(--lime);color:var(--ink)}
+.est .label{opacity:.75}
+.est .big{font-family:var(--mono);font-size:40px;font-weight:500;letter-spacing:-.04em;line-height:1;margin-top:12px}
+.est .big small{font-size:15px;margin-left:3px}
+.est.unknown .big{font-family:var(--sans);font-size:26px;font-weight:600;letter-spacing:-.02em}
+.est .why{font-size:13px;margin-top:8px;opacity:.8;line-height:1.5}
+.est .chip{margin-top:12px;background:rgba(255,255,255,.22);color:inherit}
+.est.unknown .chip,.est.estimated .chip{background:rgba(19,19,17,.08)}
+.basis{font-size:12.5px;margin-top:4px}
+.basis summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;opacity:.75}
+.basis p{opacity:.65;line-height:1.55}
+
+.savebar{position:sticky;bottom:0;padding:12px 0 calc(env(safe-area-inset-bottom) + 12px);background:linear-gradient(to bottom,rgba(244,243,239,0),var(--bg) 22%);margin-top:4px;z-index:3}
+.savewhen{font-family:var(--mono);font-size:11.5px;opacity:.6;margin-bottom:8px;text-align:center;letter-spacing:.02em}
+.primary{width:100%;min-height:54px;border-radius:14px;background:var(--ink);color:var(--bg);font-size:16px;font-weight:600;letter-spacing:-.01em;transition:opacity .15s}
+.primary:disabled{opacity:.5;cursor:wait}
+.primary:not(:disabled):active{opacity:.85}
+.danger{width:100%;min-height:48px;border-radius:14px;color:var(--error);font-size:14px;font-weight:600;margin-top:6px}
+.danger:hover{background:rgba(194,50,26,.07)}
+.secondary{width:100%;min-height:48px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:14px;font-weight:600;margin-top:12px}
+.error{color:var(--error);font-size:13.5px;margin-bottom:8px;line-height:1.5}
+.error:empty{display:none}
+.info{font-size:12.5px;background:var(--bg);border-radius:12px;padding:12px 14px;margin-top:16px;line-height:1.55;opacity:.85}
+
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);border-radius:14px;padding:13px 18px;font-size:14px;z-index:20;width:max-content;max-width:calc(100% - 32px);line-height:1.45}
+body.form-open #toast{bottom:calc(env(safe-area-inset-bottom) + 112px)}
+
+@media (prefers-reduced-motion:no-preference){
+  .view{animation:in .22s ease-out}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+}
+
+/* tablet / MacBook */
+@media (min-width:760px){
+  .app{padding:36px 32px 60px}
+  .top{margin-bottom:24px}
+  .brand{font-size:17px}
+  .bento{grid-template-columns:repeat(4,1fr);gap:10px;grid-template-areas:"mood mood caf last" "fav fav flow flow" "sleep water flow flow" "more more flow flow";grid-template-rows:auto auto auto 1fr;align-items:start}
+  .card{padding:18px;border-radius:18px}
+  .mood{padding:22px}.mood h2{font-size:26px}
+  .card .big{font-size:40px}
+  .caf,.last,.mood{align-self:stretch}
+  .sleep,.water{align-self:stretch}
+  .flow{align-self:stretch}
+  .h-screen{font-size:36px}
+  .formwrap{max-width:960px;margin:0 auto}
+  .fgrid{grid-template-columns:1.25fr 1fr;gap:10px;align-items:start}
+  .fcol.side{position:sticky;top:24px}
+  .savebar{position:static;background:none;padding:4px 0 0}
+  body.form-open #toast{bottom:28px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ========== 오늘 ========== -->
+<section id="today" class="view" data-screen-label="01 오늘">
+  <header class="top">
+    <div><div class="brand">하루결</div><div class="mono" id="date"></div></div>
+    <span class="chip ghost" title="기록은 이 브라우저에만 보관됩니다">로컬 보관 시제품</span>
+  </header>
+
+  <div class="bento">
+    <article class="card mood" aria-labelledby="moodT">
+      <div class="cardhead"><span class="label">마음 기록</span><span class="chip onDark">AI 대화 미구현</span></div>
+      <h2 id="moodT">지금 어떤 기분인가요?</h2>
+      <p>공감하고 함께 정리하는 기분 기록은 다음 단계에서 만들어요. 지금은 입력과 분석이 동작하지 않아요.</p>
+      <button class="soon" type="button" aria-disabled="true" id="moodSoon">한 줄 남기기 · 준비 중</button>
+    </article>
+
+    <article class="card caf" aria-live="polite">
+      <span class="label">오늘 카페인</span>
+      <div class="big" id="total"></div>
+      <div class="meta" id="totalsub"></div>
+      <div class="chips" id="totalchips"></div>
+    </article>
+
+    <article class="card last">
+      <span class="label">마지막 섭취</span>
+      <div class="big" id="lastTime"></div>
+      <div class="meta" id="lastSub"></div>
+    </article>
+
+    <article class="card fav">
+      <div class="cardhead"><span class="label">즐겨찾는 커피</span><button class="addbtn" id="add" type="button">＋ 추가</button></div>
+      <div id="favorites"></div>
+    </article>
+
+    <article class="card sleep pending">
+      <div class="cardhead"><span class="label">지난밤 수면</span><span class="dot" style="background:var(--violet)"></span></div>
+      <div class="big">—</div>
+      <div class="meta">건강앱에서 가져올 예정이에요.</div>
+      <span class="chip ghost">미연결</span>
+    </article>
+
+    <article class="card water pending">
+      <div class="cardhead"><span class="label">오늘 수분</span><span class="dot" style="background:var(--blue)"></span></div>
+      <div class="big">—</div>
+      <div class="meta">건강앱에서 가져올 예정이에요.</div>
+      <span class="chip ghost">미연결</span>
+    </article>
+
+    <article class="card flow">
+      <div class="cardhead"><span class="label">오늘의 흐름</span><span class="chip" id="count">0건</span></div>
+      <div id="notice"></div>
+      <div id="records" style="margin-top:6px"></div>
+    </article>
+
+    <details class="card more">
+      <summary><span class="t">생리 · 체성분</span><span style="display:flex;gap:8px;align-items:center"><span class="chip">기본 접힘</span><span class="arr">›</span></span></summary>
+      <div class="rows">
+        <div class="mrow"><span class="dot" style="background:var(--orange);margin-top:6px"></span><div><div class="n">생리 기록</div><div class="s">건강앱 연결 전 · 기록을 가져오지 않았어요.</div></div><span class="chip ghost">미연결</span></div>
+        <div class="mrow"><span class="dot" style="background:var(--ink);margin-top:6px"></span><div><div class="n">최근 체성분</div><div class="s">앳플리 → 건강앱으로 전달되는 항목을 확인한 뒤 연결해요.</div></div><span class="chip ghost">미연결</span></div>
+      </div>
+    </details>
+  </div>
+
+  <details class="scope">
+    <summary>보관 방식과 시제품의 범위</summary>
+    <p>기록은 이 주소를 연 현재 브라우저의 저장소에만 보관됩니다. 서버 전송·기기 간 동기화·외부 인공지능 분석은 하지 않습니다. 개인정보 보호 모드나 브라우저 데이터 삭제 시 기록이 사라질 수 있고, 다른 주소나 기기에서는 기록이 공유되지 않습니다.</p>
+    <p>건강앱(수면·수분·생리·체성분)과 연결하지 않았으며, 스타벅스 공식 영양정보도 연결되지 않았습니다. 카페인 수치는 비워 두거나 직접 입력할 수 있고, 직접 입력한 값은 공식 검증값으로 표시하지 않습니다.</p>
+  </details>
+  <p class="foot">기록된 섭취만 보여줍니다 · 건강 상태를 진단하거나 안전한 섭취량을 판정하지 않습니다</p>
+</section>
+
+<!-- ========== 즐겨찾기 등록 ========== -->
+<section id="favoriteView" class="view formwrap hidden" data-screen-label="02 즐겨찾기 등록">
+  <div class="bar"><button class="back" data-back type="button">← 오늘</button><span class="chip">즐겨찾기 만들기</span></div>
+  <div class="formhead"><h1 class="h-screen">평소 주문을 남겨두세요.</h1><p class="sub">한 번 등록하면 다음에는 바로 불러올 수 있어요.</p></div>
+  <form id="favoriteForm" novalidate>
+    <div class="fgrid">
+      <div class="fcol">
+        <div class="fcard">
+          <span class="label">주문</span>
+          <div class="field"><label for="drink">스타벅스 음료명</label><input type="text" id="drink" required maxlength="100" placeholder="실제로 마시는 메뉴명" autocomplete="off"></div>
+          <div class="field"><label for="nickname">주문 별칭<span class="opt">선택</span></label><input type="text" id="nickname" maxlength="40" placeholder="나만 알아보기 쉬운 이름" autocomplete="off"></div>
+        </div>
+        <div class="fcard">
+          <span class="label">옵션</span>
+          <div class="field"><span class="flabel">사이즈</span><div class="seg" data-seg="fSize"></div></div>
+          <div class="field"><span class="flabel">온도</span><div class="seg" data-seg="fTemp"></div></div>
+          <div class="field"><span class="flabel">카페인 옵션</span><div class="seg" data-seg="fOption"></div></div>
+          <div class="field"><label for="shots">샷 변경<span class="opt">선택</span></label><input type="text" id="shots" maxlength="60" placeholder="예: 추가 샷 없음 / 1샷 추가" autocomplete="off"></div>
+        </div>
+      </div>
+      <div class="fcol side">
+        <div class="fcard">
+          <span class="label">카페인</span>
+          <div class="field"><label for="caffeine">이 주문 한 잔의 카페인<span class="opt">선택</span></label><div class="mgwrap"><input type="number" id="caffeine" inputmode="decimal" min="0" max="5000" step="0.1" placeholder="모르면 비워두세요"></div>
+          <p class="help">입력하면 ‘직접 입력값’으로 표시해요. 비워두면 ‘함량 미확인’으로 저장되고 합계에 넣지 않아요.</p></div>
+          <p class="info">메뉴와 옵션의 실제 판매 여부는 직접 확인해 주세요. 이 목록은 공식 메뉴 데이터베이스가 아닙니다.</p>
+        </div>
+        <div class="savebar">
+          <p class="error" id="favoriteError" role="alert"></p>
+          <button class="primary" type="submit">즐겨찾기 저장</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>
+
+<!-- ========== 섭취 확인 / 수정 ========== -->
+<section id="entryView" class="view formwrap hidden" data-screen-label="03 섭취 확인">
+  <div class="bar"><button class="back" data-back type="button">← 오늘</button>
+    <div class="steps" id="steps"><span class="done">선택</span><span class="on">확인</span><span>저장</span></div></div>
+  <div class="formhead"><h1 class="h-screen" id="entryTitle">마신 내용을 확인해요.</h1><p class="sub" id="entrySub">이번 기록을 바꿔도 즐겨찾기는 그대로예요.</p></div>
+  <form id="entryForm" novalidate>
+    <div class="fgrid">
+      <div class="fcol">
+        <div class="order" id="order"></div>
+
+        <details class="change" id="changeBox">
+          <summary><span class="t">이번 주문만 변경<small>즐겨찾기 원본은 바뀌지 않아요</small></span><span class="arr">›</span></summary>
+          <div class="inner">
+            <div class="field"><span class="flabel">사이즈</span><div class="seg" data-seg="eSize"></div></div>
+            <div class="field"><span class="flabel">온도</span><div class="seg" data-seg="eTemp"></div></div>
+            <div class="field"><span class="flabel">카페인 옵션</span><div class="seg" data-seg="eOption"></div></div>
+            <div class="field"><label for="entryShots">샷 변경</label><input type="text" id="entryShots" maxlength="60" autocomplete="off"></div>
+            <p class="help">주문을 바꾸면 카페인 함량을 비워요. 확인한 값이 있다면 다시 입력해 주세요.</p>
+          </div>
+        </details>
+
+        <div class="fcard">
+          <div class="field"><label for="when">마신 날짜와 시각</label><input type="datetime-local" id="when" required>
+            <p class="help">기기 기준 현지 시각이에요. 실제 마신 시각으로 바꿀 수 있어요.</p></div>
+          <div class="field"><span class="flabel">마신 양</span><div class="seg fill" data-seg="portion"></div></div>
+        </div>
+      </div>
+
+      <div class="fcol side">
+        <div class="fcard">
+          <div class="field"><label for="entryCaffeine">이 주문 한 잔의 카페인<span class="opt">선택</span></label><div class="mgwrap"><input type="number" id="entryCaffeine" inputmode="decimal" min="0" max="5000" step="0.1" placeholder="미확인"></div>
+          <p class="help">전체 한 잔의 함량을 입력하세요. 마신 양에 따른 계산은 아래에 표시돼요.</p></div>
+        </div>
+        <div class="est" id="estimate" aria-live="polite"></div>
+        <details class="basis"><summary>계산 근거 보기</summary><p>직접 입력한 한 잔의 카페인 × 선택한 섭취 비율로 계산합니다. 공식 영양정보로 검증한 값이 아니며, 일부 섭취 기록은 추정값입니다. 함량이 비어 있으면 합계에 포함하지 않습니다.</p></details>
+        <div class="savebar">
+          <p class="error" id="entryError" role="alert"></p>
+          <p class="savewhen" id="saveWhen"></p>
+          <button class="primary" type="submit" id="save">섭취 기록 저장</button>
+          <button class="danger hidden" type="button" id="delete">이 기록 삭제</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>
+
+</div>
+<div id="toast" class="hidden" role="status"></div>
+
+<script>
+'use strict';
+const KEY='harugyeol-coffee-v1';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const localDate=d=>{const x=new Date(d);return [x.getFullYear(),pad(x.getMonth()+1),pad(x.getDate())].join('-')};
+const localTime=d=>localDate(d)+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+const hm=d=>{const x=new Date(d);return pad(x.getHours())+':'+pad(x.getMinutes())};
+const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+const amount=(base,portion)=>base===null?null:Math.round(base*portion/100*10)/10;
+const summary=(records,day)=>{const list=records.filter(r=>localDate(r.when)===day);return {list:list.sort((a,b)=>new Date(b.when)-new Date(a.when)),known:list.filter(r=>r.caffeine!==null).reduce((s,r)=>s+amount(r.caffeine,r.portion),0),unknown:list.filter(r=>r.caffeine===null).length,estimated:list.filter(r=>r.caffeine!==null&&r.portion<100).length}};
+function upsert(data,record){const out={favorites:[...data.favorites],records:[...data.records]};const i=out.records.findIndex(r=>r.id===record.id);if(i<0)out.records.push(record);else out.records[i]=record;return out}
+function commit(next){if(loadProblem)throw Error('저장소 상태가 바뀌었어요. 새로고침한 뒤 다시 시도해 주세요.');const text=JSON.stringify(next);localStorage.setItem(KEY,text);if(localStorage.getItem(KEY)!==text)throw Error('보관 확인 실패');state=next}
+
+/* segmented options */
+const OPTS={
+  Size:['톨','그란데','벤티','숏','트렌타','기타'],
+  Temp:['아이스','핫','해당 없음'],
+  Option:['일반','디카페인','일부 디카페인','확인 필요'],
+};
+const PORTION=[['100','전부'],['75','약 3/4'],['50','약 절반'],['25','약 1/4']];
+document.querySelectorAll('[data-seg]').forEach(box=>{
+  const name=box.dataset.seg;
+  const list=name==='portion'?PORTION:OPTS[name.slice(1)].map(v=>[v,v]);
+  box.setAttribute('role','radiogroup');
+  box.innerHTML=list.map(([v,l],i)=>`<label><input type="radio" name="${name}" value="${esc(v)}"${i===0?' checked':''}><span>${esc(l)}</span></label>`).join('');
+});
+const getSeg=name=>document.querySelector(`input[name="${name}"]:checked`)?.value??'';
+const setSeg=(name,v)=>{const el=[...document.querySelectorAll(`input[name="${name}"]`)].find(i=>i.value===String(v));if(el)el.checked=true;else document.querySelectorAll(`input[name="${name}"]`).forEach(i=>i.checked=false)};
+
+let state={favorites:[],records:[]},loadProblem=false;
+try{const raw=localStorage.getItem(KEY);if(raw){const parsed=JSON.parse(raw);if(!Array.isArray(parsed.favorites)||!Array.isArray(parsed.records))throw Error();state=parsed}}catch(e){loadProblem=true}
+let active=null,editing=null,requestId=null,dirty=false,busy=false,current='today',toastTimer,pastNotice=null;
+
+function toast(text){$('toast').textContent=text;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),5000)}
+function show(id){['today','favoriteView','entryView'].forEach(x=>$(x).classList.toggle('hidden',x!==id));current=id;document.body.classList.toggle('form-open',id!=='today');window.scrollTo(0,0)}
+function detail(f){return [f.temp,f.size,f.option,f.shots].filter(Boolean).join(' · ')}
+function sizeMark(s){return ({'톨':'T','그란데':'G','벤티':'V','숏':'S','트렌타':'TR'})[s]||'·'}
+function statusOf(r){return r.caffeine===null?{t:'함량 미확인',c:'ghost'}:r.portion<100?{t:'섭취량 기반 추정',c:'lime'}:{t:'직접 입력값',c:''}}
+
+function render(){
+  const now=new Date(),s=summary(state.records,localDate(now));
+  $('date').textContent=now.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'}).replace(/\s/g,' ');
+
+  // favorites
+  $('favorites').innerHTML=state.favorites.length
+    ?'<div class="favlist">'+state.favorites.map(f=>`<button class="favitem" type="button" data-fav="${esc(f.id)}"><span class="cup">${esc(sizeMark(f.size))}</span><span class="txt"><strong>${esc(f.nickname||f.drink)}</strong><span class="d">${f.nickname?esc(f.drink)+' · ':''}${esc(detail(f))}</span><span class="d">${f.caffeine===null?'카페인 함량 미확인':esc(f.caffeine)+'mg · 직접 입력값'}</span></span><span class="go" aria-hidden="true">→</span></button>`).join('')+'</div>'
+    :'<div class="empty"><strong>평소 주문을 등록해보세요.</strong><span>한 번 남겨두면 다음 기록은 더 짧아져요.</span></div><button class="secondary" type="button" id="firstAdd">첫 즐겨찾기 만들기</button>';
+
+  // caffeine
+  const n=s.list.length;
+  if(!n){$('total').innerHTML='<span class="word">—</span>';$('totalsub').textContent='아직 커피 기록이 없어요.';}
+  else if(n===s.unknown){$('total').innerHTML='<span class="word">미확인</span>';$('totalsub').textContent='함량을 모르는 기록만 있어요.';}
+  else{$('total').innerHTML=`${Number(s.known.toFixed(1))}<small>mg</small>`;$('totalsub').textContent='기록된 섭취 · 직접 입력값 기준';}
+  $('totalchips').innerHTML=(s.estimated?`<span class="chip">추정 ${s.estimated}건</span>`:'')+(s.unknown?`<span class="chip">미확인 ${s.unknown}건 · 합계 제외</span>`:'');
+
+  // last
+  if(n){$('lastTime').textContent=hm(s.list[0].when);$('lastSub').textContent=`오늘 ${n}잔 기록`;}
+  else{$('lastTime').innerHTML='—';$('lastSub').textContent='함량을 모르는 기록도 남길 수 있어요.';}
+
+  // flow
+  $('count').textContent=n+'건';
+  $('records').innerHTML=n?s.list.map(r=>{const st=statusOf(r);return `<button class="rec" type="button" data-record="${esc(r.id)}"><span class="rtime">${esc(hm(r.when))}</span><span class="rbar" aria-hidden="true"></span><span class="rbody"><span class="rname">${esc(r.nickname||r.drink)}</span><span class="rdet">${esc(detail(r))} · ${r.portion===100?'전부':r.portion+'% 섭취'}</span><span class="chip ${st.c}">${r.caffeine===null?'':amount(r.caffeine,r.portion)+'mg · '}${st.t}</span></span></button>`}).join('')
+    :'<div class="empty"><strong style="font-size:15px;font-weight:500">저장한 커피가 여기에 쌓여요.</strong><span>기분 기록은 준비가 끝나면 함께 표시돼요.</span></div>';
+  if(pastNotice&&state.records.some(r=>r.id===pastNotice.id)){
+    $('notice').innerHTML=`<div class="notice"><span><span class="mono">${esc(pastNotice.day)}</span> 기록이에요. 오늘 합계에는 넣지 않았어요.</span><button type="button" id="openPast">기록 보기</button></div>`;
+    $('openPast').onclick=()=>openEntry(state.records.find(r=>r.id===pastNotice.id),true);
+  } else $('notice').innerHTML='';
+
+  document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>openEntry(state.favorites.find(f=>f.id===b.dataset.fav)));
+  document.querySelectorAll('[data-record]').forEach(b=>b.onclick=()=>openEntry(state.records.find(r=>r.id===b.dataset.record),true));
+  if($('firstAdd'))$('firstAdd').onclick=openFavorite;
+}
+
+function openFavorite(){
+  if(loadProblem){toast('기존 저장소를 읽지 못해 덮어쓰기를 막았어요. 브라우저 저장 설정을 확인해 주세요.');return}
+  $('favoriteForm').reset();$('favoriteError').textContent='';dirty=false;pastNotice=null;show('favoriteView');
+}
+function openEntry(f,edit=false){
+  if(loadProblem||!f)return;
+  active=structuredClone(f);editing=edit?f.id:null;requestId=edit?f.id:uid();pastNotice=null;
+  $('entryForm').reset();$('changeBox').open=false;
+  $('order').innerHTML=`<div class="cardhead"><span class="label">${edit?'저장된 기록':'즐겨찾는 주문'}</span>${edit?'<span class="chip onDark">수정 중</span>':''}</div><strong>${esc(f.nickname||f.drink)}</strong><p class="d">${f.nickname?esc(f.drink)+' · ':''}${esc(detail(f))}</p>`;
+  setSeg('eSize',f.size);setSeg('eTemp',f.temp);setSeg('eOption',f.option);$('entryShots').value=f.shots||'';
+  $('entryCaffeine').value=f.caffeine===null?'':f.caffeine;
+  $('when').value=edit?localTime(new Date(f.when)):localTime(new Date());
+  $('when').max=localTime(new Date());
+  setSeg('portion',edit?String(f.portion):'100');
+  $('entryError').textContent='';
+  $('delete').classList.toggle('hidden',!edit);
+  $('save').textContent=edit?'변경 내용 저장':'섭취 기록 저장';
+  $('entryTitle').textContent=edit?'기록을 다시 살펴봐요.':'마신 내용을 확인해요.';
+  $('entrySub').textContent=edit?'수정하거나 삭제하면 오늘 합계도 함께 바뀌어요. 즐겨찾기는 그대로예요.':'이번 기록을 바꿔도 즐겨찾기는 그대로예요.';
+  $('steps').classList.toggle('hidden',edit);
+  dirty=false;updateEstimate();updateWhen();show('entryView');
+}
+function updateEstimate(){
+  const c=$('entryCaffeine').value,p=Number(getSeg('portion'))||100,el=$('estimate');
+  el.className='est'+(c===''?' unknown':p<100?' estimated':'');
+  el.innerHTML=c===''
+    ?`<span class="label">이번 기록의 카페인</span><div class="big">함량 미확인</div><p class="why">주문과 시각은 저장되지만 카페인 합계에는 포함되지 않아요. 0mg으로 계산하지 않아요.</p><span class="chip">미확인</span>`
+    :`<span class="label">이번 기록의 카페인</span><div class="big">${amount(Number(c),p)}<small>mg</small></div><p class="why">${p<100?`한 잔 ${Number(c)}mg × ${p}% 섭취로 계산한 추정값이에요.`:'직접 입력한 한 잔의 함량이에요.'}</p><span class="chip">${p<100?'추정값':'직접 입력값'} · 공식 검증 전</span>`;
+}
+function updateWhen(){
+  const v=$('when').value;if(!v){$('saveWhen').textContent='';return}
+  const d=new Date(v),today=localDate(new Date())===localDate(d);
+  $('saveWhen').textContent=(today?'오늘 ':d.toLocaleDateString('ko-KR',{month:'long',day:'numeric'})+' ')+hm(d)+(today?'':' · 오늘 합계에 포함되지 않아요')+'로 저장해요';
+}
+function readCaffeine(id){const v=$(id).value;if(v==='')return null;const n=Number(v);if(!Number.isFinite(n)||n<0||n>5000)throw Error('카페인은 0 이상 5,000mg 이하로 입력해 주세요. 이는 입력 범위이며 섭취 권장량이 아닙니다.');return n}
+
+$('add').onclick=openFavorite;
+$('moodSoon').onclick=()=>toast('기분 기록은 다음 단계에서 만들어요. 지금은 커피 기록만 동작해요.');
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{if(busy)return;if(dirty&&!confirm('작성 중인 내용을 버리고 오늘로 돌아갈까요?'))return;dirty=false;render();show('today')});
+['favoriteForm','entryForm'].forEach(id=>$(id).addEventListener('input',()=>dirty=true));
+
+$('favoriteForm').onsubmit=e=>{e.preventDefault();try{
+  if(loadProblem)throw Error('저장소를 읽지 못해 저장할 수 없어요.');
+  const drink=$('drink').value.trim();if(!drink){$('drink').focus();throw Error('음료명을 입력해 주세요.')}
+  const f={id:uid(),nickname:$('nickname').value.trim(),drink,size:getSeg('fSize'),temp:getSeg('fTemp'),option:getSeg('fOption'),shots:$('shots').value.trim(),caffeine:readCaffeine('caffeine')};
+  commit({favorites:[...state.favorites,f],records:[...state.records]});dirty=false;render();openEntry(f);toast('즐겨찾기를 저장했어요. 마신 내용을 확인해 주세요.');
+}catch(err){$('favoriteError').textContent='저장하지 못했어요. '+(err.name==='QuotaExceededError'?'브라우저 저장 공간을 확인해 주세요.':err.message)}};
+
+const changeBox=$('changeBox');
+changeBox.addEventListener('change',e=>{if(e.target.name&&/^e(Size|Temp|Option)$/.test(e.target.name))orderChanged()});
+$('entryShots').addEventListener('input',orderChanged);
+function orderChanged(){const had=$('entryCaffeine').value!=='';$('entryCaffeine').value='';updateEstimate();if(had)toast('주문을 바꿔 카페인 함량을 비웠어요. 확인한 값이 있다면 다시 입력해 주세요.')}
+$('entryCaffeine').addEventListener('input',updateEstimate);
+document.querySelector('[data-seg="portion"]').addEventListener('change',updateEstimate);
+$('when').addEventListener('input',updateWhen);
+
+$('entryForm').onsubmit=e=>{e.preventDefault();if(busy)return;busy=true;$('save').disabled=true;$('save').textContent='저장 중…';try{
+  const when=new Date($('when').value);
+  if(!Number.isFinite(when.getTime()))throw Error('마신 날짜와 시각을 확인해 주세요.');
+  if(when.getTime()>Date.now())throw Error('미래 시각은 저장할 수 없어요. 실제 마신 시각을 입력해 주세요.');
+  const record={...active,id:requestId,favoriteId:editing?active.favoriteId:active.id,when:when.toISOString(),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,size:getSeg('eSize'),temp:getSeg('eTemp'),option:getSeg('eOption'),shots:$('entryShots').value.trim(),portion:Number(getSeg('portion'))||100,caffeine:readCaffeine('entryCaffeine'),source:'직접 입력 · 공식 정보 미연결',updatedAt:new Date().toISOString()};
+  commit(upsert(state,record));dirty=false;
+  const wasEdit=!!editing;
+  if(localDate(when)!==localDate(new Date())){pastNotice={id:record.id,day:localDate(when)};render();show('today');toast(localDate(when)+' 기록을 저장했어요. 오늘 합계에는 넣지 않았어요.')}
+  else{render();show('today');toast(wasEdit?'변경 내용을 저장했어요.':'커피 기록을 저장했어요.')}
+}catch(err){$('entryError').textContent='저장하지 못했어요. 입력은 그대로 있어요. '+err.message}
+finally{busy=false;$('save').disabled=false;$('save').textContent=editing?'변경 내용 저장':'섭취 기록 저장'}};
+
+$('delete').onclick=()=>{if(!confirm('이 섭취 기록을 삭제할까요? 즐겨찾기는 유지됩니다.'))return;try{commit({favorites:[...state.favorites],records:state.records.filter(r=>r.id!==editing)});dirty=false;render();show('today');toast('기록을 삭제했어요. 오늘 합계도 다시 계산했어요.')}catch(e){$('entryError').textContent='삭제하지 못했어요. '+e.message}};
+
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+window.addEventListener('pageshow',()=>{if(current==='today')render()});
+window.addEventListener('storage',e=>{if(e.key===KEY){loadProblem=true;toast('다른 화면에서 기록이 바뀌었어요. 새로고침한 뒤 계속해 주세요.')}});
+window.coffeeCore={amount,summary,upsert,localDate};
+render();
+if(loadProblem)toast('기존 기록을 읽지 못했어요. 덮어쓰기를 막았습니다. 브라우저 저장 설정을 확인해 주세요.');
+</script>
+</body>
+</html>
