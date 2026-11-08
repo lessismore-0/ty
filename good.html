@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f4f3ef">
-<title>하루결 · 오늘</title>
+<title>good day · 오늘</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -59,7 +59,8 @@ button:focus-visible,input:focus-visible,summary:focus-visible,label:focus-withi
 .caf{grid-area:caf;background:var(--orange);color:#fff}
 .caf .label{opacity:.8}
 .caf .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
-.caf .chip{background:rgba(255,255,255,.2);color:#fff}
+.caf .chip{background:rgba(255,255,255,.2);color:#fff;white-space:normal;max-width:100%;min-width:0;overflow-wrap:anywhere;letter-spacing:0;line-height:1.6}
+.caf .big,.last .big{font-size:clamp(24px,7vw,34px);overflow-wrap:anywhere;line-height:1.2}
 .last{grid-area:last;background:var(--lime)}
 .big .word{font-family:var(--sans);font-size:24px;font-weight:600;letter-spacing:-.02em}
 
@@ -212,7 +213,7 @@ body.form-open #toast{bottom:calc(env(safe-area-inset-bottom) + 112px)}
   .savebar{position:static;background:none;padding:4px 0 0}
   body.form-open #toast{bottom:28px}
 }
-</style>
+select{width:100%;min-height:52px;padding:12px;border:1px solid var(--bg2);border-radius:12px;background:var(--cream);font-size:16px;color:var(--ink)}.nutrition-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.nutrition-grid strong{display:block;font:500 22px var(--mono)}.nutrition-grid span{font-size:13px}.sheet-note{font-size:13px;margin-top:12px}</style>
 </head>
 <body>
 <div class="app">
@@ -220,16 +221,17 @@ body.form-open #toast{bottom:calc(env(safe-area-inset-bottom) + 112px)}
 <!-- ========== 오늘 ========== -->
 <section id="today" class="view" data-screen-label="01 오늘">
   <header class="top">
-    <div><div class="brand">하루결</div><div class="mono" id="date"></div></div>
+    <div><div class="brand">good day</div><div class="mono" id="date"></div></div>
     <span class="chip ghost" title="기록은 이 브라우저에만 보관됩니다">로컬 보관 시제품</span>
   </header>
 
   <div class="bento">
     <article class="card mood" aria-labelledby="moodT">
-      <div class="cardhead"><span class="label">마음 기록</span><span class="chip onDark">AI 대화 미구현</span></div>
+      <div class="cardhead"><span class="label">마음 기록</span><span class="chip onDark">직접 기록</span></div>
       <h2 id="moodT">지금 어떤 기분인가요?</h2>
-      <p>공감하고 함께 정리하는 기분 기록은 다음 단계에서 만들어요. 지금은 입력과 분석이 동작하지 않아요.</p>
-      <button class="soon" type="button" aria-disabled="true" id="moodSoon">한 줄 남기기 · 준비 중</button>
+      <p>지금 느끼는 기분을 간단히 남겨요. 분석이나 대화 없이 이 브라우저에만 저장해요.</p>
+      <button class="soon" style="cursor:pointer;color:var(--bg);border-style:solid" type="button" id="moodSoon">기분 기록하기</button>
+      <div id="moodList" style="margin-top:14px"></div>
     </article>
 
     <article class="card caf" aria-live="polite">
@@ -282,247 +284,100 @@ body.form-open #toast{bottom:calc(env(safe-area-inset-bottom) + 112px)}
   <details class="scope">
     <summary>보관 방식과 시제품의 범위</summary>
     <p>기록은 이 주소를 연 현재 브라우저의 저장소에만 보관됩니다. 서버 전송·기기 간 동기화·외부 인공지능 분석은 하지 않습니다. 개인정보 보호 모드나 브라우저 데이터 삭제 시 기록이 사라질 수 있고, 다른 주소나 기기에서는 기록이 공유되지 않습니다.</p>
-    <p>건강앱(수면·수분·생리·체성분)과 연결하지 않았으며, 스타벅스 공식 영양정보도 연결되지 않았습니다. 카페인 수치는 비워 두거나 직접 입력할 수 있고, 직접 입력한 값은 공식 검증값으로 표시하지 않습니다.</p>
+    <p>건강앱은 미연결입니다. 음료 데이터는 사용자 제공 시트의 2026-11-08 가져온 저장본만 사용합니다. 이전 이미지 전사·검색 영양정보는 메뉴에서 제거했습니다. 시트의 이후 수정은 자동 반영되지 않습니다. 과거 섭취 기록은 삭제하지 않고 별도로 구분합니다.</p>
   </details>
   <p class="foot">기록된 섭취만 보여줍니다 · 건강 상태를 진단하거나 안전한 섭취량을 판정하지 않습니다</p>
 </section>
 
 <!-- ========== 즐겨찾기 등록 ========== -->
-<section id="favoriteView" class="view formwrap hidden" data-screen-label="02 즐겨찾기 등록">
-  <div class="bar"><button class="back" data-back type="button">← 오늘</button><span class="chip">즐겨찾기 만들기</span></div>
-  <div class="formhead"><h1 class="h-screen">평소 주문을 남겨두세요.</h1><p class="sub">한 번 등록하면 다음에는 바로 불러올 수 있어요.</p></div>
-  <form id="favoriteForm" novalidate>
-    <div class="fgrid">
-      <div class="fcol">
-        <div class="fcard">
-          <span class="label">주문</span>
-          <div class="field"><label for="drink">스타벅스 음료명</label><input type="text" id="drink" required maxlength="100" placeholder="실제로 마시는 메뉴명" autocomplete="off"></div>
-          <div class="field"><label for="nickname">주문 별칭<span class="opt">선택</span></label><input type="text" id="nickname" maxlength="40" placeholder="나만 알아보기 쉬운 이름" autocomplete="off"></div>
-        </div>
-        <div class="fcard">
-          <span class="label">옵션</span>
-          <div class="field"><span class="flabel">사이즈</span><div class="seg" data-seg="fSize"></div></div>
-          <div class="field"><span class="flabel">온도</span><div class="seg" data-seg="fTemp"></div></div>
-          <div class="field"><span class="flabel">카페인 옵션</span><div class="seg" data-seg="fOption"></div></div>
-          <div class="field"><label for="shots">샷 변경<span class="opt">선택</span></label><input type="text" id="shots" maxlength="60" placeholder="예: 추가 샷 없음 / 1샷 추가" autocomplete="off"></div>
-        </div>
-      </div>
-      <div class="fcol side">
-        <div class="fcard">
-          <span class="label">카페인</span>
-          <div class="field"><label for="caffeine">이 주문 한 잔의 카페인<span class="opt">선택</span></label><div class="mgwrap"><input type="number" id="caffeine" inputmode="decimal" min="0" max="5000" step="0.1" placeholder="모르면 비워두세요"></div>
-          <p class="help">입력하면 ‘직접 입력값’으로 표시해요. 비워두면 ‘함량 미확인’으로 저장되고 합계에 넣지 않아요.</p></div>
-          <p class="info">메뉴와 옵션의 실제 판매 여부는 직접 확인해 주세요. 이 목록은 공식 메뉴 데이터베이스가 아닙니다.</p>
-        </div>
-        <div class="savebar">
-          <p class="error" id="favoriteError" role="alert"></p>
-          <button class="primary" type="submit">즐겨찾기 저장</button>
-        </div>
-      </div>
-    </div>
-  </form>
-</section>
+<section id="favoriteView" class="view formwrap hidden"><div class="bar"><button class="back" data-back type="button">← 오늘</button><span class="chip">톨 고정</span></div><div class="formhead"><h1 class="h-screen">마시는 음료를 골라요.</h1><p class="sub">사용자 음료정보 시트 기준 · 기본 레시피</p></div><form id="favoriteForm" class="fcard"><div class="field"><label for="category">음료 카테고리</label><select id="category" required></select></div><div class="field"><label for="drink">음료</label><select id="drink" required></select></div><p class="help">사이즈는 톨로 고정합니다. 온도는 별도 선택하지 않으며 ‘아이스’가 포함된 메뉴는 메뉴명 그대로 선택하세요.</p><div id="menuNutrition" class="info"></div><p class="help">메뉴명에 Trenta·보틀이 명시된 항목은 제외했습니다. 그 외 전용 용량 여부는 시트에 없으므로 별도 검증하지 않았습니다.</p><a class="help" href="https://docs.google.com/spreadsheets/d/1tX59YaFx8BHiXkOkoKdA7W7fok30VFH13VaRBInu3kE/edit?usp=sharing" target="_blank" rel="noopener">원본 음료정보 시트</a><p class="error" id="favoriteError" role="alert"></p><div class="savebar"><button class="primary" type="submit">즐겨찾기 저장</button></div></form></section>
 
 <!-- ========== 섭취 확인 / 수정 ========== -->
-<section id="entryView" class="view formwrap hidden" data-screen-label="03 섭취 확인">
-  <div class="bar"><button class="back" data-back type="button">← 오늘</button>
-    <div class="steps" id="steps"><span class="done">선택</span><span class="on">확인</span><span>저장</span></div></div>
-  <div class="formhead"><h1 class="h-screen" id="entryTitle">마신 내용을 확인해요.</h1><p class="sub" id="entrySub">이번 기록을 바꿔도 즐겨찾기는 그대로예요.</p></div>
-  <form id="entryForm" novalidate>
-    <div class="fgrid">
-      <div class="fcol">
-        <div class="order" id="order"></div>
+<section id="entryView" class="view formwrap hidden"><div class="bar"><button class="back" data-back type="button">← 오늘</button><span class="chip">톨 고정</span></div><div class="formhead"><h1 class="h-screen" id="entryTitle">마신 내용을 확인해요.</h1><p class="sub">시트에 정리한 기본 레시피 기준입니다.</p></div><form id="entryForm" class="fcard"><div id="order" class="order"></div><div id="entryNutrition" class="info"></div><div class="field"><label for="when">마신 날짜와 시각</label><input type="datetime-local" id="when" required></div><div class="field"><label for="portion">마신 양</label><select id="portion"><option value="100">전부</option><option value="75">약 3/4</option><option value="50">약 절반</option><option value="25">약 1/4</option></select></div><div id="estimate" class="info" aria-live="polite"></div><p class="help">영양정보는 한 잔 기준, 섭취 카페인은 마신 비율로 계산합니다. 원본의 ‘-’는 미제공으로 처리하고 0으로 바꾸지 않습니다.</p><p class="error" id="entryError" role="alert"></p><div class="savebar"><button class="primary" id="save" type="submit">섭취 기록 저장</button><button class="danger hidden" id="delete" type="button">이 기록 삭제</button></div></form></section>
 
-        <details class="change" id="changeBox">
-          <summary><span class="t">이번 주문만 변경<small>즐겨찾기 원본은 바뀌지 않아요</small></span><span class="arr">›</span></summary>
-          <div class="inner">
-            <div class="field"><span class="flabel">사이즈</span><div class="seg" data-seg="eSize"></div></div>
-            <div class="field"><span class="flabel">온도</span><div class="seg" data-seg="eTemp"></div></div>
-            <div class="field"><span class="flabel">카페인 옵션</span><div class="seg" data-seg="eOption"></div></div>
-            <div class="field"><label for="entryShots">샷 변경</label><input type="text" id="entryShots" maxlength="60" autocomplete="off"></div>
-            <p class="help">주문을 바꾸면 카페인 함량을 비워요. 확인한 값이 있다면 다시 입력해 주세요.</p>
-          </div>
-        </details>
-
-        <div class="fcard">
-          <div class="field"><label for="when">마신 날짜와 시각</label><input type="datetime-local" id="when" required>
-            <p class="help">기기 기준 현지 시각이에요. 실제 마신 시각으로 바꿀 수 있어요.</p></div>
-          <div class="field"><span class="flabel">마신 양</span><div class="seg fill" data-seg="portion"></div></div>
-        </div>
-      </div>
-
-      <div class="fcol side">
-        <div class="fcard">
-          <div class="field"><label for="entryCaffeine">이 주문 한 잔의 카페인<span class="opt">선택</span></label><div class="mgwrap"><input type="number" id="entryCaffeine" inputmode="decimal" min="0" max="5000" step="0.1" placeholder="미확인"></div>
-          <p class="help">전체 한 잔의 함량을 입력하세요. 마신 양에 따른 계산은 아래에 표시돼요.</p></div>
-        </div>
-        <div class="est" id="estimate" aria-live="polite"></div>
-        <details class="basis"><summary>계산 근거 보기</summary><p>직접 입력한 한 잔의 카페인 × 선택한 섭취 비율로 계산합니다. 공식 영양정보로 검증한 값이 아니며, 일부 섭취 기록은 추정값입니다. 함량이 비어 있으면 합계에 포함하지 않습니다.</p></details>
-        <div class="savebar">
-          <p class="error" id="entryError" role="alert"></p>
-          <p class="savewhen" id="saveWhen"></p>
-          <button class="primary" type="submit" id="save">섭취 기록 저장</button>
-          <button class="danger hidden" type="button" id="delete">이 기록 삭제</button>
-        </div>
-      </div>
-    </div>
+<section id="moodView" class="view formwrap hidden">
+  <div class="bar"><button class="back" data-back type="button">← 오늘</button><span class="chip">마음 기록</span></div>
+  <div class="formhead"><h1 class="h-screen">지금 어떤 기분인가요?</h1><p class="sub">짧게 적어도 괜찮아요. 분석하거나 평가하지 않아요.</p></div>
+  <form id="moodForm" class="fcard">
+    <div class="field"><label for="moodText">나의 기분</label><textarea id="moodText" rows="5" maxlength="2000" required placeholder="지금 느끼는 기분을 적어주세요." style="width:100%;padding:14px;border:1px solid var(--bg2);border-radius:12px;background:var(--cream);color:var(--ink);font:inherit;font-size:16px;line-height:1.6;resize:vertical"></textarea></div>
+    <p class="help">현재 시각과 함께 저장됩니다. 외부 인공지능으로 보내지 않으며, 브라우저 데이터를 지우면 기록이 사라질 수 있어요.</p>
+    <p id="moodError" class="error" role="alert"></p>
+    <div class="savebar"><button type="submit" class="primary" id="moodSave">기분 저장</button></div>
   </form>
 </section>
-
 </div>
 <div id="toast" class="hidden" role="status"></div>
 
 <script>
 'use strict';
-const KEY='harugyeol-coffee-v1';
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// 저장 데이터는 문자열·숫자·배열·일반 객체만 사용합니다.
+function structuredClone(value){return JSON.parse(JSON.stringify(value))}
+const KEY='harugyeol-coffee-v1',SOURCE='사용자 음료정보 시트 · 2026-11-08 저장본';
+const DATA=[{"id":"sheet-row-2","category":"브루드","name":"브루드 커피","values":[5.0,0.0,0.0,15.0,0.0,260.0],"excluded":false},{"id":"sheet-row-3","category":"브루드","name":"스위트 밀크 커피","values":[185.0,24.0,4.0,75.0,4.1,60.0],"excluded":false},{"id":"sheet-row-4","category":"브루드","name":"아이스 브루드 커피","values":[5.0,0.0,0.0,10.0,0.0,140.0],"excluded":false},{"id":"sheet-row-5","category":"콜드브루","name":"나이트로 바닐라 크림","values":[80.0,10.0,1.0,40.0,2.0,232.0],"excluded":false},{"id":"sheet-row-6","category":"콜드브루","name":"나이트로 콜드 브루","values":[5.0,0.0,0.0,5.0,0.0,245.0],"excluded":false},{"id":"sheet-row-7","category":"콜드브루","name":"돌체 콜드 브루","values":[170.0,17.0,4.0,65.0,6.0,130.0],"excluded":false},{"id":"sheet-row-8","category":"콜드브루","name":"리저브 나이트로","values":[5.0,0.0,0.0,0.0,0.0,190.0],"excluded":false},{"id":"sheet-row-9","category":"콜드브루","name":"리저브 콜드 브루","values":[5.0,0.0,0.0,0.0,0.0,190.0],"excluded":false},{"id":"sheet-row-10","category":"콜드브루","name":"막걸리향 크림 콜드 브루","values":[300.0,32.0,3.0,65.0,13.0,53.0],"excluded":false},{"id":"sheet-row-11","category":"콜드브루","name":"민트 콜드 브루","values":[100.0,23.0,0.0,0.0,0.0,415.0],"excluded":false},{"id":"sheet-row-12","category":"콜드브루","name":"바닐라 아인슈페너 콜드 브루","values":[115.0,7.0,1.0,20.0,6.0,134.0],"excluded":false},{"id":"sheet-row-13","category":"콜드브루","name":"바닐라 크림 콜드 브루","values":[120.0,10.0,3.0,35.0,5.0,135.0],"excluded":false},{"id":"sheet-row-14","category":"콜드브루","name":"베르가못 콜드 브루","values":[125.0,22.0,3.0,45.0,1.7,130.0],"excluded":false},{"id":"sheet-row-15","category":"콜드브루","name":"블랙&화이트 콜드 브루","values":[175.0,12.0,1.0,70.0,12.0,190.0],"excluded":false},{"id":"sheet-row-16","category":"콜드브루","name":"서울 막걸리향 콜드 브루","values":[205.0,38.0,3.0,55.0,2.1,79.0],"excluded":false},{"id":"sheet-row-17","category":"콜드브루","name":"스모크드 콜드 패션드","values":[30.0,6.0,0.0,0.0,0.0,135.0],"excluded":false},{"id":"sheet-row-18","category":"콜드브루","name":"시그니처 더 블랙 콜드 브루","values":[25.0,0.0,0.0,50.0,0.0,680.0],"excluded":false},{"id":"sheet-row-19","category":"콜드브루","name":"여수 윤슬 헤이즐넛 콜드 브루","values":[240.0,27.0,5.0,80.0,9.0,53.0],"excluded":false},{"id":"sheet-row-20","category":"콜드브루","name":"오트 콜드 브루","values":[110.0,14.0,1.0,85.0,0.3,65.0],"excluded":false},{"id":"sheet-row-21","category":"콜드브루","name":"제주 비자림 리저브 콜드 브루","values":[205.0,26.0,8.0,100.0,4.1,250.0],"excluded":false},{"id":"sheet-row-22","category":"콜드브루","name":"콜드 브루(Trenta)","values":[5.0,0.0,0.0,25.0,0.0,360.0],"excluded":true},{"id":"sheet-row-23","category":"콜드브루","name":"콜드 브루","values":[5.0,0.0,0.0,11.0,0.0,155.0],"excluded":false},{"id":"sheet-row-24","category":"콜드브루","name":"콜드 브루 몰트","values":[505.0,41.0,7.0,150.0,20.0,190.0],"excluded":false},{"id":"sheet-row-25","category":"콜드브루","name":"콜드 브루 플로트","values":[225.0,18.0,3.0,70.0,10.0,190.0],"excluded":false},{"id":"sheet-row-26","category":"콜드브루","name":"프렌치 바닐라 콜드 브루","values":[165.0,26.0,4.0,150.0,2.7,65.0],"excluded":false},{"id":"sheet-row-27","category":"에스프레소","name":"스타벅스 에어로카노","values":[10.0,0.0,1.0,0.0,0.0,150.0],"excluded":false},{"id":"sheet-row-28","category":"에스프레소","name":"블랙 글레이즈드 라떼","values":[345.0,35.0,9.0,200.0,11.0,75.0],"excluded":false},{"id":"sheet-row-29","category":"에스프레소","name":"아이스 블랙 글레이즈드 라떼","values":[290.0,31.0,6.0,160.0,10.0,75.0],"excluded":false},{"id":"sheet-row-30","category":"에스프레소","name":"아이스 윈터 스카치 바닐라 라떼","values":[240.0,24.0,6.0,140.0,7.0,100.0],"excluded":false},{"id":"sheet-row-31","category":"에스프레소","name":"아이스 토피 넛 라떼","values":[255.0,28.0,6.0,180.0,10.0,75.0],"excluded":false},{"id":"sheet-row-32","category":"에스프레소","name":"윈터 스카치 바닐라 라떼","values":[285.0,28.0,8.0,180.0,9.0,100.0],"excluded":false},{"id":"sheet-row-33","category":"에스프레소","name":"토피 넛 라떼","values":[285.0,31.0,8.0,220.0,10.0,75.0],"excluded":false},{"id":"sheet-row-34","category":"에스프레소","name":"에스프레소 콘 파나","values":[30.0,0.0,1.0,5.0,2.0,75.0],"excluded":false},{"id":"sheet-row-35","category":"에스프레소","name":"에스프레소 마키아또","values":[10.0,0.0,0.0,0.0,0.0,75.0],"excluded":false},{"id":"sheet-row-36","category":"에스프레소","name":"아이스 카페 아메리카노","values":[10.0,0.0,1.0,5.0,0.0,150.0],"excluded":false},{"id":"sheet-row-37","category":"에스프레소","name":"카페 아메리카노","values":[10.0,0.0,1.0,5.0,0.0,150.0],"excluded":false},{"id":"sheet-row-38","category":"에스프레소","name":"아이스 우베 코코넛 마키아또","values":[245.0,20.0,4.0,85.0,5.0,105.0],"excluded":false},{"id":"sheet-row-39","category":"에스프레소","name":"아이스 카라멜 마키아또","values":[190.0,22.0,6.0,110.0,4.6,75.0],"excluded":false},{"id":"sheet-row-40","category":"에스프레소","name":"카라멜 마키아또","values":[200.0,22.0,8.0,130.0,5.0,75.0],"excluded":false},{"id":"sheet-row-41","category":"에스프레소","name":"아이스 카푸치노","values":[110.0,9.0,6.0,90.0,3.5,75.0],"excluded":false},{"id":"sheet-row-42","category":"에스프레소","name":"카푸치노","values":[110.0,8.0,6.0,70.0,3.0,75.0],"excluded":false},{"id":"sheet-row-43","category":"에스프레소","name":"라벤더 카페 브레베","values":[400.0,30.0,8.0,140.0,22.0,105.0],"excluded":false},{"id":"sheet-row-44","category":"에스프레소","name":"밀크카라멜 라떼","values":[310.0,22.0,8.0,280.0,13.0,75.0],"excluded":false},{"id":"sheet-row-45","category":"에스프레소","name":"바닐라 라떼","values":[210.0,24.0,8.0,130.0,5.0,75.0],"excluded":false},{"id":"sheet-row-46","category":"에스프레소","name":"바닐라 빈 라떼","values":[245.0,27.0,9.0,150.0,6.0,210.0],"excluded":false},{"id":"sheet-row-47","category":"에스프레소","name":"번트 카라멜 라떼","values":[380.0,30.0,12.0,250.0,13.0,210.0],"excluded":false},{"id":"sheet-row-48","category":"에스프레소","name":"사케라또 비안코 오버 아이스","values":[270.0,14.0,3.0,45.0,18.0,315.0],"excluded":false},{"id":"sheet-row-49","category":"에스프레소","name":"스타벅스 꿀 호떡 라떼","values":[360.0,23.0,10.0,150.0,11.0,75.0],"excluded":false},{"id":"sheet-row-50","category":"에스프레소","name":"스타벅스 돌체 라떼","values":[215.0,32.0,12.0,190.0,2.0,150.0],"excluded":false},{"id":"sheet-row-51","category":"에스프레소","name":"아이스 라벤더 카페 브레베","values":[335.0,27.0,6.0,110.0,18.0,105.0],"excluded":false},{"id":"sheet-row-52","category":"에스프레소","name":"아이스 밀크카라멜 라떼","values":[240.0,17.0,5.0,220.0,10.0,75.0],"excluded":false},{"id":"sheet-row-53","category":"에스프레소","name":"아이스 바닐라 라떼","values":[150.0,19.0,5.0,80.0,3.2,75.0],"excluded":false},{"id":"sheet-row-54","category":"에스프레소","name":"아이스 바닐라 빈 라떼","values":[155.0,20.0,5.0,75.0,2.9,210.0],"excluded":false},{"id":"sheet-row-55","category":"에스프레소","name":"아이스 스타벅스 꿀 호떡 라떼","values":[290.0,16.0,6.0,80.0,10.0,75.0],"excluded":false},{"id":"sheet-row-56","category":"에스프레소","name":"아이스 스타벅스 돌체 라떼","values":[190.0,28.0,10.0,140.0,2.0,150.0],"excluded":false},{"id":"sheet-row-57","category":"에스프레소","name":"아이스 인절미 크림 라떼","values":[455.0,43.0,9.0,180.0,16.0,75.0],"excluded":false},{"id":"sheet-row-58","category":"에스프레소","name":"아이스 카페 라떼","values":[110.0,8.0,6.0,75.0,3.5,75.0],"excluded":false},{"id":"sheet-row-59","category":"에스프레소","name":"인절미 크림 라떼","values":[530.0,49.0,12.0,250.0,19.0,75.0],"excluded":false},{"id":"sheet-row-60","category":"에스프레소","name":"제주 비자림 리저브 에스프레소 라떼","values":[240.0,22.0,10.0,160.0,7.0,210.0],"excluded":false},{"id":"sheet-row-61","category":"에스프레소","name":"카페 라떼","values":[180.0,13.0,10.0,115.0,5.0,75.0],"excluded":false},{"id":"sheet-row-62","category":"에스프레소","name":"코르타도","values":[115.0,8.0,6.0,85.0,3.2,225.0],"excluded":false},{"id":"sheet-row-63","category":"에스프레소","name":"피넛 크림 쿠키 아인슈페너","values":[345.0,24.0,7.0,140.0,6.0,75.0],"excluded":false},{"id":"sheet-row-64","category":"에스프레소","name":"아이스 카페 모카","values":[250.0,21.0,7.0,70.0,8.0,95.0],"excluded":false},{"id":"sheet-row-65","category":"에스프레소","name":"아이스 화이트 초콜릿 모카","values":[300.0,31.0,8.0,150.0,10.0,75.0],"excluded":false},{"id":"sheet-row-66","category":"에스프레소","name":"카페 모카","values":[290.0,25.0,10.0,105.0,9.0,95.0],"excluded":false},{"id":"sheet-row-67","category":"에스프레소","name":"클래식 민트 모카","values":[335.0,43.0,4.0,200.0,0.7,210.0],"excluded":false},{"id":"sheet-row-68","category":"에스프레소","name":"화이트 초콜릿 모카","values":[350.0,37.0,11.0,200.0,10.0,75.0],"excluded":false},{"id":"sheet-row-69","category":"에스프레소","name":"아이스 플랫 화이트","values":[120.0,9.0,6.0,90.0,3.5,130.0],"excluded":false},{"id":"sheet-row-70","category":"에스프레소","name":"플랫 화이트","values":[170.0,13.0,8.0,130.0,5.0,130.0],"excluded":false},{"id":"sheet-row-71","category":"에스프레소","name":"바닐라 스타벅스 더블 샷","values":[125.0,14.0,2.0,30.0,4.5,150.0],"excluded":false},{"id":"sheet-row-72","category":"에스프레소","name":"사케라또 아포가토","values":[290.0,30.0,4.0,70.0,10.0,210.0],"excluded":false},{"id":"sheet-row-73","category":"에스프레소","name":"스파클링 시트러스 에스프레소","values":[65.0,15.0,0.0,5.0,0.0,105.0],"excluded":false},{"id":"sheet-row-74","category":"에스프레소","name":"에스프레소","values":[5.0,0.0,0.0,0.0,0.0,75.0],"excluded":false},{"id":"sheet-row-75","category":"에스프레소","name":"에스프레소 플라이트","values":[null,null,null,null,null,null],"excluded":false},{"id":"sheet-row-76","category":"에스프레소","name":"에스프레소 플라이트 도산","values":[null,null,null,null,null,null],"excluded":false},{"id":"sheet-row-77","category":"에스프레소","name":"커피 스타벅스 더블 샷","values":[125.0,14.0,2.0,30.0,4.5,150.0],"excluded":false},{"id":"sheet-row-78","category":"에스프레소","name":"클래식 아포가토","values":[240.0,18.0,4.0,70.0,10.0,210.0],"excluded":false},{"id":"sheet-row-79","category":"에스프레소","name":"헤이즐넛 스타벅스 더블 샷","values":[125.0,14.0,2.0,30.0,4.5,150.0],"excluded":false},{"id":"sheet-row-80","category":"프라푸치노","name":"더블 에스프레소 칩 프라푸치노","values":[225.0,18.0,4.0,170.0,13.0,130.0],"excluded":false},{"id":"sheet-row-81","category":"프라푸치노","name":"스타벅스 꿀 호떡 크림 프라푸치노","values":[325.0,26.0,6.0,180.0,10.0,0.0],"excluded":false},{"id":"sheet-row-82","category":"프라푸치노","name":"에스프레소 프라푸치노","values":[110.0,17.0,2.0,150.0,1.1,120.0],"excluded":false},{"id":"sheet-row-83","category":"프라푸치노","name":"자바 칩 프라푸치노","values":[285.0,30.0,5.0,180.0,6.0,100.0],"excluded":false},{"id":"sheet-row-84","category":"프라푸치노","name":"카라멜 프라푸치노","values":[225.0,24.0,3.0,180.0,8.0,85.0],"excluded":false},{"id":"sheet-row-85","category":"프라푸치노","name":"딸기 글레이즈드 크림 프라푸치노","values":[315.0,37.0,5.0,250.0,9.0,5.0],"excluded":false},{"id":"sheet-row-86","category":"프라푸치노","name":"베르가못 딸기 크림 프라푸치노","values":[420.0,50.0,5.0,260.0,13.0,0.0],"excluded":false},{"id":"sheet-row-87","category":"프라푸치노","name":"베르가못 제주 말차 크림 프라푸치노","values":[405.0,48.0,5.0,260.0,13.0,30.0],"excluded":false},{"id":"sheet-row-88","category":"프라푸치노","name":"제주 까망 크림 프라푸치노","values":[505.0,48.0,11.0,380.0,8.0,0.0],"excluded":false},{"id":"sheet-row-89","category":"프라푸치노","name":"제주 말차 크림 프라푸치노","values":[235.0,24.0,5.0,170.0,9.0,80.0],"excluded":false},{"id":"sheet-row-90","category":"프라푸치노","name":"제주 쑥떡 크림 프라푸치노","values":[410.0,43.0,8.0,280.0,10.0,0.0],"excluded":false},{"id":"sheet-row-91","category":"프라푸치노","name":"제주 오름 초당옥수수 프라푸치노","values":[310.0,33.0,5.0,290.0,11.0,0.0],"excluded":false},{"id":"sheet-row-92","category":"프라푸치노","name":"초콜릿 크림 칩 프라푸치노","values":[275.0,27.0,6.0,180.0,7.0,10.0],"excluded":false},{"id":"sheet-row-93","category":"프라푸치노","name":"피넛 쿠키 크림 프라푸치노","values":[370.0,30.0,7.0,250.0,13.0,0.0],"excluded":false},{"id":"sheet-row-94","category":"프라푸치노","name":"화이트 타이거 프라푸치노","values":[385.0,50.0,6.0,240.0,7.0,0.0],"excluded":false},{"id":"sheet-row-95","category":"블렌디드","name":"망고 패션 프루트 블렌디드","values":[180.0,36.0,2.0,105.0,0.0,10.0],"excluded":false},{"id":"sheet-row-96","category":"블렌디드","name":"북한산 레몬 얼 그레이 블렌디드","values":[110.0,25.0,0.0,10.0,0.1,8.0],"excluded":false},{"id":"sheet-row-97","category":"블렌디드","name":"스타벅스 클래식 밀크티 블렌디드","values":[315.0,37.0,3.0,55.0,13.0,60.0],"excluded":false},{"id":"sheet-row-98","category":"블렌디드","name":"여수 바다 유자 블렌디드","values":[145.0,34.0,0.0,10.0,0.0,0.0],"excluded":false},{"id":"sheet-row-99","category":"블렌디드","name":"제주 탄제린 블렌디드","values":[260.0,43.0,1.0,25.0,0.0,0.0],"excluded":false},{"id":"sheet-row-100","category":"블렌디드","name":"딸기 딜라이트 요거트 블렌디드","values":[255.0,38.0,7.0,100.0,3.5,0.0],"excluded":false},{"id":"sheet-row-101","category":"블렌디드","name":"말차 폭포 유자 블렌디드","values":[150.0,32.0,1.0,5.0,0.0,65.0],"excluded":false},{"id":"sheet-row-102","category":"블렌디드","name":"망고 바나나 블렌디드","values":[290.0,45.0,4.0,130.0,0.9,0.0],"excluded":false},{"id":"sheet-row-103","category":"블렌디드","name":"블랙 글레이즈드 셔벗 플레이트","values":[190.0,16.0,2.0,120.0,8.0,159.0],"excluded":false},{"id":"sheet-row-104","category":"블렌디드","name":"블루베리 딜라이트 요거트 블렌디드","values":[245.0,35.0,5.0,105.0,4.1,0.0],"excluded":false},{"id":"sheet-row-105","category":"블렌디드","name":"자몽 허니 레몬 블렌디드","values":[175.0,41.0,0.0,5.0,0.0,0.0],"excluded":false},{"id":"sheet-row-106","category":"블렌디드","name":"피치 망고 블렌디드","values":[225.0,32.0,1.0,100.0,0.0,0.0],"excluded":false},{"id":"sheet-row-107","category":"피지오","name":"골든 만다린 홉 피지오","values":[120.0,27.0,0.0,5.0,0.0,16.0],"excluded":false},{"id":"sheet-row-108","category":"피지오","name":"라이트 핑크 자몽 피지오","values":[70.0,16.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-109","category":"피지오","name":"리버 피치 피지오","values":[155.0,22.0,0.0,45.0,0.0,0.0],"excluded":false},{"id":"sheet-row-110","category":"피지오","name":"서울 석양 오미자 피지오","values":[155.0,39.0,0.0,20.0,0.0,0.0],"excluded":false},{"id":"sheet-row-111","category":"피지오","name":"여수 바다 자몽 피지오","values":[250.0,45.0,1.0,105.0,0.0,0.0],"excluded":false},{"id":"sheet-row-112","category":"피지오","name":"의암호의 초록빛 자몽 피지오","values":[130.0,28.0,0.0,45.0,0.0,0.0],"excluded":false},{"id":"sheet-row-113","category":"피지오","name":"제주팔삭 셔벗 피지오","values":[165.0,38.0,0.0,5.0,0.0,0.0],"excluded":false},{"id":"sheet-row-114","category":"피지오","name":"제주팔삭 피지오","values":[150.0,34.0,0.0,5.0,0.0,0.0],"excluded":false},{"id":"sheet-row-115","category":"피지오","name":"체리&자두 에너지 피지오","values":[76.0,18.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-116","category":"피지오","name":"쿨 라임 피지오","values":[95.0,22.0,0.0,15.0,0.0,100.0],"excluded":false},{"id":"sheet-row-117","category":"피지오","name":"피치 딸기 피지오","values":[115.0,21.0,0.0,15.0,0.0,30.0],"excluded":false},{"id":"sheet-row-118","category":"티바나","name":"아이스 클래식 뱅쇼 히비스커스 티","values":[150.0,31.0,0.0,10.0,0.0,0.0],"excluded":false},{"id":"sheet-row-119","category":"티바나","name":"아이스 퓨어 말차","values":[9.0,0.0,1.0,0.0,0.0,60.0],"excluded":false},{"id":"sheet-row-120","category":"티바나","name":"아이스 퓨어 호지차","values":[7.0,0.0,0.0,0.0,0.0,20.0],"excluded":false},{"id":"sheet-row-121","category":"티바나","name":"클래식 뱅쇼 히비스커스 티","values":[210.0,44.0,0.0,10.0,0.0,0.0],"excluded":false},{"id":"sheet-row-122","category":"티바나","name":"퓨어 말차","values":[11.0,0.0,1.0,5.0,0.0,75.0],"excluded":false},{"id":"sheet-row-123","category":"티바나","name":"퓨어 호지차","values":[8.0,0.0,1.0,0.0,0.0,25.0],"excluded":false},{"id":"sheet-row-124","category":"티바나","name":"말차 글레이즈드 티 라떼","values":[310.0,29.0,9.0,180.0,11.0,65.0],"excluded":false},{"id":"sheet-row-125","category":"티바나","name":"살구 조이풀 메들리 티 라떼","values":[300.0,36.0,6.0,90.0,10.0,80.0],"excluded":false},{"id":"sheet-row-126","category":"티바나","name":"아이스 말차 글레이즈드 티 라떼","values":[235.0,23.0,6.0,115.0,8.0,60.0],"excluded":false},{"id":"sheet-row-127","category":"티바나","name":"아이스 살구 조이풀 메들리 티 라떼","values":[200.0,25.0,3.0,60.0,7.0,50.0],"excluded":false},{"id":"sheet-row-128","category":"티바나","name":"아이스 차이 티 라떼","values":[180.0,28.0,5.0,75.0,2.9,60.0],"excluded":false},{"id":"sheet-row-129","category":"티바나","name":"아이스 호지 글레이즈드 티 라떼","values":[215.0,22.0,5.0,90.0,8.0,20.0],"excluded":false},{"id":"sheet-row-130","category":"티바나","name":"차이 티 라떼","values":[220.0,31.0,7.0,105.0,4.1,60.0],"excluded":false},{"id":"sheet-row-131","category":"티바나","name":"호지 글레이즈드 티 라떼","values":[295.0,28.0,9.0,150.0,11.0,20.0],"excluded":false},{"id":"sheet-row-132","category":"티바나","name":"민트 블렌드 티","values":[0.0,0.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-133","category":"티바나","name":"아이스 민트 블렌드 티","values":[0.0,0.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-134","category":"티바나","name":"아이스 얼 그레이 티","values":[0.0,0.0,0.0,0.0,0.0,50.0],"excluded":false},{"id":"sheet-row-135","category":"티바나","name":"아이스 유스베리 티","values":[0.0,0.0,0.0,0.0,0.0,20.0],"excluded":false},{"id":"sheet-row-136","category":"티바나","name":"아이스 유자 민트 티","values":[95.0,22.0,0.0,5.0,0.0,0.0],"excluded":false},{"id":"sheet-row-137","category":"티바나","name":"아이스 잉글리쉬 브렉퍼스트 티","values":[0.0,0.0,0.0,0.0,0.0,40.0],"excluded":false},{"id":"sheet-row-138","category":"티바나","name":"아이스 제주 녹차","values":[0.0,0.0,0.0,0.0,0.0,16.0],"excluded":false},{"id":"sheet-row-139","category":"티바나","name":"아이스 제주팔삭 & 자몽 허니 블랙 티","values":[140.0,38.0,0.0,5.0,0.0,27.0],"excluded":false},{"id":"sheet-row-140","category":"티바나","name":"아이스 캐모마일 블렌드 티","values":[0.0,0.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-141","category":"티바나","name":"아이스 히비스커스 블렌드 티","values":[0.0,0.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-142","category":"티바나","name":"얼 그레이 티","values":[0.0,0.0,0.0,0.0,0.0,70.0],"excluded":false},{"id":"sheet-row-143","category":"티바나","name":"유스베리 티","values":[0.0,0.0,0.0,0.0,0.0,20.0],"excluded":false},{"id":"sheet-row-144","category":"티바나","name":"유자 민트 티","values":[140.0,33.0,0.0,10.0,0.0,0.0],"excluded":false},{"id":"sheet-row-145","category":"티바나","name":"잉글리쉬 브렉퍼스트 티","values":[0.0,0.0,0.0,0.0,0.0,70.0],"excluded":false},{"id":"sheet-row-146","category":"티바나","name":"자몽 허니 블랙 티","values":[125.0,30.0,0.0,5.0,0.0,70.0],"excluded":false},{"id":"sheet-row-147","category":"티바나","name":"제주 녹차","values":[0.0,0.0,0.0,0.0,0.0,16.0],"excluded":false},{"id":"sheet-row-148","category":"티바나","name":"제주팔삭 & 자몽 허니 블랙 티","values":[140.0,38.0,0.0,5.0,0.0,70.0],"excluded":false},{"id":"sheet-row-149","category":"티바나","name":"캐모마일 블렌드 티","values":[0.0,0.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-150","category":"티바나","name":"히비스커스 블렌드 티","values":[0.0,0.0,0.0,0.0,0.0,0.0],"excluded":false},{"id":"sheet-row-151","category":"티바나","name":"레몬 캐모마일 블렌드 티","values":[130.0,30.0,0.0,10.0,0.0,0.0],"excluded":false},{"id":"sheet-row-152","category":"티바나","name":"복숭아 아이스 티(Trenta)","values":[255.0,34.0,1.0,75.0,0.0,70.0],"excluded":true},{"id":"sheet-row-153","category":"티바나","name":"복숭아 아이스 티","values":[110.0,15.0,0.0,35.0,0.0,30.0],"excluded":false},{"id":"sheet-row-154","category":"티바나","name":"복숭아 핫 티","values":[160.0,21.0,0.0,50.0,0.0,70.0],"excluded":false},{"id":"sheet-row-155","category":"티바나","name":"시트러스 가든 민트 티","values":[140.0,32.0,0.0,5.0,0.0,0.0],"excluded":false},{"id":"sheet-row-156","category":"티바나","name":"아이스 레몬 캐모마일 블렌드 티","values":[130.0,30.0,0.0,10.0,0.0,0.0],"excluded":false},{"id":"sheet-row-157","category":"티바나","name":"아이스 자몽 허니 블랙 티","values":[125.0,30.0,0.0,5.0,0.0,30.0],"excluded":false},{"id":"sheet-row-158","category":"티바나","name":"아이스 자몽 허니 블랙 티(Trenta)","values":[345.0,79.0,1.0,10.0,0.0,75.0],"excluded":true},{"id":"sheet-row-159","category":"티바나","name":"말차 티라미수 라떼","values":[415.0,39.0,11.0,230.0,15.0,75.0],"excluded":false},{"id":"sheet-row-160","category":"티바나","name":"스타벅스 클래식 밀크 티","values":[290.0,28.0,5.0,80.0,14.0,170.0],"excluded":false},{"id":"sheet-row-161","category":"티바나","name":"스타벅스 클래식 밀크 티 보틀","values":[455.0,44.0,7.0,130.0,22.0,155.0],"excluded":true},{"id":"sheet-row-162","category":"티바나","name":"아이스 말차 티라미수 라떼","values":[355.0,34.0,8.0,180.0,13.0,75.0],"excluded":false},{"id":"sheet-row-163","category":"티바나","name":"아이스 스타벅스 클래식 밀크 티","values":[185.0,18.0,3.0,50.0,9.0,65.0],"excluded":false},{"id":"sheet-row-164","category":"티바나","name":"아이스 우베 말차 라떼","values":[275.0,24.0,7.0,120.0,4.6,40.0],"excluded":false},{"id":"sheet-row-165","category":"티바나","name":"아이스 의암호의 보랏빛 라벤더 티 라떼","values":[290.0,33.0,4.0,80.0,7.0,13.0],"excluded":false},{"id":"sheet-row-166","category":"티바나","name":"아이스 제주 말차 라떼","values":[155.0,16.0,6.0,95.0,3.6,80.0],"excluded":false},{"id":"sheet-row-167","category":"티바나","name":"아이스 프렌치 바닐라 말차 라떼","values":[260.0,25.0,6.0,160.0,11.0,40.0],"excluded":false},{"id":"sheet-row-168","category":"티바나","name":"의암호의 보랏빛 라벤더 티 라떼","values":[315.0,35.0,5.0,100.0,8.0,70.0],"excluded":false},{"id":"sheet-row-169","category":"티바나","name":"제주 말차 라떼","values":[205.0,20.0,9.0,130.0,5.0,80.0],"excluded":false},{"id":"sheet-row-170","category":"티바나","name":"프렌치 바닐라 말차 라떼","values":[380.0,35.0,12.0,250.0,15.0,40.0],"excluded":false}];
+const MENU=DATA.filter(x=>!x.excluded);
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad=n=>String(n).padStart(2,'0');
 const localDate=d=>{const x=new Date(d);return [x.getFullYear(),pad(x.getMonth()+1),pad(x.getDate())].join('-')};
 const localTime=d=>localDate(d)+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
-const hm=d=>{const x=new Date(d);return pad(x.getHours())+':'+pad(x.getMinutes())};
-const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
-const amount=(base,portion)=>base===null?null:Math.round(base*portion/100*10)/10;
-const summary=(records,day)=>{const list=records.filter(r=>localDate(r.when)===day);return {list:list.sort((a,b)=>new Date(b.when)-new Date(a.when)),known:list.filter(r=>r.caffeine!==null).reduce((s,r)=>s+amount(r.caffeine,r.portion),0),unknown:list.filter(r=>r.caffeine===null).length,estimated:list.filter(r=>r.caffeine!==null&&r.portion<100).length}};
-function upsert(data,record){const out={favorites:[...data.favorites],records:[...data.records]};const i=out.records.findIndex(r=>r.id===record.id);if(i<0)out.records.push(record);else out.records[i]=record;return out}
-function commit(next){if(loadProblem)throw Error('저장소 상태가 바뀌었어요. 새로고침한 뒤 다시 시도해 주세요.');const text=JSON.stringify(next);localStorage.setItem(KEY,text);if(localStorage.getItem(KEY)!==text)throw Error('보관 확인 실패');state=next}
-
-/* segmented options */
-const OPTS={
-  Size:['톨','그란데','벤티','숏','트렌타','기타'],
-  Temp:['아이스','핫','해당 없음'],
-  Option:['일반','디카페인','일부 디카페인','확인 필요'],
-};
-const PORTION=[['100','전부'],['75','약 3/4'],['50','약 절반'],['25','약 1/4']];
-document.querySelectorAll('[data-seg]').forEach(box=>{
-  const name=box.dataset.seg;
-  const list=name==='portion'?PORTION:OPTS[name.slice(1)].map(v=>[v,v]);
-  box.setAttribute('role','radiogroup');
-  box.innerHTML=list.map(([v,l],i)=>`<label><input type="radio" name="${name}" value="${esc(v)}"${i===0?' checked':''}><span>${esc(l)}</span></label>`).join('');
-});
-const getSeg=name=>document.querySelector(`input[name="${name}"]:checked`)?.value??'';
-const setSeg=(name,v)=>{const el=[...document.querySelectorAll(`input[name="${name}"]`)].find(i=>i.value===String(v));if(el)el.checked=true;else document.querySelectorAll(`input[name="${name}"]`).forEach(i=>i.checked=false)};
-
-let state={favorites:[],records:[]},loadProblem=false;
-try{const raw=localStorage.getItem(KEY);if(raw){const parsed=JSON.parse(raw);if(!Array.isArray(parsed.favorites)||!Array.isArray(parsed.records))throw Error();state=parsed}}catch(e){loadProblem=true}
-let active=null,editing=null,requestId=null,dirty=false,busy=false,current='today',toastTimer,pastNotice=null;
-
-function toast(text){$('toast').textContent=text;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),5000)}
-function show(id){['today','favoriteView','entryView'].forEach(x=>$(x).classList.toggle('hidden',x!==id));current=id;document.body.classList.toggle('form-open',id!=='today');window.scrollTo(0,0)}
-function detail(f){return [f.temp,f.size,f.option,f.shots].filter(Boolean).join(' · ')}
-function sizeMark(s){return ({'톨':'T','그란데':'G','벤티':'V','숏':'S','트렌타':'TR'})[s]||'·'}
-function statusOf(r){return r.caffeine===null?{t:'함량 미확인',c:'ghost'}:r.portion<100?{t:'섭취량 기반 추정',c:'lime'}:{t:'직접 입력값',c:''}}
-
+const hm=d=>new Date(d).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now()+'-'+Math.random();
+const amount=(n,p)=>n===null?null:Math.round(n*p/100*10)/10;
+let state={favorites:[],records:[]},loadProblem=false,dirty=false,busy=false,current='today',active=null,editing=null,requestId=null,toastTimer;
+try{const raw=localStorage.getItem(KEY);if(raw){const v=JSON.parse(raw);if(!Array.isArray(v.favorites)||!Array.isArray(v.records))throw Error();state=v}}catch(e){loadProblem=true}
+function commit(next){if(loadProblem)throw Error('저장소를 읽지 못했어요. 새로고침해 주세요.');const s=JSON.stringify(next);localStorage.setItem(KEY,s);if(localStorage.getItem(KEY)!==s)throw Error('저장을 확인하지 못했어요.');state=next}
+function toast(t){$('toast').textContent=t;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),5000)}
+function show(id){['today','favoriteView','entryView','moodView'].forEach(v=>$(v).classList.toggle('hidden',id!==v));current=id;document.body.classList.toggle('form-open',id!=='today');window.scrollTo(0,0);if(id==='today')renderMoods()}
+const labels={'콜드브루':'콜드브루 커피','브루드':'브루드 커피','에스프레소':'에스프레소커피'};
+const categoryName=c=>labels[c]||c;
+function nutrition(m){if(!m)return '이 과거 기록에는 시트 기준 영양정보가 없습니다.';const names=['열량','당류','단백질','나트륨','포화지방','카페인'],units=['kcal','g','g','mg','g','mg'];return '<div class="nutrition-grid">'+m.values.map((v,i)=>`<div><span>${names[i]}</span><strong>${v===null?'미제공':v+' '+units[i]}</strong></div>`).join('')+'</div><p class="sheet-note">한 잔 기준 · '+esc(SOURCE)+'</p>'}
+function fillDrinks(){const cat=$('category').value;$('drink').innerHTML='<option value="">음료를 선택하세요</option>'+MENU.filter(x=>x.category===cat).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');$('menuNutrition').textContent='음료를 선택하면 영양정보가 표시됩니다.'}
+function selected(){return MENU.find(m=>m.id===$('drink').value)}
 function render(){
-  const now=new Date(),s=summary(state.records,localDate(now));
-  $('date').textContent=now.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'}).replace(/\s/g,' ');
-
-  // favorites
-  $('favorites').innerHTML=state.favorites.length
-    ?'<div class="favlist">'+state.favorites.map(f=>`<button class="favitem" type="button" data-fav="${esc(f.id)}"><span class="cup">${esc(sizeMark(f.size))}</span><span class="txt"><strong>${esc(f.nickname||f.drink)}</strong><span class="d">${f.nickname?esc(f.drink)+' · ':''}${esc(detail(f))}</span><span class="d">${f.caffeine===null?'카페인 함량 미확인':esc(f.caffeine)+'mg · 직접 입력값'}</span></span><span class="go" aria-hidden="true">→</span></button>`).join('')+'</div>'
-    :'<div class="empty"><strong>평소 주문을 등록해보세요.</strong><span>한 번 남겨두면 다음 기록은 더 짧아져요.</span></div><button class="secondary" type="button" id="firstAdd">첫 즐겨찾기 만들기</button>';
-
-  // caffeine
-  const n=s.list.length;
-  if(!n){$('total').innerHTML='<span class="word">—</span>';$('totalsub').textContent='아직 커피 기록이 없어요.';}
-  else if(n===s.unknown){$('total').innerHTML='<span class="word">미확인</span>';$('totalsub').textContent='함량을 모르는 기록만 있어요.';}
-  else{$('total').innerHTML=`${Number(s.known.toFixed(1))}<small>mg</small>`;$('totalsub').textContent='기록된 섭취 · 직접 입력값 기준';}
-  $('totalchips').innerHTML=(s.estimated?`<span class="chip">추정 ${s.estimated}건</span>`:'')+(s.unknown?`<span class="chip">미확인 ${s.unknown}건 · 합계 제외</span>`:'');
-
-  // last
-  if(n){$('lastTime').textContent=hm(s.list[0].when);$('lastSub').textContent=`오늘 ${n}잔 기록`;}
-  else{$('lastTime').innerHTML='—';$('lastSub').textContent='함량을 모르는 기록도 남길 수 있어요.';}
-
-  // flow
-  $('count').textContent=n+'건';
-  $('records').innerHTML=n?s.list.map(r=>{const st=statusOf(r);return `<button class="rec" type="button" data-record="${esc(r.id)}"><span class="rtime">${esc(hm(r.when))}</span><span class="rbar" aria-hidden="true"></span><span class="rbody"><span class="rname">${esc(r.nickname||r.drink)}</span><span class="rdet">${esc(detail(r))} · ${r.portion===100?'전부':r.portion+'% 섭취'}</span><span class="chip ${st.c}">${r.caffeine===null?'':amount(r.caffeine,r.portion)+'mg · '}${st.t}</span></span></button>`}).join('')
-    :'<div class="empty"><strong style="font-size:15px;font-weight:500">저장한 커피가 여기에 쌓여요.</strong><span>기분 기록은 준비가 끝나면 함께 표시돼요.</span></div>';
-  if(pastNotice&&state.records.some(r=>r.id===pastNotice.id)){
-    $('notice').innerHTML=`<div class="notice"><span><span class="mono">${esc(pastNotice.day)}</span> 기록이에요. 오늘 합계에는 넣지 않았어요.</span><button type="button" id="openPast">기록 보기</button></div>`;
-    $('openPast').onclick=()=>openEntry(state.records.find(r=>r.id===pastNotice.id),true);
-  } else $('notice').innerHTML='';
-
-  document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>openEntry(state.favorites.find(f=>f.id===b.dataset.fav)));
-  document.querySelectorAll('[data-record]').forEach(b=>b.onclick=()=>openEntry(state.records.find(r=>r.id===b.dataset.record),true));
-  if($('firstAdd'))$('firstAdd').onclick=openFavorite;
+ const day=localDate(new Date()),list=state.records.filter(r=>localDate(r.when)===day).sort((a,b)=>new Date(b.when)-new Date(a.when));
+ const valid=list.filter(r=>r.dataOrigin==='user-sheet'),unknown=valid.filter(r=>r.caffeine===null).length,legacy=list.length-valid.length;
+ const total=valid.reduce((a,r)=>a+(amount(r.caffeine,r.portion)||0),0);
+ $('date').textContent=new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
+ $('total').innerHTML=valid.length>unknown?`${Number(total.toFixed(1))}<small>mg</small>`:'<span class="word">—</span>';
+  $('totalsub').textContent='시트 기준 기록만 합산';$('totalchips').innerHTML=`<span class="chip">미제공 ${unknown}건 제외</span><span class="chip">과거 자료 ${legacy}건 제외</span>`;
+ $('lastTime').textContent=list.length?hm(list[0].when):'—';$('lastSub').textContent=list.length?'오늘 '+list.length+'건 기록':'아직 음료 기록이 없어요.';
+ $('favorites').innerHTML=state.favorites.length?'<div class="favlist">'+state.favorites.map(f=>`<button class="favitem" type="button" data-fav="${esc(f.id)}"><span class="cup">T</span><span class="txt"><strong>${esc(f.drink)}</strong><span class="d">${f.dataOrigin==='user-sheet'?esc(categoryName(f.category))+' · 톨 · 시트 기준':'과거 즐겨찾기 · 시트 메뉴 재선택 필요'}</span></span><span class="go">→</span></button>`).join('')+'</div>':'<div class="empty"><strong>카테고리에서 음료를 골라보세요.</strong></div><button type="button" class="secondary" id="firstAdd">첫 즐겨찾기 만들기</button>';
+ $('records').innerHTML=list.length?list.map(r=>`<button type="button" class="rec" data-record="${esc(r.id)}"><span class="rtime">${esc(hm(r.when))}</span><span class="rbar"></span><span class="rbody"><span class="rname">${esc(r.drink)}</span><span class="rdet">${r.dataOrigin==='user-sheet'?'톨 · '+categoryName(r.category):'과거 기록 · 시트 집계 제외'} · ${r.portion}% 섭취</span><span class="chip">${r.dataOrigin!=='user-sheet'?'이전 자료 · 합계 제외':r.caffeine===null?'카페인 미제공':amount(r.caffeine,r.portion)+'mg · '+(r.portion<100?'섭취량 추정':'시트 기준')}</span></span></button>`).join(''):'<div class="empty">저장한 음료가 여기에 쌓여요.</div>';
+ $('count').textContent=list.length+'건';
+ document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{const f=state.favorites.find(x=>x.id===b.dataset.fav);if(f.dataOrigin!=='user-sheet'){openFavorite();toast('이전 값은 사용하지 않아요. 시트에서 음료를 다시 선택해 주세요.')}else openEntry(f)});
+ document.querySelectorAll('[data-record]').forEach(b=>b.onclick=()=>openEntry(state.records.find(r=>r.id===b.dataset.record),true));
+ if($('firstAdd'))$('firstAdd').onclick=openFavorite;
 }
-
-function openFavorite(){
-  if(loadProblem){toast('기존 저장소를 읽지 못해 덮어쓰기를 막았어요. 브라우저 저장 설정을 확인해 주세요.');return}
-  $('favoriteForm').reset();$('favoriteError').textContent='';dirty=false;pastNotice=null;show('favoriteView');
-}
-function openEntry(f,edit=false){
-  if(loadProblem||!f)return;
-  active=structuredClone(f);editing=edit?f.id:null;requestId=edit?f.id:uid();pastNotice=null;
-  $('entryForm').reset();$('changeBox').open=false;
-  $('order').innerHTML=`<div class="cardhead"><span class="label">${edit?'저장된 기록':'즐겨찾는 주문'}</span>${edit?'<span class="chip onDark">수정 중</span>':''}</div><strong>${esc(f.nickname||f.drink)}</strong><p class="d">${f.nickname?esc(f.drink)+' · ':''}${esc(detail(f))}</p>`;
-  setSeg('eSize',f.size);setSeg('eTemp',f.temp);setSeg('eOption',f.option);$('entryShots').value=f.shots||'';
-  $('entryCaffeine').value=f.caffeine===null?'':f.caffeine;
-  $('when').value=edit?localTime(new Date(f.when)):localTime(new Date());
-  $('when').max=localTime(new Date());
-  setSeg('portion',edit?String(f.portion):'100');
-  $('entryError').textContent='';
-  $('delete').classList.toggle('hidden',!edit);
-  $('save').textContent=edit?'변경 내용 저장':'섭취 기록 저장';
-  $('entryTitle').textContent=edit?'기록을 다시 살펴봐요.':'마신 내용을 확인해요.';
-  $('entrySub').textContent=edit?'수정하거나 삭제하면 오늘 합계도 함께 바뀌어요. 즐겨찾기는 그대로예요.':'이번 기록을 바꿔도 즐겨찾기는 그대로예요.';
-  $('steps').classList.toggle('hidden',edit);
-  dirty=false;updateEstimate();updateWhen();show('entryView');
-}
-function updateEstimate(){
-  const c=$('entryCaffeine').value,p=Number(getSeg('portion'))||100,el=$('estimate');
-  el.className='est'+(c===''?' unknown':p<100?' estimated':'');
-  el.innerHTML=c===''
-    ?`<span class="label">이번 기록의 카페인</span><div class="big">함량 미확인</div><p class="why">주문과 시각은 저장되지만 카페인 합계에는 포함되지 않아요. 0mg으로 계산하지 않아요.</p><span class="chip">미확인</span>`
-    :`<span class="label">이번 기록의 카페인</span><div class="big">${amount(Number(c),p)}<small>mg</small></div><p class="why">${p<100?`한 잔 ${Number(c)}mg × ${p}% 섭취로 계산한 추정값이에요.`:'직접 입력한 한 잔의 함량이에요.'}</p><span class="chip">${p<100?'추정값':'직접 입력값'} · 공식 검증 전</span>`;
-}
-function updateWhen(){
-  const v=$('when').value;if(!v){$('saveWhen').textContent='';return}
-  const d=new Date(v),today=localDate(new Date())===localDate(d);
-  $('saveWhen').textContent=(today?'오늘 ':d.toLocaleDateString('ko-KR',{month:'long',day:'numeric'})+' ')+hm(d)+(today?'':' · 오늘 합계에 포함되지 않아요')+'로 저장해요';
-}
-function readCaffeine(id){const v=$(id).value;if(v==='')return null;const n=Number(v);if(!Number.isFinite(n)||n<0||n>5000)throw Error('카페인은 0 이상 5,000mg 이하로 입력해 주세요. 이는 입력 범위이며 섭취 권장량이 아닙니다.');return n}
-
+function openFavorite(){if(loadProblem){toast('저장소 설정을 확인한 뒤 새로고침해 주세요.');return}$('favoriteForm').reset();fillDrinks();$('favoriteError').textContent='';dirty=false;show('favoriteView')}
+function openEntry(f,edit=false){active=structuredClone(f);editing=edit?f.id:null;requestId=editing||uid();$('entryForm').reset();$('when').value=edit?localTime(new Date(f.when)):localTime(new Date());$('portion').value=edit?String(f.portion):'100';$('order').textContent=f.drink+' · '+(f.dataOrigin==='user-sheet'?'톨':(f.size||'과거 기록'));$('entryNutrition').innerHTML=nutrition(f.nutrition);$('entryError').textContent='';$('delete').classList.toggle('hidden',!edit);$('save').textContent=edit?'변경 내용 저장':'섭취 기록 저장';dirty=false;updateEstimate();show('entryView')}
+function updateEstimate(){if(!active)return;const p=Number($('portion').value);$('estimate').textContent=active.dataOrigin!=='user-sheet'?'과거 기록 · 시트 기준 합계에서 제외됩니다.':active.caffeine===null?'카페인 미제공 · 합계에서 제외됩니다.':amount(active.caffeine,p)+'mg · '+(p<100?'시트 함량 × '+p+'% · 추정':'시트 한 잔 기준')}
+$('category').innerHTML='<option value="">카테고리를 선택하세요</option>'+[...new Set(MENU.map(m=>m.category))].map(c=>`<option value="${esc(c)}">${esc(categoryName(c))}</option>`).join('');
+$('category').addEventListener('change',fillDrinks);$('drink').addEventListener('change',()=>{$('menuNutrition').innerHTML=nutrition(selected())});
 $('add').onclick=openFavorite;
-$('moodSoon').onclick=()=>toast('기분 기록은 다음 단계에서 만들어요. 지금은 커피 기록만 동작해요.');
+$('favoriteForm').onsubmit=e=>{e.preventDefault();try{const m=selected();if(!m)throw Error('카테고리와 음료를 선택해 주세요.');const f={id:uid(),drink:m.name,category:m.category,size:'톨',dataOrigin:'user-sheet',source:SOURCE,nutrition:structuredClone(m),caffeine:m.values[5]};commit({...state,favorites:[...state.favorites,f]});dirty=false;render();openEntry(f);toast('시트 기준 즐겨찾기를 저장했어요.')}catch(err){$('favoriteError').textContent='저장하지 못했어요. '+err.message}};
+$('portion').addEventListener('change',updateEstimate);
+$('entryForm').onsubmit=e=>{e.preventDefault();if(busy)return;busy=true;$('save').disabled=true;try{const when=new Date($('when').value);if(!Number.isFinite(when.getTime())||when>Date.now())throw Error('미래가 아닌 실제 섭취 시각을 입력해 주세요.');const r={...active,id:requestId,when:when.toISOString(),portion:Number($('portion').value),updatedAt:new Date().toISOString()},records=state.records.slice(),i=records.findIndex(x=>x.id===r.id);if(i<0)records.push(r);else records[i]=r;commit({...state,records});dirty=false;render();show('today');if(localDate(when)!==localDate(new Date())){$('notice').innerHTML='<button class="secondary" type="button" id="openPast">'+esc(localDate(when))+' 저장한 기록 보기</button>';$('openPast').onclick=()=>openEntry(state.records.find(x=>x.id===r.id),true)}toast('음료 기록을 저장했어요.')}catch(err){$('entryError').textContent='저장하지 못했어요. 입력은 유지됩니다. '+err.message}finally{busy=false;$('save').disabled=false}};
+$('delete').onclick=()=>{if(!confirm('이 섭취 기록을 삭제할까요?'))return;try{commit({...state,records:state.records.filter(r=>r.id!==editing)});dirty=false;render();show('today');toast('기록을 삭제했어요.')}catch(e){$('entryError').textContent='삭제하지 못했어요. '+e.message}};
+const MOOD_KEY='harugyeol-moods-v1';
+let moods=[],moodProblem=false;
+try{const raw=localStorage.getItem(MOOD_KEY);if(raw){const v=JSON.parse(raw);if(!Array.isArray(v)||v.some(m=>typeof m.text!=='string'||typeof m.id!=='string'||!Number.isFinite(new Date(m.when).getTime())))throw Error('기록 형식 오류');moods=v}}catch(e){moodProblem=true}
+function renderMoods(){
+  if(moodProblem){$('moodList').textContent='기존 기분 기록을 읽지 못했어요. 덮어쓰지 않도록 저장을 막았습니다.';return}
+  $('moodList').innerHTML=moods.slice().sort((a,b)=>new Date(b.when)-new Date(a.when)).map(m=>`<div style="padding:12px 0;border-top:1px solid rgba(244,243,239,.2)"><small>${esc(new Date(m.when).toLocaleString('ko-KR'))}</small><p style="opacity:1;font-size:16px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word">${esc(m.text)}</p><button type="button" data-mood-delete="${esc(m.id)}" style="color:var(--bg);min-height:48px;padding:8px 12px;text-decoration:underline">삭제</button></div>`).join('');
+  document.querySelectorAll('[data-mood-delete]').forEach(b=>b.onclick=()=>{if(!confirm('이 기분 기록을 삭제할까요?'))return;try{saveMoods(moods.filter(m=>m.id!==b.dataset.moodDelete));renderMoods();toast('기분 기록을 삭제했어요.')}catch(e){toast('삭제하지 못했어요. 기록은 유지됩니다.')}});
+}
+function saveMoods(next){if(moodProblem)throw Error('기존 기록을 읽지 못했어요.');const text=JSON.stringify(next);localStorage.setItem(MOOD_KEY,text);if(localStorage.getItem(MOOD_KEY)!==text)throw Error('저장 확인 실패');moods=next}
+$('moodSoon').onclick=()=>{if(moodProblem){toast('브라우저 저장 설정을 확인한 뒤 새로고침해 주세요.');return}$('moodForm').reset();$('moodError').textContent='';dirty=false;show('moodView');$('moodText').focus()};
+$('moodText').addEventListener('input',()=>dirty=true);
+$('moodForm').onsubmit=e=>{e.preventDefault();const text=$('moodText').value.trim();if(!text){$('moodError').textContent='기분을 한 글자 이상 적어주세요.';return}if(text.length>2000){$('moodError').textContent='2,000자 이내로 적어주세요.';return}$('moodSave').disabled=true;try{saveMoods([...moods,{id:uid(),text,when:new Date().toISOString()}]);dirty=false;render();show('today');toast('기분을 저장했어요.')}catch(e){$('moodError').textContent='저장하지 못했어요. 입력은 유지됩니다. 브라우저 저장 공간과 설정을 확인해 주세요.'}finally{$('moodSave').disabled=false}};
+window.addEventListener('storage',e=>{if(e.key===MOOD_KEY){moodProblem=true;renderMoods();toast('다른 화면에서 기분 기록이 바뀌었어요. 새로고침해 주세요.')}});
+renderMoods();
+
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{if(busy)return;if(dirty&&!confirm('작성 중인 내용을 버리고 오늘로 돌아갈까요?'))return;dirty=false;render();show('today')});
 ['favoriteForm','entryForm'].forEach(id=>$(id).addEventListener('input',()=>dirty=true));
-
-$('favoriteForm').onsubmit=e=>{e.preventDefault();try{
-  if(loadProblem)throw Error('저장소를 읽지 못해 저장할 수 없어요.');
-  const drink=$('drink').value.trim();if(!drink){$('drink').focus();throw Error('음료명을 입력해 주세요.')}
-  const f={id:uid(),nickname:$('nickname').value.trim(),drink,size:getSeg('fSize'),temp:getSeg('fTemp'),option:getSeg('fOption'),shots:$('shots').value.trim(),caffeine:readCaffeine('caffeine')};
-  commit({favorites:[...state.favorites,f],records:[...state.records]});dirty=false;render();openEntry(f);toast('즐겨찾기를 저장했어요. 마신 내용을 확인해 주세요.');
-}catch(err){$('favoriteError').textContent='저장하지 못했어요. '+(err.name==='QuotaExceededError'?'브라우저 저장 공간을 확인해 주세요.':err.message)}};
-
-const changeBox=$('changeBox');
-changeBox.addEventListener('change',e=>{if(e.target.name&&/^e(Size|Temp|Option)$/.test(e.target.name))orderChanged()});
-$('entryShots').addEventListener('input',orderChanged);
-function orderChanged(){const had=$('entryCaffeine').value!=='';$('entryCaffeine').value='';updateEstimate();if(had)toast('주문을 바꿔 카페인 함량을 비웠어요. 확인한 값이 있다면 다시 입력해 주세요.')}
-$('entryCaffeine').addEventListener('input',updateEstimate);
-document.querySelector('[data-seg="portion"]').addEventListener('change',updateEstimate);
-$('when').addEventListener('input',updateWhen);
-
-$('entryForm').onsubmit=e=>{e.preventDefault();if(busy)return;busy=true;$('save').disabled=true;$('save').textContent='저장 중…';try{
-  const when=new Date($('when').value);
-  if(!Number.isFinite(when.getTime()))throw Error('마신 날짜와 시각을 확인해 주세요.');
-  if(when.getTime()>Date.now())throw Error('미래 시각은 저장할 수 없어요. 실제 마신 시각을 입력해 주세요.');
-  const record={...active,id:requestId,favoriteId:editing?active.favoriteId:active.id,when:when.toISOString(),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,size:getSeg('eSize'),temp:getSeg('eTemp'),option:getSeg('eOption'),shots:$('entryShots').value.trim(),portion:Number(getSeg('portion'))||100,caffeine:readCaffeine('entryCaffeine'),source:'직접 입력 · 공식 정보 미연결',updatedAt:new Date().toISOString()};
-  commit(upsert(state,record));dirty=false;
-  const wasEdit=!!editing;
-  if(localDate(when)!==localDate(new Date())){pastNotice={id:record.id,day:localDate(when)};render();show('today');toast(localDate(when)+' 기록을 저장했어요. 오늘 합계에는 넣지 않았어요.')}
-  else{render();show('today');toast(wasEdit?'변경 내용을 저장했어요.':'커피 기록을 저장했어요.')}
-}catch(err){$('entryError').textContent='저장하지 못했어요. 입력은 그대로 있어요. '+err.message}
-finally{busy=false;$('save').disabled=false;$('save').textContent=editing?'변경 내용 저장':'섭취 기록 저장'}};
-
-$('delete').onclick=()=>{if(!confirm('이 섭취 기록을 삭제할까요? 즐겨찾기는 유지됩니다.'))return;try{commit({favorites:[...state.favorites],records:state.records.filter(r=>r.id!==editing)});dirty=false;render();show('today');toast('기록을 삭제했어요. 오늘 합계도 다시 계산했어요.')}catch(e){$('entryError').textContent='삭제하지 못했어요. '+e.message}};
-
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
-window.addEventListener('pageshow',()=>{if(current==='today')render()});
-window.addEventListener('storage',e=>{if(e.key===KEY){loadProblem=true;toast('다른 화면에서 기록이 바뀌었어요. 새로고침한 뒤 계속해 주세요.')}});
-window.coffeeCore={amount,summary,upsert,localDate};
+window.addEventListener('storage',e=>{if(e.key===KEY){loadProblem=true;toast('다른 화면에서 기록이 바뀌었어요. 새로고침해 주세요.')}});
+window.addEventListener('pageshow',()=>{if(current==='today'){render();renderMoods()}});
 render();
-if(loadProblem)toast('기존 기록을 읽지 못했어요. 덮어쓰기를 막았습니다. 브라우저 저장 설정을 확인해 주세요.');
 </script>
 </body>
 </html>
