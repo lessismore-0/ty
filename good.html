@@ -23,6 +23,7 @@ button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;background:none;border:0}
 button:focus-visible,input:focus-visible,summary:focus-visible,label:focus-within{outline:2px solid var(--blue);outline-offset:2px}
 .hidden{display:none!important}
+.feeling-field{border:0;padding:0;margin:0 0 26px;min-width:0}.feeling-field legend{font-size:16px;font-weight:600;margin-bottom:12px}.faces{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.face-option{position:relative;min-width:0;cursor:pointer}.face-option input{position:absolute;width:1px;height:1px;opacity:0}.face-option>span{display:flex;min-height:86px;flex-direction:column;align-items:center;justify-content:center;gap:7px;border:2px solid transparent;border-radius:13px;background:var(--bg2);padding:7px 1px}.face-option small{font-size:11px;line-height:1.4;text-align:center;white-space:normal;letter-spacing:-.5px}.face-option input:checked+span{background:var(--lime);border-color:var(--ink)}.face-option input:focus-visible+span{outline:2px solid var(--blue);outline-offset:2px}.saved-feelings{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}.saved-feelings span{display:flex;align-items:center;gap:5px;font-size:13px}.saved-feelings svg{width:25px;height:25px;flex-shrink:0}
 
 .app{max-width:1120px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 40px)}
 
@@ -213,7 +214,13 @@ body.form-open #toast{bottom:calc(env(safe-area-inset-bottom) + 112px)}
   .savebar{position:static;background:none;padding:4px 0 0}
   body.form-open #toast{bottom:28px}
 }
-select{width:100%;min-height:52px;padding:12px;border:1px solid var(--bg2);border-radius:12px;background:var(--cream);font-size:16px;color:var(--ink)}.nutrition-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.nutrition-grid strong{display:block;font:500 22px var(--mono)}.nutrition-grid span{font-size:13px}.sheet-note{font-size:13px;margin-top:12px}</style>
+select{width:100%;min-height:52px;padding:12px;border:1px solid var(--bg2);border-radius:12px;background:var(--cream);font-size:16px;color:var(--ink)}.nutrition-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.nutrition-grid strong{display:block;font:500 22px var(--mono)}.nutrition-grid span{font-size:13px}.sheet-note{font-size:13px;margin-top:12px}
+.bento{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"water caf mood" "sleep flow flow" "more flow flow";gap:12px;align-items:stretch}.card{min-width:0}.card .big{font-size:clamp(24px,3vw,34px);line-height:1.3;overflow-wrap:anywhere}.water{background:var(--lime)}.water label{display:block;margin-top:18px;font-size:14px}.water-entry{display:flex;flex-wrap:wrap;gap:8px;margin-top:7px}.water-entry input{flex:1;min-width:70px;width:100%}.water-entry .primary{width:auto;min-height:48px;padding:10px 16px}.top-actions{display:flex;justify-content:flex-end;margin-bottom:16px}.top-actions .secondary{width:auto;min-height:48px;padding:10px 16px}.daily-tabs{display:flex;gap:8px;margin-bottom:16px}.daily-tabs button{min-height:48px;padding:10px 22px;border-radius:12px;background:var(--bg2)}.daily-tabs [aria-selected=true]{background:var(--ink);color:var(--cream)}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}.modal-sheet{background:var(--bg);border-radius:20px;max-width:540px;width:100%;max-height:85dvh;overflow:auto;padding:22px;overscroll-behavior:contain}.modal-sheet h2{font-size:22px}.water-day{padding:18px 0;border-bottom:1px solid var(--bg2)}.water-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0}.water-row button{min-height:48px;padding:8px 12px;text-decoration:underline}.caf .meta,.mood p{overflow-wrap:anywhere}.mood h2{font-size:22px}body.modal-open{overflow:hidden}
+@media(max-width:700px){.bento{grid-template-columns:1fr;grid-template-areas:"water" "caf" "mood" "sleep" "flow" "more"}.modal{align-items:flex-end;padding:12px 12px calc(env(safe-area-inset-bottom) + 12px)}.modal-sheet{padding:20px}.card .big{font-size:30px}}
+
+.bento{grid-template-areas:"water caf mood";grid-template-rows:auto}.intake-list{margin-top:16px;padding-top:10px;border-top:1px solid currentColor;max-height:310px;overflow-y:auto}.intake-list h3{font-size:14px;margin:0 0 8px}.intake-list p{font-size:13px}.intake-row{display:flex;gap:10px;width:100%;padding:11px 0;text-align:left;align-items:flex-start;color:inherit;border-bottom:1px solid rgba(0,0,0,.12);font-size:14px;min-height:48px}.intake-row>span:last-child{min-width:0}.intake-row strong{font-weight:600;display:block;overflow-wrap:anywhere}.intake-row small{display:block;font-size:12px;margin-top:3px}.intake-time{font:12px var(--mono);flex-shrink:0;padding-top:3px}.daily-tabs{overflow-x:auto;max-width:100%;padding-bottom:6px;scrollbar-width:thin;gap:7px}.daily-tabs button{white-space:nowrap;flex-shrink:0;padding:10px 16px}.daily-tabs [role=tab]:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.history-day-heading{padding-top:22px;font-size:17px}#moodList .saved-feelings{color:var(--ink)}#moodList [data-mood-delete]{color:var(--ink)!important}#mindHistory small{color:var(--soft)}
+@media(max-width:700px){.bento{grid-template-areas:"water" "caf" "mood";grid-template-columns:1fr;grid-template-rows:auto}.intake-list{max-height:240px}}
+.home-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.home-charts h2{font-size:19px}.home-charts svg{display:block;width:100%;height:auto}.chart-legend{font-size:14px;margin-top:14px;font-weight:600}@media(max-width:700px){.home-charts{grid-template-columns:1fr}}#todayWaterList,#todayCoffeeList{display:none}</style>
 </head>
 <body>
 <div class="app">
@@ -225,70 +232,25 @@ select{width:100%;min-height:52px;padding:12px;border:1px solid var(--bg2);borde
     <span class="chip ghost" title="기록은 이 브라우저에만 보관됩니다">로컬 보관 시제품</span>
   </header>
 
-  <div class="bento">
-    <article class="card mood" aria-labelledby="moodT">
-      <div class="cardhead"><span class="label">마음 기록</span><span class="chip onDark">직접 기록</span></div>
-      <h2 id="moodT">지금 어떤 기분인가요?</h2>
-      <p>지금 느끼는 기분을 간단히 남겨요. 분석이나 대화 없이 이 브라우저에만 저장해요.</p>
-      <button class="soon" style="cursor:pointer;color:var(--bg);border-style:solid" type="button" id="moodSoon">기분 기록하기</button>
-      <div id="moodList" style="margin-top:14px"></div>
-    </article>
-
-    <article class="card caf" aria-live="polite">
-      <span class="label">오늘 카페인</span>
-      <div class="big" id="total"></div>
-      <div class="meta" id="totalsub"></div>
-      <div class="chips" id="totalchips"></div>
-    </article>
-
-    <article class="card last">
-      <span class="label">마지막 섭취</span>
-      <div class="big" id="lastTime"></div>
-      <div class="meta" id="lastSub"></div>
-    </article>
-
-    <article class="card fav">
-      <div class="cardhead"><span class="label">즐겨찾는 커피</span><button class="addbtn" id="add" type="button">＋ 추가</button></div>
-      <div id="favorites"></div>
-    </article>
-
-    <article class="card sleep pending">
-      <div class="cardhead"><span class="label">지난밤 수면</span><span class="dot" style="background:var(--violet)"></span></div>
-      <div class="big">—</div>
-      <div class="meta">건강앱에서 가져올 예정이에요.</div>
-      <span class="chip ghost">미연결</span>
-    </article>
-
-    <article class="card water pending">
-      <div class="cardhead"><span class="label">오늘 수분</span><span class="dot" style="background:var(--blue)"></span></div>
-      <div class="big">—</div>
-      <div class="meta">건강앱에서 가져올 예정이에요.</div>
-      <span class="chip ghost">미연결</span>
-    </article>
-
-    <article class="card flow">
-      <div class="cardhead"><span class="label">오늘의 흐름</span><span class="chip" id="count">0건</span></div>
-      <div id="notice"></div>
-      <div id="records" style="margin-top:6px"></div>
-    </article>
-
-    <details class="card more">
-      <summary><span class="t">생리 · 체성분</span><span style="display:flex;gap:8px;align-items:center"><span class="chip">기본 접힘</span><span class="arr">›</span></span></summary>
-      <div class="rows">
-        <div class="mrow"><span class="dot" style="background:var(--orange);margin-top:6px"></span><div><div class="n">생리 기록</div><div class="s">건강앱 연결 전 · 기록을 가져오지 않았어요.</div></div><span class="chip ghost">미연결</span></div>
-        <div class="mrow"><span class="dot" style="background:var(--ink);margin-top:6px"></span><div><div class="n">최근 체성분</div><div class="s">앳플리 → 건강앱으로 전달되는 항목을 확인한 뒤 연결해요.</div></div><span class="chip ghost">미연결</span></div>
-      </div>
-    </details>
-  </div>
-
-  <details class="scope">
+  <div class="top-actions"><button class="secondary" id="favoritesOpen" type="button">즐겨찾는 커피</button></div>
+<div class="daily-tabs" role="tablist" aria-label="기록 보기"><button id="todayTab" role="tab" aria-selected="true" aria-controls="dailyDashboard">오늘</button><button id="waterTab" role="tab" aria-selected="false" aria-controls="waterHistory">물 기록</button><button id="coffeeTab" role="tab" aria-selected="false" aria-controls="coffeeHistory">커피 기록</button><button id="mindTab" role="tab" aria-selected="false" aria-controls="mindHistory">마음 기록</button><button id="sleepTab" role="tab" aria-selected="false" aria-controls="sleepHistory">수면</button><button id="bodyTab" role="tab" aria-selected="false" aria-controls="bodyHistory">체성분</button><button id="cycleTab" role="tab" aria-selected="false" aria-controls="cycleHistory">주기</button><button id="infoTab" role="tab" aria-selected="false" aria-controls="infoHistory">안내</button></div>
+<div id="dailyDashboard"><div class="bento">
+    <article class="card water"><span class="label">하루 물 섭취량</span><div class="big" id="waterTotal">—</div><p class="meta" id="waterCompare"></p><form id="waterForm"><label for="waterAmount">마신 물 추가 · mL</label><div class="water-entry"><input id="waterAmount" type="number" inputmode="numeric" min="1" max="10000" step="1" required placeholder="예: 250"><button type="submit" class="primary">추가</button></div><p id="waterError" class="error" role="alert"></p></form><p class="meta">마신 물만 입력 · 커피는 별도 기록</p><div id="todayWaterList" class="intake-list"></div></article>
+    <article class="card caf" aria-live="polite"><span class="label">커피 섭취량</span><div class="big" id="coffeeCount">—</div><div class="meta" id="coffeeCompare"></div><div class="big" id="total"></div><div class="meta" id="totalsub"></div><div class="chips" id="totalchips"></div><p class="meta" id="caffeineCompare"></p><div id="todayCoffeeList" class="intake-list"></div><div class="hidden"><span id="lastTime"></span><span id="lastSub"></span></div></article>
+    <article class="card mood" aria-labelledby="moodT"><div class="cardhead"><span class="label">오늘의 기분</span><span class="chip onDark">직접 기록</span></div><h2 id="moodT">아직 기록이 없어요.</h2><p id="moodCompare"></p><p id="bodyCompare"></p><button class="soon" style="cursor:pointer;color:var(--bg);border-style:solid" type="button" id="moodSoon">기분 기록하기</button></article>
+  </div><div class="home-charts"><article class="card"><h2>오늘 먹은 물과 커피 섭취량</h2><p class="help">시간대별 누적 · 물은 mL, 커피는 섭취 비율을 반영한 잔 수입니다. 단위가 달라 각각 표시합니다.</p><div id="intakeChart"></div></article><article class="card"><h2>체중과 체지방량 변화</h2><p class="help">체중 kg · 체지방량 kg</p><div id="bodyChart"><p class="empty">아직 체중·체지방량 기록이 없습니다.</p><p class="help">건강앱 연동 후 실제 측정값으로 표시합니다. 체지방률(%)을 체지방량(kg)으로 대신 표시하지 않습니다.</p></div></article></div></div>
+<section id="waterHistory" class="hidden" role="tabpanel" aria-labelledby="waterTab"><article class="card"><h2>물 기록</h2><p class="help">날짜별 합계와 섭취 내역이 계속 누적됩니다.</p><div id="waterDays"></div></article></section>
+<section id="coffeeHistory" class="hidden" role="tabpanel" aria-labelledby="coffeeTab"><article class="card"><h2>커피 기록</h2><p class="help">날짜별 섭취 내역과 카페인 합계 · 기록을 누르면 수정·삭제할 수 있어요.</p><div id="coffeeDays"></div><div class="hidden"><span id="count"></span><div id="notice"></div><div id="records"></div></div></article></section>
+<section id="mindHistory" class="hidden" role="tabpanel" aria-labelledby="mindTab"><article class="card"><h2>마음 기록</h2><p class="help">기분·몸 컨디션과 한 줄 리뷰를 날짜별로 모아봅니다.</p><div id="moodList"></div></article></section>
+<section id="sleepHistory" class="hidden" role="tabpanel"><article class="card"><h2>수면</h2><p class="empty">수면 데이터가 아직 연결되지 않았어요.</p><p class="help">현재 누적 데이터 없음 · 연동·입력 기능 미구현. 실제 기록을 가져오기 전에는 임의 데이터를 표시하지 않습니다.</p></article></section><section id="bodyHistory" class="hidden" role="tabpanel"><article class="card"><h2>체성분</h2><p class="empty">앳플리·건강앱 데이터가 아직 연결되지 않았어요.</p><p class="help">현재 누적 데이터 없음 · 연동·입력 기능 미구현. 실제 기록을 가져오기 전에는 임의 데이터를 표시하지 않습니다.</p></article></section><section id="cycleHistory" class="hidden" role="tabpanel"><article class="card"><h2>주기</h2><p class="empty">생리주기 데이터가 아직 연결되지 않았어요.</p><p class="help">현재 누적 데이터 없음 · 연동·입력 기능 미구현. 실제 기록을 가져오기 전에는 임의 데이터를 표시하지 않습니다.</p></article></section><section id="infoHistory" class="hidden" role="tabpanel" aria-labelledby="infoTab"><article class="card" style="margin-bottom:16px"><h2>구글 로그인 테스트</h2><p class="help">로그인은 인증만 확인합니다. 건강 기록은 계정과 연결하거나 서버에 업로드하지 않습니다. 로그인하지 않아도 현재 기록은 사용할 수 있습니다. 이 브라우저의 기록은 로그아웃해도 남으므로 공용 기기에서는 주의하세요.</p><p id="authStatus" role="status" style="margin:14px 0">인증 설정 안 됨</p><button id="googleLogin" class="primary" type="button" disabled>구글로 로그인</button><button id="googleLogout" class="secondary hidden" type="button">로그아웃</button><details style="margin-top:18px"><summary>인증 테스트 설정</summary><p class="help">Supabase 프로젝트 URL과 공개 publishable 키만 입력하세요. secret·service_role·Google Client Secret은 입력하지 마세요. 값은 현재 브라우저에 보관되고 백업에는 포함되지 않습니다.</p><form id="authSettings"><label for="authUrl">Supabase 프로젝트 URL</label><input id="authUrl" type="url" required autocomplete="off" placeholder="프로젝트의 실제 HTTPS 주소"><label for="authPublicKey">Publishable 키</label><input id="authPublicKey" type="text" required autocomplete="off" placeholder="sb_publishable_로 시작하는 공개 키"><button class="secondary" type="submit" style="margin-top:14px">인증 설정 저장</button></form><p class="help">현재 페이지의 주소(쿼리·해시 제외)를 Supabase의 Redirect URLs에 등록하세요. Google OAuth 동의 화면과 제공자 설정이 먼저 필요합니다.</p><p id="authRedirect" class="help" style="overflow-wrap:anywhere"></p></details><p class="help">애플 건강 연동은 별도의 아이폰 테스트 앱에서 권한 요청 후 읽습니다. 이 웹 페이지와의 데이터 전송·동기화는 아직 연결하지 않았습니다.</p></article><article class="card"><h2>데이터 백업</h2><p style="margin:12px 0">물·커피·기분·즐겨찾기를 JSON 파일 하나로 내보냅니다.</p><p class="help">이 파일은 암호화되지 않습니다. 기분 리뷰 등 개인 기록이 포함되므로 공개 GitHub에 올리지 말고 개인 파일 보관함에 저장하세요. 수면·체성분·주기는 아직 기록 기능이 없어 포함되지 않습니다.</p><button type="button" id="backupButton" class="primary" style="margin-top:18px;min-height:52px">전체 데이터 백업</button><p id="backupStatus" class="help" role="status" style="margin-top:12px"></p><a id="backupDownload" class="secondary hidden" style="display:inline-block;margin-top:12px;min-height:48px" download>백업 파일 다시 다운로드</a><p class="help" style="margin-top:12px">다운로드가 시작돼도 실제 파일 저장 완료 여부는 확인할 수 없습니다. 사파리 다운로드 목록 또는 파일 앱에서 저장된 JSON 파일을 확인하세요. 자동 백업·기기 동기화·백업 파일 복원 기능은 아직 제공하지 않습니다.</p></article>  <details class="scope">
     <summary>보관 방식과 시제품의 범위</summary>
     <p>기록은 이 주소를 연 현재 브라우저의 저장소에만 보관됩니다. 서버 전송·기기 간 동기화·외부 인공지능 분석은 하지 않습니다. 개인정보 보호 모드나 브라우저 데이터 삭제 시 기록이 사라질 수 있고, 다른 주소나 기기에서는 기록이 공유되지 않습니다.</p>
     <p>건강앱은 미연결입니다. 음료 데이터는 사용자 제공 시트의 2026-11-08 가져온 저장본만 사용합니다. 이전 이미지 전사·검색 영양정보는 메뉴에서 제거했습니다. 시트의 이후 수정은 자동 반영되지 않습니다. 과거 섭취 기록은 삭제하지 않고 별도로 구분합니다.</p>
   </details>
-  <p class="foot">기록된 섭취만 보여줍니다 · 건강 상태를 진단하거나 안전한 섭취량을 판정하지 않습니다</p>
+  <p class="help">전일 비교는 현재까지 입력한 기록과 어제 전체 기록을 비교합니다. 커피 건수는 기록 횟수이며, 기분·몸은 날짜별 마지막 표정 선택(1~5단계) 기준입니다. 변화는 건강 평가가 아닙니다.</p><p class="foot">기록된 섭취만 보여줍니다 · 건강 상태를 진단하거나 안전한 섭취량을 판정하지 않습니다</p></section>
 </section>
 
+<div id="favoriteModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="favoriteModalTitle"><div class="modal-sheet"><div class="cardhead"><h2 id="favoriteModalTitle">즐겨찾는 커피</h2><button id="favoritesClose" class="back" type="button">닫기</button></div><button class="secondary" id="add" type="button">＋ 음료 추가</button><div id="favorites"></div></div></div>
 <!-- ========== 즐겨찾기 등록 ========== -->
 <section id="favoriteView" class="view formwrap hidden"><div class="bar"><button class="back" data-back type="button">← 오늘</button><span class="chip">톨 고정</span></div><div class="formhead"><h1 class="h-screen">마시는 음료를 골라요.</h1><p class="sub">사용자 음료정보 시트 기준 · 기본 레시피</p></div><form id="favoriteForm" class="fcard"><div class="field"><label for="category">음료 카테고리</label><select id="category" required></select></div><div class="field"><label for="drink">음료</label><select id="drink" required></select></div><p class="help">사이즈는 톨로 고정합니다. 온도는 별도 선택하지 않으며 ‘아이스’가 포함된 메뉴는 메뉴명 그대로 선택하세요.</p><div id="menuNutrition" class="info"></div><p class="help">메뉴명에 Trenta·보틀이 명시된 항목은 제외했습니다. 그 외 전용 용량 여부는 시트에 없으므로 별도 검증하지 않았습니다.</p><a class="help" href="https://docs.google.com/spreadsheets/d/1tX59YaFx8BHiXkOkoKdA7W7fok30VFH13VaRBInu3kE/edit?usp=sharing" target="_blank" rel="noopener">원본 음료정보 시트</a><p class="error" id="favoriteError" role="alert"></p><div class="savebar"><button class="primary" type="submit">즐겨찾기 저장</button></div></form></section>
 
@@ -297,9 +259,11 @@ select{width:100%;min-height:52px;padding:12px;border:1px solid var(--bg2);borde
 
 <section id="moodView" class="view formwrap hidden">
   <div class="bar"><button class="back" data-back type="button">← 오늘</button><span class="chip">마음 기록</span></div>
-  <div class="formhead"><h1 class="h-screen">지금 어떤 기분인가요?</h1><p class="sub">짧게 적어도 괜찮아요. 분석하거나 평가하지 않아요.</p></div>
+  <div class="formhead"><h1 class="h-screen">오늘의 마음과 몸.</h1><p class="sub">두 가지 표정과 한 줄로 하루를 남겨요.</p></div>
   <form id="moodForm" class="fcard">
-    <div class="field"><label for="moodText">나의 기분</label><textarea id="moodText" rows="5" maxlength="2000" required placeholder="지금 느끼는 기분을 적어주세요." style="width:100%;padding:14px;border:1px solid var(--bg2);border-radius:12px;background:var(--cream);color:var(--ink);font:inherit;font-size:16px;line-height:1.6;resize:vertical"></textarea></div>
+    <fieldset class="feeling-field"><legend>전체 기분</legend><div class="faces" id="overallFaces"></div></fieldset>
+    <fieldset class="feeling-field"><legend>몸 컨디션</legend><div class="faces" id="bodyFaces"></div></fieldset>
+    <div class="field"><label for="moodText">전체 하루 기분 한 줄 리뷰</label><textarea id="moodText" rows="2" maxlength="200" required placeholder="오늘 하루를 한 줄로 남겨주세요." style="width:100%;padding:14px;border:1px solid var(--bg2);border-radius:12px;background:var(--cream);color:var(--ink);font:inherit;font-size:16px;line-height:1.6;resize:vertical"></textarea><p class="help">200자 이내 · 분석이나 평가 없이 저장해요.</p></div>
     <p class="help">현재 시각과 함께 저장됩니다. 외부 인공지능으로 보내지 않으며, 브라우저 데이터를 지우면 기록이 사라질 수 있어요.</p>
     <p id="moodError" class="error" role="alert"></p>
     <div class="savebar"><button type="submit" class="primary" id="moodSave">기분 저장</button></div>
@@ -326,7 +290,7 @@ let state={favorites:[],records:[]},loadProblem=false,dirty=false,busy=false,cur
 try{const raw=localStorage.getItem(KEY);if(raw){const v=JSON.parse(raw);if(!Array.isArray(v.favorites)||!Array.isArray(v.records))throw Error();state=v}}catch(e){loadProblem=true}
 function commit(next){if(loadProblem)throw Error('저장소를 읽지 못했어요. 새로고침해 주세요.');const s=JSON.stringify(next);localStorage.setItem(KEY,s);if(localStorage.getItem(KEY)!==s)throw Error('저장을 확인하지 못했어요.');state=next}
 function toast(t){$('toast').textContent=t;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),5000)}
-function show(id){['today','favoriteView','entryView','moodView'].forEach(v=>$(v).classList.toggle('hidden',id!==v));current=id;document.body.classList.toggle('form-open',id!=='today');window.scrollTo(0,0);if(id==='today')renderMoods()}
+function show(id){['today','favoriteView','entryView','moodView'].forEach(v=>$(v).classList.toggle('hidden',id!==v));current=id;document.body.classList.toggle('form-open',id!=='today');window.scrollTo(0,0);if(id==='today'){switchTab('dailyDashboard')}}
 const labels={'콜드브루':'콜드브루 커피','브루드':'브루드 커피','에스프레소':'에스프레소커피'};
 const categoryName=c=>labels[c]||c;
 function nutrition(m){if(!m)return '이 과거 기록에는 시트 기준 영양정보가 없습니다.';const names=['열량','당류','단백질','나트륨','포화지방','카페인'],units=['kcal','g','g','mg','g','mg'];return '<div class="nutrition-grid">'+m.values.map((v,i)=>`<div><span>${names[i]}</span><strong>${v===null?'미제공':v+' '+units[i]}</strong></div>`).join('')+'</div><p class="sheet-note">한 잔 기준 · '+esc(SOURCE)+'</p>'}
@@ -345,10 +309,10 @@ function render(){
  $('count').textContent=list.length+'건';
  document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{const f=state.favorites.find(x=>x.id===b.dataset.fav);if(f.dataOrigin!=='user-sheet'){openFavorite();toast('이전 값은 사용하지 않아요. 시트에서 음료를 다시 선택해 주세요.')}else openEntry(f)});
  document.querySelectorAll('[data-record]').forEach(b=>b.onclick=()=>openEntry(state.records.find(r=>r.id===b.dataset.record),true));
- if($('firstAdd'))$('firstAdd').onclick=openFavorite;
+ if($('firstAdd'))$('firstAdd').onclick=openFavorite;renderDashboard();
 }
-function openFavorite(){if(loadProblem){toast('저장소 설정을 확인한 뒤 새로고침해 주세요.');return}$('favoriteForm').reset();fillDrinks();$('favoriteError').textContent='';dirty=false;show('favoriteView')}
-function openEntry(f,edit=false){active=structuredClone(f);editing=edit?f.id:null;requestId=editing||uid();$('entryForm').reset();$('when').value=edit?localTime(new Date(f.when)):localTime(new Date());$('portion').value=edit?String(f.portion):'100';$('order').textContent=f.drink+' · '+(f.dataOrigin==='user-sheet'?'톨':(f.size||'과거 기록'));$('entryNutrition').innerHTML=nutrition(f.nutrition);$('entryError').textContent='';$('delete').classList.toggle('hidden',!edit);$('save').textContent=edit?'변경 내용 저장':'섭취 기록 저장';dirty=false;updateEstimate();show('entryView')}
+function openFavorite(){closeFavorites();if(loadProblem){toast('저장소 설정을 확인한 뒤 새로고침해 주세요.');return}$('favoriteForm').reset();fillDrinks();$('favoriteError').textContent='';dirty=false;show('favoriteView')}
+function openEntry(f,edit=false){closeFavorites();active=structuredClone(f);editing=edit?f.id:null;requestId=editing||uid();$('entryForm').reset();$('when').value=edit?localTime(new Date(f.when)):localTime(new Date());$('portion').value=edit?String(f.portion):'100';$('order').textContent=f.drink+' · '+(f.dataOrigin==='user-sheet'?'톨':(f.size||'과거 기록'));$('entryNutrition').innerHTML=nutrition(f.nutrition);$('entryError').textContent='';$('delete').classList.toggle('hidden',!edit);$('save').textContent=edit?'변경 내용 저장':'섭취 기록 저장';dirty=false;updateEstimate();show('entryView')}
 function updateEstimate(){if(!active)return;const p=Number($('portion').value);$('estimate').textContent=active.dataOrigin!=='user-sheet'?'과거 기록 · 시트 기준 합계에서 제외됩니다.':active.caffeine===null?'카페인 미제공 · 합계에서 제외됩니다.':amount(active.caffeine,p)+'mg · '+(p<100?'시트 함량 × '+p+'% · 추정':'시트 한 잔 기준')}
 $('category').innerHTML='<option value="">카테고리를 선택하세요</option>'+[...new Set(MENU.map(m=>m.category))].map(c=>`<option value="${esc(c)}">${esc(categoryName(c))}</option>`).join('');
 $('category').addEventListener('change',fillDrinks);$('drink').addEventListener('change',()=>{$('menuNutrition').innerHTML=nutrition(selected())});
@@ -357,18 +321,70 @@ $('favoriteForm').onsubmit=e=>{e.preventDefault();try{const m=selected();if(!m)t
 $('portion').addEventListener('change',updateEstimate);
 $('entryForm').onsubmit=e=>{e.preventDefault();if(busy)return;busy=true;$('save').disabled=true;try{const when=new Date($('when').value);if(!Number.isFinite(when.getTime())||when>Date.now())throw Error('미래가 아닌 실제 섭취 시각을 입력해 주세요.');const r={...active,id:requestId,when:when.toISOString(),portion:Number($('portion').value),updatedAt:new Date().toISOString()},records=state.records.slice(),i=records.findIndex(x=>x.id===r.id);if(i<0)records.push(r);else records[i]=r;commit({...state,records});dirty=false;render();show('today');if(localDate(when)!==localDate(new Date())){$('notice').innerHTML='<button class="secondary" type="button" id="openPast">'+esc(localDate(when))+' 저장한 기록 보기</button>';$('openPast').onclick=()=>openEntry(state.records.find(x=>x.id===r.id),true)}toast('음료 기록을 저장했어요.')}catch(err){$('entryError').textContent='저장하지 못했어요. 입력은 유지됩니다. '+err.message}finally{busy=false;$('save').disabled=false}};
 $('delete').onclick=()=>{if(!confirm('이 섭취 기록을 삭제할까요?'))return;try{commit({...state,records:state.records.filter(r=>r.id!==editing)});dirty=false;render();show('today');toast('기록을 삭제했어요.')}catch(e){$('entryError').textContent='삭제하지 못했어요. '+e.message}};
+
+const WATER_KEY='good-day-water-v1';let waters=[],waterProblem=false;
+try{const raw=localStorage.getItem(WATER_KEY);if(raw){const v=JSON.parse(raw);if(!Array.isArray(v)||v.some(r=>typeof r.id!=='string'||!Number.isFinite(r.ml)||r.ml<=0||!Number.isFinite(new Date(r.when).getTime())))throw Error();waters=v}}catch(e){waterProblem=true}
+function yesterdayKey(){const d=new Date();d.setDate(d.getDate()-1);return localDate(d)}
+function delta(a,b,unit){const n=Math.round((a-b)*10)/10;return n===0?'어제와 같음':`어제보다 ${Math.abs(n)}${unit} ${n>0?'증가':'감소'}`}
+function saveWaters(next){if(waterProblem)throw Error('저장소 상태를 확인한 뒤 새로고침해 주세요.');const raw=JSON.stringify(next);localStorage.setItem(WATER_KEY,raw);if(localStorage.getItem(WATER_KEY)!==raw)throw Error('저장을 확인하지 못했어요.');waters=next}
+function renderDashboard(){
+ const today=localDate(new Date()),yesterday=yesterdayKey(),byDay=(list,day)=>list.filter(r=>localDate(r.when)===day);
+ const wt=byDay(waters,today),wy=byDay(waters,yesterday),sum=l=>l.reduce((s,r)=>s+r.ml,0);
+ $('waterTotal').textContent=wt.length?sum(wt)+' mL':'기록 없음';$('waterCompare').textContent=waterProblem?'물 기록을 읽지 못했어요.':wt.length&&wy.length?delta(sum(wt),sum(wy),'mL'):'어제와 비교할 기록 없음';
+ const ct=byDay(state.records,today),cy=byDay(state.records,yesterday);
+ $('coffeeCount').textContent=ct.length?ct.length+'건':'기록 없음';$('coffeeCompare').textContent=ct.length&&cy.length?delta(ct.length,cy.length,'건'):'어제와 비교할 기록 없음';
+ const complete=l=>l.length&&l.every(r=>r.dataOrigin==='user-sheet'&&r.caffeine!==null),caf=l=>l.reduce((s,r)=>s+amount(r.caffeine,r.portion),0);
+ $('caffeineCompare').textContent=complete(ct)&&complete(cy)?'카페인 '+delta(caf(ct),caf(cy),'mg'):'카페인 전일 비교: 기록 없음 또는 미제공 포함';
+ const latest=day=>byDay(moods,day).filter(m=>m.overall&&m.body).sort((a,b)=>new Date(b.when)-new Date(a.when))[0];const mt=latest(today),my=latest(yesterday);
+ $('moodT').textContent=mt?'기분 · '+feelingLabels[mt.overall-1]:'아직 기록이 없어요.';
+ $('moodCompare').textContent=mt&&my?'기분 '+delta(mt.overall,my.overall,'단계'):'기분: 어제와 비교할 기록 없음';
+ $('bodyCompare').textContent=(mt?'몸 · '+bodyLabels[mt.body-1]+' / ':'')+(mt&&my?delta(mt.body,my.body,'단계'):'몸: 어제와 비교할 기록 없음');
+ const dates=[...new Set(waters.map(r=>localDate(r.when)))].sort().reverse();
+ $('waterDays').innerHTML=waterProblem?'<p>기록을 읽지 못해 덮어쓰기를 막았습니다.</p>':dates.length?dates.map(day=>{const list=byDay(waters,day).sort((a,b)=>new Date(b.when)-new Date(a.when));return `<section class="water-day"><h3>${day} · ${sum(list)}mL</h3>${list.map(r=>`<div class="water-row"><span>${esc(hm(r.when))} · ${r.ml}mL</span><button type="button" data-water-delete="${esc(r.id)}">삭제</button></div>`).join('')}</section>`}).join(''):'<p class="empty">첫 카드에서 마신 물을 추가하면 날짜별로 쌓여요.</p>';
+ renderIntakes();renderCharts();
+ document.querySelectorAll('[data-water-delete]').forEach(b=>b.onclick=()=>{if(!confirm('이 물 섭취 기록을 삭제할까요?'))return;try{saveWaters(waters.filter(r=>r.id!==b.dataset.waterDelete));renderDashboard()}catch(e){toast('삭제하지 못했어요. '+e.message)}});
+}
+
+function coffeeRows(list){return list.slice().sort((a,b)=>new Date(b.when)-new Date(a.when)).map(r=>`<button class="intake-row" type="button" data-intake-coffee="${esc(r.id)}"><span class="intake-time">${esc(hm(r.when))}</span><span><strong>${esc(r.drink)}</strong><small>${r.portion}% 섭취 · ${r.dataOrigin!=='user-sheet'?'과거 자료 · 집계 제외':r.caffeine===null?'카페인 미제공':amount(r.caffeine,r.portion)+'mg'+(r.portion<100?' · 추정':'')}</small></span></button>`).join('')}
+function renderIntakes(){
+ const today=localDate(new Date());
+ const wt=waters.filter(r=>localDate(r.when)===today).sort((a,b)=>new Date(b.when)-new Date(a.when));
+ $('todayWaterList').innerHTML=wt.length?'<h3>오늘 마신 물</h3>'+wt.map(r=>`<div class="intake-row"><span class="intake-time">${esc(hm(r.when))}</span><strong>${r.ml}mL</strong></div>`).join(''):'<p>오늘 마신 물을 추가해 주세요.</p>';
+ const ct=state.records.filter(r=>localDate(r.when)===today);
+ $('todayCoffeeList').innerHTML=ct.length?'<h3>오늘 마신 음료</h3>'+coffeeRows(ct):'<p>즐겨찾는 커피에서 음료를 기록해 주세요.</p>';
+ const days=[...new Set(state.records.map(r=>localDate(r.when)))].sort().reverse();
+ $('coffeeDays').innerHTML=days.length?days.map(day=>{const list=state.records.filter(r=>localDate(r.when)===day),valid=list.filter(r=>r.dataOrigin==='user-sheet'&&r.caffeine!==null),unknown=list.length-valid.length,total=valid.reduce((s,r)=>s+amount(r.caffeine,r.portion),0);return `<section class="water-day"><h3>${day}</h3><p class="help">${list.length}건 · 카페인 ${valid.length?Number(total.toFixed(1))+'mg':'미제공'}${unknown?' · 미제공/과거 자료 '+unknown+'건 제외':''}</p>${coffeeRows(list)}</section>`}).join(''):'<p class="empty">아직 저장한 음료가 없어요. 기록하면 날짜별로 계속 쌓입니다.</p>';
+ document.querySelectorAll('[data-intake-coffee]').forEach(b=>b.onclick=()=>openEntry(state.records.find(r=>r.id===b.dataset.intakeCoffee),true));
+}
+$('waterForm').onsubmit=e=>{e.preventDefault();const ml=Number($('waterAmount').value);if(!Number.isInteger(ml)||ml<1||ml>10000){$('waterError').textContent='1~10,000mL 사이 정수로 입력해 주세요. 입력 범위이며 권장량이 아닙니다.';return}try{saveWaters([...waters,{id:uid(),ml,when:new Date().toISOString()}]);$('waterAmount').value='';$('waterError').textContent='';renderDashboard();toast(ml+'mL를 기록했어요.')}catch(e){$('waterError').textContent='저장하지 못했어요. 입력은 유지됩니다. '+e.message}};
+const TAB_MAP=[['todayTab', 'dailyDashboard'], ['waterTab', 'waterHistory'], ['coffeeTab', 'coffeeHistory'], ['mindTab', 'mindHistory'], ['sleepTab', 'sleepHistory'], ['bodyTab', 'bodyHistory'], ['cycleTab', 'cycleHistory'], ['infoTab', 'infoHistory']];
+function switchTab(id){TAB_MAP.forEach(([tab,panel])=>{$(panel).classList.toggle('hidden',panel!==id);$(tab).setAttribute('aria-selected',String(panel===id));$(tab).tabIndex=panel===id?0:-1});renderDashboard();renderMoods()}
+TAB_MAP.forEach(([tab,panel],i)=>{$(tab).onclick=()=>switchTab(panel);$(tab).addEventListener('keydown',e=>{let next;if(e.key==='ArrowRight')next=(i+1)%TAB_MAP.length;else if(e.key==='ArrowLeft')next=(i+TAB_MAP.length-1)%TAB_MAP.length;else if(e.key==='Home')next=0;else if(e.key==='End')next=TAB_MAP.length-1;else return;e.preventDefault();switchTab(TAB_MAP[next][1]);$(TAB_MAP[next][0]).focus()})});
+function openFavorites(){clearTimeout(toastTimer);$('toast').classList.add('hidden');render();$('favoriteModal').classList.remove('hidden');document.body.classList.add('modal-open');$('favoritesClose').focus()}
+function closeFavorites(){if(!$('favoriteModal').classList.contains('hidden')){$('favoriteModal').classList.add('hidden');document.body.classList.remove('modal-open');$('favoritesOpen').focus()}}
+$('favoritesOpen').onclick=openFavorites;$('favoritesClose').onclick=closeFavorites;
+$('favoriteModal').addEventListener('click',e=>{if(e.target===$('favoriteModal'))closeFavorites()});
+$('favoriteModal').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closeFavorites()}if(e.key==='Tab'){const list=[...$('favoriteModal').querySelectorAll('button')],first=list[0],last=list[list.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+window.addEventListener('storage',e=>{if(e.key===WATER_KEY){waterProblem=true;toast('물 기록이 다른 화면에서 바뀌었어요. 새로고침해 주세요.')}});
+
 const MOOD_KEY='harugyeol-moods-v1';
 let moods=[],moodProblem=false;
 try{const raw=localStorage.getItem(MOOD_KEY);if(raw){const v=JSON.parse(raw);if(!Array.isArray(v)||v.some(m=>typeof m.text!=='string'||typeof m.id!=='string'||!Number.isFinite(new Date(m.when).getTime())))throw Error('기록 형식 오류');moods=v}}catch(e){moodProblem=true}
 function renderMoods(){
   if(moodProblem){$('moodList').textContent='기존 기분 기록을 읽지 못했어요. 덮어쓰지 않도록 저장을 막았습니다.';return}
-  $('moodList').innerHTML=moods.slice().sort((a,b)=>new Date(b.when)-new Date(a.when)).map(m=>`<div style="padding:12px 0;border-top:1px solid rgba(244,243,239,.2)"><small>${esc(new Date(m.when).toLocaleString('ko-KR'))}</small><p style="opacity:1;font-size:16px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word">${esc(m.text)}</p><button type="button" data-mood-delete="${esc(m.id)}" style="color:var(--bg);min-height:48px;padding:8px 12px;text-decoration:underline">삭제</button></div>`).join('');
-  document.querySelectorAll('[data-mood-delete]').forEach(b=>b.onclick=()=>{if(!confirm('이 기분 기록을 삭제할까요?'))return;try{saveMoods(moods.filter(m=>m.id!==b.dataset.moodDelete));renderMoods();toast('기분 기록을 삭제했어요.')}catch(e){toast('삭제하지 못했어요. 기록은 유지됩니다.')}});
+  let previousMoodDay='';$('moodList').innerHTML=moods.slice().sort((a,b)=>new Date(b.when)-new Date(a.when)).map(m=>{const day=localDate(m.when),heading=day!==previousMoodDay?`<h3 class="history-day-heading">${esc(day)}</h3>`:'';previousMoodDay=day;return heading+`<div style="padding:12px 0;border-top:1px solid var(--bg2)"><small>${esc(new Date(m.when).toLocaleString('ko-KR'))}</small>${m.overall&&m.body?`<div class="saved-feelings"><span>${faceSVG(m.overall)} 기분 · ${esc(feelingLabels[m.overall-1])}</span><span>${faceSVG(m.body)} 몸 · ${esc(bodyLabels[m.body-1])}</span></div>`:'<p style="font-size:12px">이전 한 줄 기록 · 표정 선택 없음</p>'}<p style="opacity:1;font-size:16px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word">${esc(m.text)}</p><button type="button" data-mood-delete="${esc(m.id)}" style="color:var(--bg);min-height:48px;padding:8px 12px;text-decoration:underline">삭제</button></div>`}).join('')||'<p class="empty">아직 마음 기록이 없어요.</p>';
+  document.querySelectorAll('[data-mood-delete]').forEach(b=>b.onclick=()=>{if(!confirm('이 기분 기록을 삭제할까요?'))return;try{saveMoods(moods.filter(m=>m.id!==b.dataset.moodDelete));renderMoods();renderDashboard();toast('기분 기록을 삭제했어요.')}catch(e){toast('삭제하지 못했어요. 기록은 유지됩니다.')}});
 }
 function saveMoods(next){if(moodProblem)throw Error('기존 기록을 읽지 못했어요.');const text=JSON.stringify(next);localStorage.setItem(MOOD_KEY,text);if(localStorage.getItem(MOOD_KEY)!==text)throw Error('저장 확인 실패');moods=next}
-$('moodSoon').onclick=()=>{if(moodProblem){toast('브라우저 저장 설정을 확인한 뒤 새로고침해 주세요.');return}$('moodForm').reset();$('moodError').textContent='';dirty=false;show('moodView');$('moodText').focus()};
+const feelingLabels=['매우 나쁨','나쁨','보통','좋음','매우 좋음'];
+const bodyLabels=['매우 지침','지침','보통','가뿐함','매우 가뿐함'];
+function faceSVG(n){const paths=['M12 29 Q22 17 32 29','M13 28 Q22 21 31 28','M13 26 L31 26','M13 24 Q22 32 31 24','M12 23 Q22 37 32 23'];return `<svg viewBox="0 0 44 44" width="38" height="38" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="22" cy="22" r="19"/><circle cx="15" cy="17" r="1" fill="currentColor"/><circle cx="29" cy="17" r="1" fill="currentColor"/><path d="${paths[n-1]||paths[2]}"/></svg>`}
+function makeFaces(id,name,labels){$(id).innerHTML=labels.map((label,i)=>`<label class="face-option"><input type="radio" name="${name}" value="${i+1}" required><span>${faceSVG(i+1)}<small>${label}</small></span></label>`).join('')}
+makeFaces('overallFaces','overall',feelingLabels);makeFaces('bodyFaces','body',bodyLabels);
+$('moodForm').addEventListener('input',()=>dirty=true);
+$('moodSoon').onclick=()=>{if(moodProblem){toast('브라우저 저장 설정을 확인한 뒤 새로고침해 주세요.');return}clearTimeout(toastTimer);$('toast').classList.add('hidden');$('moodForm').reset();$('moodError').textContent='';dirty=false;show('moodView')};
 $('moodText').addEventListener('input',()=>dirty=true);
-$('moodForm').onsubmit=e=>{e.preventDefault();const text=$('moodText').value.trim();if(!text){$('moodError').textContent='기분을 한 글자 이상 적어주세요.';return}if(text.length>2000){$('moodError').textContent='2,000자 이내로 적어주세요.';return}$('moodSave').disabled=true;try{saveMoods([...moods,{id:uid(),text,when:new Date().toISOString()}]);dirty=false;render();show('today');toast('기분을 저장했어요.')}catch(e){$('moodError').textContent='저장하지 못했어요. 입력은 유지됩니다. 브라우저 저장 공간과 설정을 확인해 주세요.'}finally{$('moodSave').disabled=false}};
+$('moodForm').onsubmit=e=>{e.preventDefault();const overall=Number(document.querySelector('input[name="overall"]:checked')?.value),body=Number(document.querySelector('input[name="body"]:checked')?.value),text=$('moodText').value.trim();if(!overall||!body){$('moodError').textContent='전체 기분과 몸 컨디션을 각각 선택해 주세요.';return}if(!text){$('moodError').textContent='하루 기분을 한 줄로 남겨주세요.';return}if(text.length>200){$('moodError').textContent='200자 이내로 적어주세요.';return}$('moodSave').disabled=true;try{saveMoods([...moods,{id:uid(),overall,body,text,when:new Date().toISOString()}]);dirty=false;render();show('today');toast('마음과 몸, 한 줄 리뷰를 저장했어요.')}catch(e){$('moodError').textContent='저장하지 못했어요. 입력은 유지됩니다. 브라우저 저장 공간과 설정을 확인해 주세요.'}finally{$('moodSave').disabled=false}};
 window.addEventListener('storage',e=>{if(e.key===MOOD_KEY){moodProblem=true;renderMoods();toast('다른 화면에서 기분 기록이 바뀌었어요. 새로고침해 주세요.')}});
 renderMoods();
 
@@ -377,6 +393,59 @@ document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{if(busy)retur
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
 window.addEventListener('storage',e=>{if(e.key===KEY){loadProblem=true;toast('다른 화면에서 기록이 바뀌었어요. 새로고침해 주세요.')}});
 window.addEventListener('pageshow',()=>{if(current==='today'){render();renderMoods()}});
+let backupObjectURL=null;
+function buildBackup(){
+  if(loadProblem||waterProblem||moodProblem)throw Error('일부 기록을 안전하게 읽지 못했어요. 이 상태에서는 백업을 만들지 않습니다. 다른 화면의 변경이 있다면 새로고침 후 다시 시도해 주세요.');
+  const coffeeRaw=localStorage.getItem(KEY),waterRaw=localStorage.getItem(WATER_KEY),moodRaw=localStorage.getItem(MOOD_KEY);
+  const coffee=coffeeRaw===null?{favorites:[],records:[]}:JSON.parse(coffeeRaw);
+  const water=waterRaw===null?[]:JSON.parse(waterRaw),mood=moodRaw===null?[]:JSON.parse(moodRaw);
+  if(!coffee||!Array.isArray(coffee.favorites)||!Array.isArray(coffee.records)||!Array.isArray(water)||!Array.isArray(mood))throw Error('저장된 기록의 형식을 확인하지 못했어요.');
+  const createdAt=new Date().toISOString();
+  return {format:'good-day-backup',version:1,createdAt,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,encrypted:false,counts:{favorites:coffee.favorites.length,coffee:coffee.records.length,water:water.length,mood:mood.length},data:{favorites:coffee.favorites,coffee:coffee.records,water,mood}};
+}
+$('backupButton').onclick=()=>{
+  $('backupStatus').textContent='';$('backupDownload').classList.add('hidden');
+  if(backupObjectURL){URL.revokeObjectURL(backupObjectURL);backupObjectURL=null}
+  try{
+    const backup=buildBackup(),json=JSON.stringify(backup,null,2);
+    const filename='good-day-backup-'+localDate(new Date())+'-'+pad(new Date().getHours())+pad(new Date().getMinutes())+pad(new Date().getSeconds())+'.json';
+    backupObjectURL=URL.createObjectURL(new Blob([json],{type:'application/json;charset=utf-8'}));
+    const link=$('backupDownload');link.href=backupObjectURL;link.download=filename;link.classList.remove('hidden');
+    const n=backup.counts;$('backupStatus').textContent=`백업 파일 생성: 물 ${n.water}건 · 커피 ${n.coffee}건 · 기분 ${n.mood}건 · 즐겨찾기 ${n.favorites}건. 다운로드를 요청했습니다. 파일 저장 여부를 확인해 주세요.`;
+    link.click();
+  }catch(e){$('backupStatus').textContent='백업하지 못했어요. 기존 기록은 변경하지 않았습니다. '+e.message}
+};
+
+function cumulativeSeries(list,value){return Array.from({length:25},(_,hour)=>list.filter(r=>new Date(r.when).getHours()<hour).reduce((sum,r)=>sum+value(r),0))}
+function miniPlot(values,unit,label,color,hasData){
+ if(!hasData)return `<p class="chart-legend">${esc(label)}</p><p class="help">今日</p>`.replace('今日','오늘 기록 없음');
+ const max=Math.max(...values,1),pts=values.map((v,i)=>`${36+i*12.5},${110-v/max*78}`).join(' ');
+ return `<p class="chart-legend">${esc(label)} · ${Number(values[24].toFixed(2))}${unit}</p><svg viewBox="0 0 356 145" role="img" aria-label="${esc(label)} 시간대별 누적 그래프"><path d="M36 26V110H336" stroke="var(--soft)" fill="none"/><text x="32" y="20" fill="var(--ink)" font-size="11">${Number(max.toFixed(2))}${unit}</text><polyline points="${pts}" stroke="${color}" stroke-width="3" fill="none"/>${[0,6,12,18,24].map(t=>`<text x="${36+t*12.5}" y="132" text-anchor="middle" fill="var(--ink)" font-size="11">${t}시</text>`).join('')}</svg>`
+}
+function renderCharts(){const day=localDate(new Date()),wt=waters.filter(r=>localDate(r.when)===day),ct=state.records.filter(r=>localDate(r.when)===day);$('intakeChart').innerHTML=miniPlot(cumulativeSeries(wt,r=>r.ml),'mL','물','var(--blue)',wt.length)+miniPlot(cumulativeSeries(ct,r=>r.portion/100),'잔','커피','var(--orange)',ct.length)}
+
+const AUTH_CONFIG_KEY='good-day-auth-config-v1';let authClient=null,authSubscription=null,authReady=false;
+function validateAuthConfig(v){let url;try{url=new URL(v.url)}catch(e){throw Error('올바른 프로젝트 URL을 입력해 주세요.')}if(url.protocol!=='https:'||!url.hostname.endsWith('.supabase.co')||url.pathname!=='/'||url.search||url.hash||url.username||url.password)throw Error('이 테스트는 https://프로젝트.supabase.co 형식만 지원합니다.');if(!/^sb_publishable_[A-Za-z0-9_-]+$/.test(v.key))throw Error('sb_publishable_로 시작하는 공개 키만 허용합니다.');return {url:url.origin,key:v.key}}
+function loadAuthLibrary(){if(window.supabase?.createClient)return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js';s.onload=()=>window.supabase?.createClient?resolve():reject(Error('라이브러리 초기화 실패'));s.onerror=()=>{s.remove();reject(Error('인증 라이브러리를 불러오지 못했어요. 네트워크를 확인하세요.'))};document.head.appendChild(s)})}
+const authRedirect=()=>location.origin+location.pathname;
+function authUI(session){authReady=true;$('authStatus').textContent=session?'로그인됨 · '+(session.user?.email||'사용자 확인됨')+' · 기록 동기화 없음':'로그아웃 상태 · 기록은 이 브라우저에만 보관';$('googleLogin').disabled=!!session;$('googleLogout').classList.toggle('hidden',!session)}
+async function startAuth(config){
+ authReady=false;$('googleLogin').disabled=true;$('authStatus').textContent='인증 연결 확인 중…';
+ await loadAuthLibrary();
+ authSubscription?.unsubscribe();
+ authClient=window.supabase.createClient(config.url,config.key,{auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true,storageKey:'good-day-auth-'+new URL(config.url).hostname}});
+ const params=new URLSearchParams(location.search);
+ if(params.has('error')){history.replaceState(null,'',authRedirect());throw Error('로그인이 취소되었거나 제공자 설정이 올바르지 않습니다.')}
+ if(params.has('code')){const {error}=await authClient.auth.exchangeCodeForSession(params.get('code'));history.replaceState(null,'',authRedirect());if(error)throw Error('로그인 코드 확인에 실패했어요. 같은 기기·브라우저에서 다시 시작해 주세요.')}
+ const {data,error}=await authClient.auth.getSession();if(error)throw Error('세션 확인 실패');authUI(data.session);
+ authSubscription=authClient.auth.onAuthStateChange((_event,session)=>authUI(session)).data.subscription;
+}
+$('authSettings').onsubmit=async e=>{e.preventDefault();try{if(authClient){const {data,error}=await authClient.auth.getSession();if(error)throw Error('현재 세션을 확인하지 못했어요.');if(data.session)throw Error('먼저 로그아웃한 뒤 인증 설정을 바꾸세요.')}const config=validateAuthConfig({url:$('authUrl').value.trim(),key:$('authPublicKey').value.trim()});localStorage.setItem(AUTH_CONFIG_KEY,JSON.stringify(config));await startAuth(config)}catch(err){authReady=false;$('googleLogin').disabled=true;$('authStatus').textContent='인증 연결 안 됨 · '+err.message}};
+$('googleLogin').onclick=async()=>{if(!authReady||!authClient)return;$('googleLogin').disabled=true;try{if(location.protocol!=='https:')throw Error('실제 HTTPS 배포 주소에서 테스트하세요.');const {error}=await authClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirect(),scopes:'openid email profile'}});if(error)throw Error('Google 제공자와 리디렉션 설정을 확인해 주세요.')}catch(err){$('authStatus').textContent='로그인하지 못했어요. '+err.message;$('googleLogin').disabled=false}};
+$('googleLogout').onclick=async()=>{if(!authClient)return;const {error}=await authClient.auth.signOut({scope:'local'});if(error){$('authStatus').textContent='로그아웃하지 못했어요. 네트워크를 확인하세요.';return}authUI(null)};
+$('authRedirect').textContent=location.protocol==='https:'?'등록할 리디렉션 주소: '+authRedirect():'파일 미리보기가 아닌 HTTPS 배포 사이트에서 테스트하세요.';
+try{const raw=localStorage.getItem(AUTH_CONFIG_KEY);if(raw){const c=validateAuthConfig(JSON.parse(raw));$('authUrl').value=c.url;$('authPublicKey').value=c.key;startAuth(c).catch(()=>{$('authStatus').textContent='인증 연결 안 됨 · 설정과 네트워크를 확인해 주세요.'})}}catch(e){$('authStatus').textContent='인증 설정을 읽지 못했어요. 다시 설정해 주세요.'}
+
 render();
 </script>
 </body>
