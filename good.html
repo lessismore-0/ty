@@ -269,7 +269,7 @@ select{width:100%;min-height:52px;padding:12px;border:1px solid var(--bg2);borde
 <section id="waterHistory" class="hidden" role="tabpanel" aria-labelledby="waterTab"><article class="card"><h2>물 기록</h2><p class="help">건강앱 물 기록을 날짜별로 합산합니다. 과거 수동 기록은 보존하되 합계에서 제외합니다.</p><div id="waterDays"></div></article></section>
 <section id="coffeeHistory" class="hidden" role="tabpanel" aria-labelledby="coffeeTab"><article class="card"><h2>커피 기록</h2><p class="help">날짜별 섭취 내역과 카페인 합계 · 기록을 누르면 수정·삭제할 수 있어요.</p><div id="coffeeDays"></div><div class="hidden"><span id="count"></span><div id="notice"></div><div id="records"></div></div></article></section>
 <section id="mindHistory" class="hidden" role="tabpanel" aria-labelledby="mindTab"><article class="card"><h2>마음 기록</h2><p class="help">기분·몸 컨디션과 한 줄 리뷰를 날짜별로 모아봅니다.</p><div id="moodList"></div></article></section>
-<section id="sleepHistory" class="hidden" role="tabpanel"><article class="card"><h2>수면</h2><p class="help">밤마다 잠든 구간을 합산한 총 수면 시간과 참고 점수입니다. 점수는 시간(70점) + 연속성(30점)으로 계산한 자체 지표이며 의학적 평가가 아닙니다.</p><div id="sleepDays"></div></article></section><section id="bodyHistory" class="hidden" role="tabpanel"><article class="card"><h2>체성분</h2><p class="empty">앳플리·건강앱 데이터가 아직 연결되지 않았어요.</p><p class="help">현재 누적 데이터 없음 · 연동·입력 기능 미구현. 실제 기록을 가져오기 전에는 임의 데이터를 표시하지 않습니다.</p></article></section><section id="cycleHistory" class="hidden" role="tabpanel"><article class="card"><h2>주기</h2><p class="help">건강앱 월경 기록으로 다음 예정일을 계산합니다. 기록이 쌓일수록 예측이 안정되며, 피임·진단 목적이 아닙니다.</p><div id="cyclePanel"></div></article></section><section id="infoHistory" class="hidden" role="tabpanel" aria-labelledby="infoTab"><article class="card" style="margin-bottom:16px"><h2>구글 로그인 테스트</h2><p class="help">로그인은 인증만 확인합니다. 건강 기록은 계정과 연결하거나 서버에 업로드하지 않습니다. 로그인하지 않아도 현재 기록은 사용할 수 있습니다. 이 브라우저의 기록은 로그아웃해도 남으므로 공용 기기에서는 주의하세요.</p><p id="authStatus" role="status" style="margin:14px 0">인증 설정 안 됨</p><button id="googleLogin" class="primary" type="button" disabled>구글로 로그인</button><button id="googleLogout" class="secondary hidden" type="button">로그아웃</button><details style="margin-top:18px"><summary>인증 테스트 설정</summary><p class="help">Supabase 프로젝트 URL과 공개 publishable 키만 입력하세요. secret·service_role·Google Client Secret은 입력하지 마세요. 값은 현재 브라우저에 보관되고 백업에는 포함되지 않습니다.</p><form id="authSettings"><label for="authUrl">Supabase 프로젝트 URL</label><input id="authUrl" type="url" required autocomplete="off" placeholder="프로젝트의 실제 HTTPS 주소"><label for="authPublicKey">Publishable 키</label><input id="authPublicKey" type="text" required autocomplete="off" placeholder="sb_publishable_로 시작하는 공개 키"><button class="secondary" type="submit" style="margin-top:14px">인증 설정 저장</button></form><p class="help">현재 페이지의 주소(쿼리·해시 제외)를 Supabase의 Redirect URLs에 등록하세요. Google OAuth 동의 화면과 제공자 설정이 먼저 필요합니다.</p><p id="authRedirect" class="help" style="overflow-wrap:anywhere"></p></details><p class="help">애플 건강 연동은 별도의 아이폰 테스트 앱에서 권한 요청 후 읽습니다. 이 웹 페이지와의 데이터 전송·동기화는 아직 연결하지 않았습니다.</p></article><article class="card"><h2>데이터 백업</h2><p style="margin:12px 0">물·커피·기분·즐겨찾기를 JSON 파일 하나로 내보냅니다.</p><p class="help">이 파일은 암호화되지 않습니다. 기분 리뷰 등 개인 기록이 포함되므로 공개 GitHub에 올리지 말고 개인 파일 보관함에 저장하세요. 수면·체성분·주기는 아직 기록 기능이 없어 포함되지 않습니다.</p><button type="button" id="backupButton" class="primary" style="margin-top:18px;min-height:52px">전체 데이터 백업</button><p id="backupStatus" class="help" role="status" style="margin-top:12px"></p><a id="backupDownload" class="secondary hidden" style="display:inline-block;margin-top:12px;min-height:48px" download>백업 파일 다시 다운로드</a><p class="help" style="margin-top:12px">다운로드가 시작돼도 실제 파일 저장 완료 여부는 확인할 수 없습니다. 사파리 다운로드 목록 또는 파일 앱에서 저장된 JSON 파일을 확인하세요. 자동 백업·기기 동기화·백업 파일 복원 기능은 아직 제공하지 않습니다.</p></article>  <details class="scope">
+<section id="sleepHistory" class="hidden" role="tabpanel"><article class="card"><h2>수면</h2><p class="help">밤마다 잠든 구간을 합산한 총 수면 시간과 참고 점수입니다. 점수는 시간(70점) + 연속성(30점)으로 계산한 자체 지표이며 의학적 평가가 아닙니다.</p><div id="sleepDays"></div></article></section><section id="bodyHistory" class="hidden" role="tabpanel"><article class="card"><h2>체성분</h2><p class="empty">앳플리·건강앱 데이터가 아직 연결되지 않았어요.</p><p class="help">현재 누적 데이터 없음 · 연동·입력 기능 미구현. 실제 기록을 가져오기 전에는 임의 데이터를 표시하지 않습니다.</p></article></section><section id="cycleHistory" class="hidden" role="tabpanel"><article class="card"><h2>주기</h2><p class="help">건강앱 월경 기록으로 다음 예정일을 계산합니다. 기록이 쌓일수록 예측이 안정되며, 피임·진단 목적이 아닙니다.</p><div id="cyclePanel"></div></article></section><section id="infoHistory" class="hidden" role="tabpanel" aria-labelledby="infoTab"><article class="card" style="margin-bottom:16px"><h2>구글 로그인 테스트</h2><p class="help">로그인은 인증만 확인합니다. 건강 기록은 계정과 연결하거나 서버에 업로드하지 않습니다. 로그인하지 않아도 현재 기록은 사용할 수 있습니다. 이 브라우저의 기록은 로그아웃해도 남으므로 공용 기기에서는 주의하세요.</p><p id="authStatus" role="status" style="margin:14px 0">인증 설정 안 됨</p><button id="googleLogin" class="primary" type="button" disabled>구글로 로그인</button><button id="googleLogout" class="secondary hidden" type="button">로그아웃</button><details style="margin-top:18px"><summary>인증 테스트 설정</summary><p class="help">Supabase 프로젝트 URL과 공개 publishable 키만 입력하세요. secret·service_role·Google Client Secret은 입력하지 마세요. 값은 현재 브라우저에 보관되고 백업에는 포함되지 않습니다.</p><form id="authSettings"><label for="authUrl">Supabase 프로젝트 URL</label><input id="authUrl" type="url" required autocomplete="off" placeholder="프로젝트의 실제 HTTPS 주소"><label for="authPublicKey">Publishable 키</label><input id="authPublicKey" type="text" required autocomplete="off" placeholder="sb_publishable_로 시작하는 공개 키"><button class="secondary" type="submit" style="margin-top:14px">인증 설정 저장</button></form><p class="help">현재 페이지의 주소(쿼리·해시 제외)를 Supabase의 Redirect URLs에 등록하세요. Google OAuth 동의 화면과 제공자 설정이 먼저 필요합니다.</p><p id="authRedirect" class="help" style="overflow-wrap:anywhere"></p></details><p class="help">애플 건강 연동은 별도의 아이폰 테스트 앱에서 권한 요청 후 읽습니다. 이 웹 페이지와의 데이터 전송·동기화는 아직 연결하지 않았습니다.</p></article><article class="card"><h2>데이터 백업</h2><p style="margin:12px 0">커피·기분·즐겨찾기를 JSON 파일 하나로 내보냅니다.</p><p class="help">건강앱에서 오는 물·수면·체성분·주기는 백업에 넣지 않습니다. 원본이 건강앱과 서버에 있어 이 파일이 없어도 다시 불러올 수 있기 때문입니다. 로그인 토큰도 넣지 않습니다.</p><p class="help">이 파일은 암호화되지 않습니다. 기분 리뷰 등 개인 기록이 포함되므로 공개 GitHub에 올리지 말고 개인 파일 보관함에 저장하세요. 폰을 바꾸거나 사파리 저장소가 지워지면 커피·기분 기록은 이 파일이 유일한 사본입니다.</p><button type="button" id="backupButton" class="primary" style="margin-top:18px;min-height:52px">커피·기분 백업</button><p id="backupStatus" class="help" role="status" style="margin-top:12px"></p><a id="backupDownload" class="secondary hidden" style="display:inline-block;margin-top:12px;min-height:48px" download>백업 파일 다시 다운로드</a><p style="margin:22px 0 0;padding-top:18px;border-top:1px solid var(--bg2)"><strong>백업 파일 불러오기</strong></p><p class="help">내보낸 JSON 파일을 골라 커피·기분·즐겨찾기를 되살립니다. 같은 기록은 건너뛰고 없는 기록만 추가하며, 지금 있는 기록을 지우지 않습니다.</p><input id="restoreFile" class="hidden" type="file" accept=".json,application/json"><button type="button" id="restoreButton" class="secondary" style="margin-top:12px;min-height:48px">백업 파일 선택</button><p id="restoreStatus" class="help" role="status" style="margin-top:12px"></p><p class="help" style="margin-top:12px">다운로드가 시작돼도 실제 파일 저장 완료 여부는 확인할 수 없습니다. 사파리 다운로드 목록 또는 파일 앱에서 저장된 JSON 파일을 확인하세요. 자동 백업과 기기 간 동기화는 아직 제공하지 않습니다. 불러오기는 같은 브라우저에서 직접 파일을 고를 때만 동작합니다.</p></article>  <details class="scope">
     <summary>보관 방식과 시제품의 범위</summary>
     <p>기록은 이 주소를 연 현재 브라우저의 저장소에만 보관됩니다. 서버 전송·기기 간 동기화·외부 인공지능 분석은 하지 않습니다. 개인정보 보호 모드나 브라우저 데이터 삭제 시 기록이 사라질 수 있고, 다른 주소나 기기에서는 기록이 공유되지 않습니다.</p>
     <p>건강앱은 미연결입니다. 음료 데이터는 사용자 제공 시트의 2026-11-08 가져온 저장본만 사용합니다. 이전 이미지 전사·검색 영양정보는 메뉴에서 제거했습니다. 시트의 이후 수정은 자동 반영되지 않습니다. 과거 섭취 기록은 삭제하지 않고 별도로 구분합니다.</p>
@@ -466,13 +466,13 @@ window.addEventListener('storage',e=>{if(e.key===KEY){loadProblem=true;toast('�
 window.addEventListener('pageshow',()=>{if(current==='today'){render();renderMoods()}});
 let backupObjectURL=null;
 function buildBackup(){
-  if(loadProblem||waterProblem||moodProblem)throw Error('일부 기록을 안전하게 읽지 못했어요. 이 상태에서는 백업을 만들지 않습니다. 다른 화면의 변경이 있다면 새로고침 후 다시 시도해 주세요.');
-  const coffeeRaw=localStorage.getItem(KEY),waterRaw=localStorage.getItem(WATER_KEY),moodRaw=localStorage.getItem(MOOD_KEY);
+  if(loadProblem||moodProblem)throw Error('커피·기분 기록을 안전하게 읽지 못했어요. 이 상태에서는 백업을 만들지 않습니다. 새로고침 후 다시 시도해 주세요.');
+  const coffeeRaw=localStorage.getItem(KEY),moodRaw=localStorage.getItem(MOOD_KEY);
   const coffee=coffeeRaw===null?{favorites:[],records:[]}:JSON.parse(coffeeRaw);
-  const water=waterRaw===null?[]:JSON.parse(waterRaw),mood=moodRaw===null?[]:JSON.parse(moodRaw);
-  if(!coffee||!Array.isArray(coffee.favorites)||!Array.isArray(coffee.records)||!Array.isArray(water)||!Array.isArray(mood))throw Error('저장된 기록의 형식을 확인하지 못했어요.');
+  const mood=moodRaw===null?[]:JSON.parse(moodRaw);
+  if(!coffee||!Array.isArray(coffee.favorites)||!Array.isArray(coffee.records)||!Array.isArray(mood))throw Error('저장된 기록의 형식을 확인하지 못했어요.');
   const createdAt=new Date().toISOString();
-  return {format:'good-day-backup',version:1,createdAt,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,encrypted:false,counts:{favorites:coffee.favorites.length,coffee:coffee.records.length,water:water.length,mood:mood.length},data:{favorites:coffee.favorites,coffee:coffee.records,water,mood}};
+  return {format:'good-day-backup',version:2,createdAt,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,encrypted:false,scope:'coffee-mood-favorites',excluded:['healthkit-water','sleep','body','cycle','auth-token'],counts:{favorites:coffee.favorites.length,coffee:coffee.records.length,mood:mood.length},data:{favorites:coffee.favorites,coffee:coffee.records,mood}};
 }
 $('backupButton').onclick=()=>{
   $('backupStatus').textContent='';$('backupDownload').classList.add('hidden');
@@ -482,11 +482,79 @@ $('backupButton').onclick=()=>{
     const filename='good-day-backup-'+localDate(new Date())+'-'+pad(new Date().getHours())+pad(new Date().getMinutes())+pad(new Date().getSeconds())+'.json';
     backupObjectURL=URL.createObjectURL(new Blob([json],{type:'application/json;charset=utf-8'}));
     const link=$('backupDownload');link.href=backupObjectURL;link.download=filename;link.classList.remove('hidden');
-    const n=backup.counts;$('backupStatus').textContent=`백업 파일 생성: 물 ${n.water}건 · 커피 ${n.coffee}건 · 기분 ${n.mood}건 · 즐겨찾기 ${n.favorites}건. 다운로드를 요청했습니다. 파일 저장 여부를 확인해 주세요.`;
+    const n=backup.counts;$('backupStatus').textContent=`백업 파일 생성: 커피 ${n.coffee}건 · 기분 ${n.mood}건 · 즐겨찾기 ${n.favorites}건. 건강앱 기록(물·수면·체성분·주기)은 건강앱 원본에 있어 제외했습니다. 다운로드를 요청했으니 파일 저장 여부를 확인해 주세요.`;
     link.click();
   }catch(e){$('backupStatus').textContent='백업하지 못했어요. 기존 기록은 변경하지 않았습니다. '+e.message}
 };
 
+const BACKUP_FORMAT='good-day-backup';
+function parseBackup(doc){
+  if(!doc||typeof doc!=='object')throw Error('JSON 형식을 읽지 못했습니다.');
+  if(doc.format!==BACKUP_FORMAT)throw Error('이 앱에서 만든 백업 파일이 아닙니다.');
+  if(![1,2].includes(doc.version))throw Error('지원하지 않는 백업 버전입니다 (version '+esc(doc.version)+').');
+  const d=doc.data||{};
+  const fav=d.favorites??[],cof=d.coffee??[],mood=d.mood??[];
+  if(!Array.isArray(fav)||!Array.isArray(cof)||!Array.isArray(mood))throw Error('백업 안의 기록 형식이 올바르지 않습니다.');
+  if(fav.length+cof.length+mood.length>50000)throw Error('기록이 너무 많습니다. 나눠서 불러와 주세요.');
+  const isDate=v=>Number.isFinite(new Date(v).getTime());
+  const favorites=fav.map((f,i)=>{
+    if(!f||typeof f.id!=='string'||!f.id)throw Error('즐겨찾기 '+(i+1)+'번째 항목에 식별자가 없습니다.');
+    if(typeof f.drink!=='string'||!f.drink)throw Error('즐겨찾기 '+(i+1)+'번째 항목에 음료 이름이 없습니다.');
+    const copy={...f};
+    delete copy.nutrition;
+    if(f.nutrition&&typeof f.nutrition==='object')copy.nutrition=f.nutrition;
+    return copy;
+  });
+  const coffee=cof.map((r,i)=>{
+    if(!r||typeof r.id!=='string'||!r.id)throw Error('커피 기록 '+(i+1)+'번째 항목에 식별자가 없습니다.');
+    if(typeof r.drink!=='string'||!r.drink)throw Error('커피 기록 '+(i+1)+'번째 항목에 음료 이름이 없습니다.');
+    if(!isDate(r.when))throw Error('커피 기록 '+(i+1)+'번째 항목의 시각이 올바르지 않습니다.');
+    const portion=Number(r.portion);
+    if(!Number.isFinite(portion)||portion<=0||portion>100)throw Error('커피 기록 '+(i+1)+'번째 항목의 섭취 비율이 올바르지 않습니다.');
+    if(!(r.caffeine===null||r.caffeine===undefined||Number.isFinite(Number(r.caffeine))))throw Error('커피 기록 '+(i+1)+'번째 항목의 카페인 값이 올바르지 않습니다.');
+    return {...r,portion};
+  });
+  const moods=mood.map((m,i)=>{
+    if(!m||typeof m.id!=='string'||!m.id)throw Error('기분 기록 '+(i+1)+'번째 항목에 식별자가 없습니다.');
+    if(!isDate(m.when))throw Error('기분 기록 '+(i+1)+'번째 항목의 시각이 올바르지 않습니다.');
+    if(typeof m.text!=='string'||m.text.length>200)throw Error('기분 기록 '+(i+1)+'번째 항목의 내용이 올바르지 않습니다.');
+    const pick=n=>(Number.isInteger(Number(n))&&Number(n)>=1&&Number(n)<=5)?Number(n):null;
+    const out={...m,overall:pick(m.overall),body:pick(m.body)};
+    return out;
+  });
+  return {favorites,coffee,moods,water:Array.isArray(d.water)?d.water.length:0,ignoredWater:Array.isArray(d.water)&&d.water.length>0};
+}
+function mergeSkip(existing,incoming){
+  const map=new Map(existing.map(x=>[x.id,x]));let added=0,skipped=0;
+  incoming.forEach(x=>{if(map.has(x.id))skipped++;else{map.set(x.id,x);added++}});
+  return {list:[...map.values()],added,skipped};
+}
+function applyBackup(parsed){
+  if(loadProblem||moodProblem)throw Error('기록을 읽지 못한 상태에서는 불러오지 않습니다. 새로고침 후 다시 시도해 주세요.');
+  const f=mergeSkip(state.favorites,parsed.favorites),c=mergeSkip(state.records,parsed.coffee),m=mergeSkip(moods,parsed.moods);
+  commit({...state,favorites:f.list,records:c.list});
+  saveMoods(m.list);
+  render();renderMoods();
+  return {fav:f,cof:c,mood:m};
+}
+$('restoreButton').onclick=()=>$('restoreFile').click();
+$('restoreFile').onchange=async e=>{
+  const file=e.target.files&&e.target.files[0];$('restoreStatus').textContent='';
+  if(!file)return;
+  try{
+    if(file.size>20*1024*1024)throw Error('20MB 이하 파일을 선택해 주세요.');
+    const parsed=parseBackup(JSON.parse(await file.text()));
+    const total=parsed.favorites.length+parsed.coffee.length+parsed.moods.length;
+    if(!total){$('restoreStatus').textContent='이 파일에는 커피·기분·즐겨찾기 기록이 없습니다. 현재 기록은 그대로입니다.';return}
+    const msg='백업 파일 내용\n· 즐겨찾기 '+parsed.favorites.length+'건\n· 커피 '+parsed.coffee.length+'건\n· 기분 '+parsed.moods.length+'건\n\n지금 있는 기록은 지우지 않고, 같은 기록은 건너뜁니다. 불러올까요?'
+      +(parsed.ignoredWater?'\n\n(이 파일의 물 기록 '+parsed.water+'건은 이번 범위가 아니라 건너뜁니다.)':'');
+    if(!confirm(msg)){$('restoreStatus').textContent='불러오기를 취소했습니다. 기록은 그대로입니다.';return}
+    const r=applyBackup(parsed);
+    $('restoreStatus').textContent='불러왔습니다 · 즐겨찾기 +'+r.fav.added+' (건너뜀 '+r.fav.skipped+') · 커피 +'+r.cof.added+' (건너뜀 '+r.cof.skipped+') · 기분 +'+r.mood.added+' (건너뜀 '+r.mood.skipped+')';
+    toast('백업 파일을 불러왔습니다.');
+  }catch(err){$('restoreStatus').textContent='불러오지 못했습니다. 현재 기록은 변경하지 않았습니다. '+err.message}
+  finally{e.target.value=''}
+};
 function cumulativeSeries(list,value){return Array.from({length:25},(_,hour)=>list.filter(r=>new Date(r.when).getHours()<hour).reduce((sum,r)=>sum+value(r),0))}
 function miniPlot(values,unit,label,color,hasData){
  if(!hasData)return `<p class="chart-legend">${esc(label)}</p><p class="help">今日</p>`.replace('今日','오늘 기록 없음');
