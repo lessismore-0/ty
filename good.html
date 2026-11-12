@@ -8,7 +8,7 @@
 <style>
 :root{
   --bg:#f3f4f7;--card:#ffffff;--ink:#14171f;--muted:#5f6b7c;--line:#e3e6eb;--track:#eceef2;
-  --caf:#b4541a;--water:#1e7fd6;--carb:#5b5bd6;--prot:#12a37a;--fat:#e59a12;--mood:#7a4fd8;--sleep:#3b4a7a;--bad:#d92d20;
+  --caf:#b4541a;--water:#1e7fd6;--carb:#5b5bd6;--prot:#12a37a;--fat:#e59a12;--mood:#7a4fd8;--sleep:#3b4a7a;--bad:#d92d20;--weight:#00879b;--bodyfat:#c2417a;
   --sans:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Segoe UI',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -103,6 +103,12 @@ details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;f
 .sleep-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .sleep-score{font-size:15px;font-weight:800;color:var(--sleep);white-space:nowrap}
 .sleep-sub{font-size:14px;color:var(--muted);margin-top:2px}
+.body-sec{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.body-chart svg{display:block;width:100%;height:auto;margin-top:6px;touch-action:manipulation}
+.body-log{padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.body-log:last-child{border-bottom:0}
+.body-when{display:block;color:var(--muted);font-size:13.5px}
+.body-vals b{font-weight:700}
 
 /* 주기 달력 */
 .cy-head{font-size:15px;font-weight:700;margin:18px 0 8px}
@@ -841,9 +847,61 @@ function renderCloudPanels(){
  }
  $('cyclePanel').innerHTML=panel;
 
- // 체성분
+ // 체성분: 체중·체지방률 그래프(각각 따로, 최근 30일) + 측정 기록 목록
  const weights=byKind('weight'),fats=byKind('body_fat');
- $('bodyHistory').innerHTML='<article class="card"><h2>체성분</h2><p class="help">'+logged+' · 체지방은 비율(%)로만 표시합니다.</p>'+[...weights,...fats].sort((a,b)=>new Date(b.start_at)-new Date(a.start_at)).map(r=>'<div class="water-day">'+esc(new Date(r.start_at).toLocaleString('ko-KR'))+' · '+(r.kind==='weight'?'체중 ':'체지방률 ')+esc(r.value)+' '+esc(r.unit)+'</div>').join('')+(!weights.length&&!fats.length?'<p class="empty">아직 받은 측정 기록이 없습니다.</p>':'')+'</article>';
+ renderBody(logged,weights,fats);
+}
+// ===== 체성분 =====
+// 체중은 소수점 2자리까지(측정값 그대로), 체지방률은 소수점 1자리로 표시합니다.
+const fmtWeight=v=>Number(v).toLocaleString('ko-KR',{maximumFractionDigits:2});
+const fmtFat=v=>Number(v).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const BODY=[
+ {kind:'weight',id:'weightChart',name:'체중',unit:'kg',color:'var(--weight)',fmt:fmtWeight,step:0.5},
+ {kind:'body_fat',id:'fatChart',name:'체지방률',unit:'%',color:'var(--bodyfat)',fmt:fmtFat,step:0.5}
+];
+const mdLabel=t=>new Date(t).toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
+// 같은 날 여러 번 측정했으면 그날의 마지막 측정값 하나만 그래프에 씁니다.
+function bodyDaily(rows){
+ const map=new Map();
+ rows.forEach(r=>{const t=new Date(r.start_at).getTime(),v=Number(r.value);if(!Number.isFinite(t)||!Number.isFinite(v))return;const day=localDate(t),cur=map.get(day);if(!cur||t>cur.t)map.set(day,{t,v})});
+ return [...map.values()].sort((a,b)=>a.t-b.t);
+}
+function bodyChart(cfg,daily){
+ const end=new Date();end.setHours(23,59,59,999);const start=new Date(end);start.setDate(start.getDate()-29);start.setHours(0,0,0,0);
+ const t0=start.getTime(),t1=end.getTime(),data=daily.filter(p=>p.t>=t0&&p.t<=t1);
+ if(!data.length)return {svg:'<p class="empty-note">최근 30일 '+cfg.name+' 기록이 없습니다.</p>',read:''};
+ const X0=44,X1=300,Y0=24,Y1=120;
+ const vs=data.map(p=>p.v);let lo=Math.min(...vs),hi=Math.max(...vs);const pad=Math.max((hi-lo)*0.25,cfg.step);lo-=pad;hi+=pad;
+ const x=t=>X0+(t-t0)/(t1-t0)*(X1-X0),y=v=>Y1-(v-lo)/(hi-lo)*(Y1-Y0);
+ const axisN=v=>Number(v).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
+ const grid=[lo,(lo+hi)/2,hi].map((v,i)=>`<line x1="${X0}" x2="${X1}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="currentColor" stroke-opacity="${i===0?.25:.08}"/><text x="${X0-6}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${axisN(v)}</text>`).join('');
+ const md=t=>{const d=new Date(t);return (d.getMonth()+1)+'/'+d.getDate()};
+ const xl=[[t0,'start',md(t0)],[t0+(t1-t0)/2,'middle',md(t0+(t1-t0)/2)],[t1,'end','오늘']].map(([t,a,l])=>`<text x="${x(t).toFixed(1)}" y="140" text-anchor="${a}" font-size="11" fill="currentColor" opacity=".65">${l}</text>`).join('');
+ const pts=data.map(p=>[x(p.t),y(p.v)]);
+ const line=pts.length>1?`<polyline points="${pts.map(([a,b])=>a.toFixed(1)+','+b.toFixed(1)).join(' ')}" fill="none" stroke="${cfg.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+ const dots=pts.map(([a,b])=>`<circle cx="${a.toFixed(1)}" cy="${b.toFixed(1)}" r="4" fill="${cfg.color}" stroke="var(--card)" stroke-width="2"/>`).join('');
+ const [lx,ly]=pts[pts.length-1],last=data[data.length-1];
+ // 마지막 값 글자: 선이 위에서 내려오면 점 아래에, 아니면 위에 둡니다. 흰 테두리로 선과 겹쳐도 읽히게 합니다.
+ const below=pts.length>1&&pts[pts.length-2][1]<ly;
+ const lastLabel=`<text x="${(lx>X1-24?lx+4:lx).toFixed(1)}" y="${(below?ly+19:ly-10).toFixed(1)}" text-anchor="${lx>X1-24?'end':'middle'}" font-size="12" font-weight="700" fill="currentColor" stroke="var(--card)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">${esc(cfg.fmt(last.v))}</text>`;
+ // 누르거나 마우스를 올리면 그 날짜의 값을 보여주는 세로 영역
+ const hits=pts.map(([a],i)=>{const l=i?(pts[i-1][0]+a)/2:X0-8,r=i<pts.length-1?(a+pts[i+1][0])/2:X1+8;return `<rect data-body-pt="${cfg.id}" data-x="${a.toFixed(1)}" data-read="${esc(mdLabel(data[i].t)+' · '+cfg.name+' '+cfg.fmt(data[i].v)+' '+cfg.unit)}" x="${l.toFixed(1)}" y="${Y0-14}" width="${Math.max(1,r-l).toFixed(1)}" height="${Y1-Y0+14}" fill="transparent"/>`}).join('');
+ const summary=data.map(p=>md(p.t)+' '+cfg.fmt(p.v)).join(', ');
+ const first=data[0],diff=last.v-first.v;
+ const read='최근 '+mdLabel(last.t)+' · '+cfg.fmt(last.v)+' '+cfg.unit+(data.length>1?' · '+md(first.t)+' 이후 '+(diff>0?'+':diff<0?'−':'±')+cfg.fmt(Math.abs(diff))+' '+cfg.unit:'');
+ return {svg:`<svg viewBox="0 0 320 150" role="img" aria-label="최근 30일 ${cfg.name}(${cfg.unit}): ${esc(summary)}">${grid}${xl}<line class="body-cross" x1="0" x2="0" y1="${Y0-10}" y2="${Y1}" stroke="currentColor" stroke-opacity=".3" visibility="hidden"/>${line}${dots}${lastLabel}${hits}</svg>`,read};
+}
+function renderBody(logged,weights,fats){
+ const rows={weight:weights,body_fat:fats};
+ const charts=BODY.map(cfg=>{const c=bodyChart(cfg,bodyDaily(rows[cfg.kind]));return `<section class="body-sec"><h3>${cfg.name} · 최근 30일</h3><div class="body-chart" id="${cfg.id}">${c.svg}</div><p class="note left" id="${cfg.id}Read" aria-live="polite">${esc(c.read)}</p></section>`}).join('');
+ // 같은 시각(분 단위)에 잰 체중·체지방률은 한 줄로 묶습니다.
+ const groups=new Map();
+ [...weights,...fats].forEach(r=>{const t=new Date(r.start_at).getTime();if(!Number.isFinite(t))return;const key=Math.floor(t/60000);if(!groups.has(key))groups.set(key,{t,weight:null,body_fat:null});const g=groups.get(key);if(g[r.kind]===null)g[r.kind]=Number(r.value)});
+ const list=[...groups.values()].sort((a,b)=>b.t-a.t).map(g=>`<div class="body-log"><span class="body-when">${esc(mdLabel(g.t))} ${esc(hm(g.t))}</span><span class="body-vals">${g.weight!==null?'체중 <b>'+esc(fmtWeight(g.weight))+'</b> kg':''}${g.weight!==null&&g.body_fat!==null?' · ':''}${g.body_fat!==null?'체지방률 <b>'+esc(fmtFat(g.body_fat))+'</b> %':''}</span></div>`).join('');
+ const has=weights.length||fats.length;
+ $('bodyHistory').innerHTML='<article class="card"><h2>체성분</h2><p class="help">'+logged+' · 체지방은 비율(%)로만 표시합니다. 그래프는 하루 마지막 측정값 기준이며, 점을 누르면 그날 값이 보여요.</p>'
+  +(has?charts+'<section class="body-sec"><h3>측정 기록</h3>'+list+'</section>':'<p class="empty">아직 받은 측정 기록이 없습니다.</p>')+'</article>';
+ document.querySelectorAll('[data-body-pt]').forEach(h=>{const pick=()=>{const svg=h.ownerSVGElement,cross=svg.querySelector('.body-cross');cross.setAttribute('x1',h.dataset.x);cross.setAttribute('x2',h.dataset.x);cross.setAttribute('visibility','visible');$(h.dataset.bodyPt+'Read').textContent=h.dataset.read};h.addEventListener('click',pick);h.addEventListener('mouseenter',pick)});
 }
 async function refreshCloud(){
  if(!authClient||!cloudUser){$('cloudStatus').textContent='먼저 구글로 로그인하세요.';return}
