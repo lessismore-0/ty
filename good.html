@@ -8,7 +8,7 @@
 <style>
 :root{
   --bg:#f3f4f7;--card:#ffffff;--ink:#14171f;--muted:#5f6b7c;--line:#e3e6eb;--track:#eceef2;
-  --caf:#b4541a;--water:#1e7fd6;--carb:#5b5bd6;--prot:#12a37a;--fat:#e59a12;--mood:#7a4fd8;--sleep:#3b4a7a;--bad:#d92d20;
+  --caf:#b4541a;--water:#1e7fd6;--carb:#5b5bd6;--prot:#12a37a;--fat:#e59a12;--mood:#7a4fd8;--sleep:#3b4a7a;--bad:#d92d20;--weight:#00879b;--bodyfat:#c2417a;
   --sans:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Segoe UI',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -21,9 +21,10 @@ button{cursor:pointer;background:none;border:0}
 .app{max-width:1040px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 28px)}
 
 /* 머리글 */
-.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:18px}
-.brand{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.02em}
-.head h1{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 12px;margin-bottom:18px}
+.brand{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.02em;grid-column:1;grid-row:1}
+.headbtns{display:flex;gap:8px;grid-column:2;grid-row:1}
+.head h1{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.2;grid-column:1/-1;grid-row:2}
 .ghost{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:14px;font-weight:600;white-space:nowrap}
 .pagebar{margin-bottom:10px}
 .back{min-height:44px;padding:0 12px 0 0;font-size:15px;font-weight:700;display:inline-flex;align-items:center}
@@ -60,10 +61,11 @@ button{cursor:pointer;background:none;border:0}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
 
 /* 메뉴·버튼 */
-.menu{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.menu button{flex:1 1 0;min-width:96px;min-height:48px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600}
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
+.menu button{min-height:48px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600}
+@media(min-width:560px){.menu{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .foot{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.55}
-.actions{position:sticky;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 0 calc(env(safe-area-inset-bottom) + 10px);margin-top:6px;background:linear-gradient(to bottom,rgba(243,244,247,0),var(--bg) 32%);z-index:3}
+.actions{position:sticky;bottom:0;display:grid;grid-template-columns:1fr;gap:10px;padding:16px 0 calc(env(safe-area-inset-bottom) + 10px);margin-top:6px;background:linear-gradient(to bottom,rgba(243,244,247,0),var(--bg) 32%);z-index:3}
 .primary,.secondary{width:100%;min-height:52px;border-radius:14px;font-size:16px;font-weight:700;padding:0 16px}
 .primary{background:var(--ink);color:#fff}
 .primary:disabled{opacity:.45;cursor:not-allowed}
@@ -82,8 +84,11 @@ details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;f
 /* 기록 목록 */
 .water-day{padding:16px 0;border-bottom:1px solid var(--line)}
 .water-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;font-size:14.5px}
-.intake-row{display:flex;gap:12px;width:100%;padding:12px 0;text-align:left;align-items:flex-start;border-top:1px solid var(--line);font-size:15px;min-height:48px;margin-top:8px}
-.intake-row+.intake-row{margin-top:0}
+.intake-line{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);margin-top:8px}
+.intake-line+.intake-line{margin-top:0}
+.intake-row{display:flex;gap:12px;flex:1;min-width:0;padding:12px 0;text-align:left;align-items:flex-start;font-size:15px;min-height:48px}
+.intake-del{flex-shrink:0;min-height:44px;min-width:52px;padding:0 4px 0 10px;font-size:14px;font-weight:700;color:var(--bad)}
+.modal-sub{margin-top:22px}
 .intake-row>span:last-child{min-width:0}
 .intake-row strong{font-weight:700;display:block;overflow-wrap:anywhere}
 .intake-row small{display:block;font-size:13px;color:var(--muted);margin-top:2px}
@@ -98,6 +103,12 @@ details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;f
 .sleep-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .sleep-score{font-size:15px;font-weight:800;color:var(--sleep);white-space:nowrap}
 .sleep-sub{font-size:14px;color:var(--muted);margin-top:2px}
+.body-sec{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.body-chart svg{display:block;width:100%;height:auto;margin-top:6px;touch-action:manipulation}
+.body-log{padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.body-log:last-child{border-bottom:0}
+.body-when{display:block;color:var(--muted);font-size:13.5px}
+.body-vals b{font-weight:700}
 
 /* 주기 달력 */
 .cy-head{font-size:15px;font-weight:700;margin:18px 0 8px}
@@ -152,6 +163,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
 .favitem strong{display:block;font-size:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .favitem .d{display:block;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .favitem .go{font-size:18px;color:var(--muted)}
+.favrow{display:flex;align-items:center;gap:6px}
+.favrow .favitem{flex:1;min-width:0}
+.favtools{display:flex;gap:10px}
+.favtools>button{flex:1 1 0;min-width:0}
+.favtools .secondary{margin-top:12px}
 
 /* 모달·알림 */
 .modal{position:fixed;inset:0;background:rgba(15,18,25,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -182,8 +198,12 @@ body.modal-open{overflow:hidden}
 <!-- ========== 오늘 ========== -->
 <section id="today" class="view">
   <header class="head" id="homeHead">
-    <div><p class="brand">good day</p><h1 id="date"></h1></div>
-    <button class="ghost" id="healthOpen" type="button" aria-haspopup="dialog">건강앱 연결</button>
+    <p class="brand">good day</p>
+    <div class="headbtns">
+      <button class="ghost" id="moodSoon" type="button">기분 기록</button>
+      <button class="ghost" id="syncOpen" type="button" title="good day 동기화 앱 열기">동기화</button>
+    </div>
+    <h1 id="date"></h1>
   </header>
   <div class="pagebar hidden" id="pageBar"><button class="back" id="homeBack" type="button">← 오늘</button></div>
 
@@ -223,18 +243,18 @@ body.modal-open{overflow:hidden}
     <nav class="menu" aria-label="더 보기">
       <button type="button" data-go="bodyHistory">체성분</button>
       <button type="button" data-go="cycleHistory">주기</button>
+      <button type="button" id="healthOpen" aria-haspopup="dialog">동기화 상태</button>
       <button type="button" data-go="infoHistory">설정 · 백업</button>
     </nav>
     <p class="foot">카페인 한도 400 mg은 성인 일반 권고 기준이며, 임신 중이면 300 mg 이하가 권고됩니다. 이 화면은 기록을 보여줄 뿐 건강 상태를 진단하지 않습니다.</p>
     <div class="actions">
       <button class="primary" id="favoritesOpen" type="button" aria-haspopup="dialog">＋ 커피 기록</button>
-      <button class="secondary" id="moodSoon" type="button">＋ 기분 기록</button>
     </div>
   </div>
 
   <section id="waterHistory" class="page hidden"><article class="card"><h2>물 기록</h2><p class="help">건강앱 물 기록을 날짜별로 합산합니다. 과거 수동 기록은 보존하되 합계에서 제외합니다.</p><div id="waterDays"></div></article></section>
 
-  <section id="coffeeHistory" class="page hidden"><article class="card"><h2>커피 기록</h2><p class="help">기록을 누르면 수정·삭제할 수 있어요. 첫 화면의 카페인은 건강앱에 카페인 기록이 있으면 건강앱 값을, 없으면 여기의 직접 기록을 사용하며 두 값을 더하지 않습니다.</p><div id="coffeeDays"></div></article></section>
+  <section id="coffeeHistory" class="page hidden"><article class="card"><h2>커피 기록</h2><p class="help">기록을 누르면 수정할 수 있고, 오른쪽 ‘삭제’로 바로 지울 수 있어요. 첫 화면의 카페인은 건강앱에 카페인 기록이 있으면 건강앱 값을, 없으면 여기의 직접 기록을 사용하며 두 값을 더하지 않습니다.</p><div id="coffeeDays"></div></article></section>
 
   <section id="mindHistory" class="page hidden"><article class="card"><h2>마음 기록</h2><p class="help">기분·몸 컨디션과 한 줄 리뷰를 날짜별로 모아봅니다.</p><div id="moodList"></div></article></section>
 
@@ -280,10 +300,10 @@ body.modal-open{overflow:hidden}
   </section>
 </section>
 
-<!-- ========== 건강앱 연결 ========== -->
+<!-- ========== 동기화 상태 ========== -->
 <div id="healthModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="healthModalTitle"><div class="modal-sheet">
-  <div class="cardhead"><h2 id="healthModalTitle">건강앱 연결</h2><button id="healthClose" class="back" type="button">닫기</button></div>
-  <p class="help">아이폰 앱이 건강앱을 읽어 서버로 보내고, 이 화면은 서버 기록을 조회합니다.</p>
+  <div class="cardhead"><h2 id="healthModalTitle">동기화 상태</h2><button id="healthClose" class="back" type="button">닫기</button></div>
+  <p class="help">아이폰 앱이 건강앱을 읽어 서버로 보내고, 이 화면은 서버 기록을 조회합니다. 첫 화면의 ‘동기화’를 누르면 앱이 바로 열리고, 이 화면으로 돌아오면 서버 기록을 자동으로 다시 불러옵니다.</p>
   <button id="openSyncApp" type="button" class="primary" style="margin-top:14px">동기화 앱 열기</button>
   <p id="syncAppStatus" class="help" role="status">아이폰에서 good day 앱이 열립니다. 앱에서 ‘지금 새로 조회하여 동기화’를 누른 뒤 이 화면으로 돌아오세요.</p>
   <button id="cloudRefresh" type="button" class="secondary">서버의 최신 건강 기록 불러오기</button>
@@ -292,7 +312,7 @@ body.modal-open{overflow:hidden}
     <p class="help">1. 아이폰 good day 앱에서 건강앱 읽기 허용</p>
     <p class="help">2. 앱에서 같은 구글 계정으로 로그인하고 업로드에 동의</p>
     <p class="help">3. 앱의 ‘지금 새로 조회하여 동기화’ 실행</p>
-    <p class="help">4. 이 화면에서 ‘서버의 최신 건강 기록 불러오기’</p>
+    <p class="help">4. 이 웹 화면으로 돌아오면 자동으로 불러옵니다. 안 보이면 ‘서버의 최신 건강 기록 불러오기’</p>
     <p class="help">사파리에서는 건강앱을 직접 읽을 수 없습니다. 앱을 닫아둔 동안의 자동 전송은 아직 지원하지 않습니다.</p>
   </section>
   <section><h3>계정 상태</h3>
@@ -313,7 +333,8 @@ body.modal-open{overflow:hidden}
   <div class="cardhead"><h2 id="favoriteModalTitle">커피 기록</h2><button id="favoritesClose" class="back" type="button">닫기</button></div>
   <p class="help">마신 음료를 누르면 시각과 양을 확인한 뒤 저장합니다.</p>
   <div id="favorites"></div>
-  <button class="secondary" id="add" type="button">＋ 새 음료 추가</button>
+  <div class="favtools"><button class="secondary" id="add" type="button">＋ 새 음료 추가</button><button class="secondary hidden" id="favEdit" type="button">즐겨찾기 편집</button></div>
+  <div id="favToday"></div>
 </div></div>
 
 <!-- ========== 즐겨찾기 등록 ========== -->
@@ -400,7 +421,7 @@ const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now()+'-'+Math.random();
 const amount=(n,p)=>n===null||n===undefined?null:Math.round(n*p/100*10)/10;
 const r1=n=>Math.round(n*10)/10;
 const CAF_LIMIT=400,WATER_GOAL=1500;
-let state={favorites:[],records:[]},loadProblem=false,dirty=false,busy=false,current='today',active=null,editing=null,requestId=null,toastTimer;
+let state={favorites:[],records:[]},loadProblem=false,dirty=false,busy=false,current='today',active=null,editing=null,requestId=null,toastTimer,favEdit=false;
 try{const raw=localStorage.getItem(KEY);if(raw){const v=JSON.parse(raw);if(!Array.isArray(v.favorites)||!Array.isArray(v.records))throw Error();state=v}}catch(e){loadProblem=true}
 function commit(next){if(loadProblem)throw Error('저장소를 읽지 못했어요. 새로고침해 주세요.');const s=JSON.stringify(next);localStorage.setItem(KEY,s);if(localStorage.getItem(KEY)!==s)throw Error('저장을 확인하지 못했어요.');state=next}
 function toast(t){$('toast').textContent=t;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),5000)}
@@ -413,9 +434,33 @@ function selected(){return MENU.find(m=>m.id===$('drink').value)}
 const sheetValid=r=>r.dataOrigin==='user-sheet'&&r.caffeine!==null&&r.caffeine!==undefined;
 function render(){
  $('date').textContent=new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'});
- $('favorites').innerHTML=state.favorites.length?'<div class="favlist">'+state.favorites.map(f=>`<button class="favitem" type="button" data-fav="${esc(f.id)}"><span class="cup">${f.dataOrigin==='user-sheet'&&f.caffeine!==null&&f.caffeine!==undefined?esc(f.caffeine):'–'}</span><span class="txt"><strong>${esc(f.drink)}</strong><span class="d">${f.dataOrigin==='user-sheet'?esc(categoryName(f.category))+' · 톨 · 카페인 '+(f.caffeine===null||f.caffeine===undefined?'미제공':esc(f.caffeine)+'mg'):'과거 즐겨찾기 · 시트 메뉴 재선택 필요'}</span></span><span class="go">›</span></button>`).join('')+'</div>':'<p class="empty"><strong>아직 등록한 음료가 없어요.</strong>아래에서 자주 마시는 음료를 추가해 주세요.</p>';
- document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{const f=state.favorites.find(x=>x.id===b.dataset.fav);if(f.dataOrigin!=='user-sheet'){openFavorite();toast('이전 값은 사용하지 않아요. 시트에서 음료를 다시 선택해 주세요.')}else openEntry(f)});
+ if(!state.favorites.length)favEdit=false;
+ const favItem=f=>`<button class="favitem" type="button" data-fav="${esc(f.id)}"><span class="cup">${f.dataOrigin==='user-sheet'&&f.caffeine!==null&&f.caffeine!==undefined?esc(f.caffeine):'–'}</span><span class="txt"><strong>${esc(f.drink)}</strong><span class="d">${f.dataOrigin==='user-sheet'?esc(categoryName(f.category))+' · 톨 · 카페인 '+(f.caffeine===null||f.caffeine===undefined?'미제공':esc(f.caffeine)+'mg'):'과거 즐겨찾기 · 시트 메뉴 재선택 필요'}</span></span><span class="go">›</span></button>`;
+ $('favorites').innerHTML=state.favorites.length?'<div class="favlist">'+state.favorites.map(f=>favEdit?`<div class="favrow">${favItem(f)}<button type="button" class="intake-del" data-fav-delete="${esc(f.id)}" aria-label="${esc(f.drink)} 즐겨찾기 삭제">삭제</button></div>`:favItem(f)).join('')+'</div>':'<p class="empty"><strong>아직 등록한 음료가 없어요.</strong>아래에서 자주 마시는 음료를 추가해 주세요.</p>';
+ $('favEdit').classList.toggle('hidden',!state.favorites.length);$('favEdit').textContent=favEdit?'편집 끝내기':'즐겨찾기 편집';
+ // 오늘 마신 음료: 커피 기록 창에서 바로 삭제할 수 있게 함께 보여줍니다.
+ const today=localDate(new Date()),todayList=state.records.filter(r=>localDate(r.when)===today);
+ $('favToday').innerHTML=todayList.length?'<h3 class="modal-sub">오늘 마신 음료 · '+todayList.length+'건</h3>'+coffeeRows(todayList):'';
+ document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{const f=state.favorites.find(x=>x.id===b.dataset.fav);if(!f)return;if(f.dataOrigin!=='user-sheet'){openFavorite();toast('이전 값은 사용하지 않아요. 시트에서 음료를 다시 선택해 주세요.')}else openEntry(f)});
+ document.querySelectorAll('[data-fav-delete]').forEach(b=>b.onclick=()=>deleteFavorite(b.dataset.favDelete));
  renderDashboard();
+}
+// ===== 커피 기록 삭제 =====
+function deleteCoffee(id){
+ const r=state.records.find(x=>x.id===id);if(!r)return;
+ const today=localDate(new Date()),day=localDate(r.when);
+ if(!confirm((day===today?'오늘 ':day+' ')+hm(r.when)+' · '+r.drink+'\n이 커피 기록을 삭제할까요?'))return;
+ try{
+  commit({...state,records:state.records.filter(x=>x.id!==id)});render();
+  if(!$('favoriteModal').classList.contains('hidden'))$('favoritesClose').focus();
+  toast(day===today&&cafInfo(today).src==='health'?'기록을 삭제했어요. 오늘 카페인은 건강앱 기록을 표시 중이라 첫 화면 숫자는 그대로예요.':'커피 기록을 삭제했어요.');
+ }catch(e){toast('삭제하지 못했어요. 기록은 유지됩니다. '+e.message)}
+}
+function deleteFavorite(id){
+ const f=state.favorites.find(x=>x.id===id);if(!f)return;
+ if(!confirm(f.drink+'\n즐겨찾기에서 뺄까요? 이미 저장한 커피 기록은 지워지지 않아요.'))return;
+ try{commit({...state,favorites:state.favorites.filter(x=>x.id!==id)});render();$('favoritesClose').focus();toast('즐겨찾기에서 뺐어요.')}
+ catch(e){toast('삭제하지 못했어요. 즐겨찾기는 유지됩니다. '+e.message)}
 }
 function openFavorite(){closeFavorites();if(loadProblem){toast('저장소 설정을 확인한 뒤 새로고침해 주세요.');return}$('favoriteForm').reset();fillDrinks();$('favoriteError').textContent='';dirty=false;show('favoriteView')}
 function openEntry(f,edit=false){closeFavorites();active=structuredClone(f);editing=edit?f.id:null;requestId=editing||uid();$('entryForm').reset();$('when').value=edit?localTime(new Date(f.when)):localTime(new Date());$('portion').value=edit?String(f.portion):'100';$('order').textContent=f.drink+' · '+(f.dataOrigin==='user-sheet'?'톨':(f.size||'과거 기록'));$('entryNutrition').innerHTML=nutrition(f.nutrition);$('entryError').textContent='';$('delete').classList.toggle('hidden',!edit);$('save').textContent=edit?'변경 내용 저장':'섭취 기록 저장';dirty=false;updateEstimate();show('entryView')}
@@ -435,6 +480,7 @@ function updateEstimate(){
 $('category').innerHTML='<option value="">카테고리를 선택하세요</option>'+[...new Set(MENU.map(m=>m.category))].map(c=>`<option value="${esc(c)}">${esc(categoryName(c))}</option>`).join('');
 $('category').addEventListener('change',fillDrinks);$('drink').addEventListener('change',()=>{$('menuNutrition').innerHTML=nutrition(selected())});
 $('add').onclick=openFavorite;
+$('favEdit').onclick=()=>{favEdit=!favEdit;render();$('favEdit').focus()};
 $('favoriteForm').onsubmit=e=>{e.preventDefault();try{const m=selected();if(!m)throw Error('카테고리와 음료를 선택해 주세요.');const f={id:uid(),drink:m.name,category:m.category,size:'톨',dataOrigin:'user-sheet',source:SOURCE,nutrition:structuredClone(m),caffeine:m.values[5]};commit({...state,favorites:[...state.favorites,f]});dirty=false;render();openEntry(f);toast('즐겨찾기를 저장했어요.')}catch(err){$('favoriteError').textContent='저장하지 못했어요. '+err.message}};
 $('portion').addEventListener('change',updateEstimate);$('when').addEventListener('change',updateEstimate);
 $('entryForm').onsubmit=e=>{e.preventDefault();if(busy)return;busy=true;$('save').disabled=true;try{const when=new Date($('when').value);if(!Number.isFinite(when.getTime())||when>Date.now())throw Error('미래가 아닌 실제 섭취 시각을 입력해 주세요.');const r={...active,id:requestId,when:when.toISOString(),portion:Number($('portion').value),updatedAt:new Date().toISOString()},records=state.records.slice(),i=records.findIndex(x=>x.id===r.id);if(i<0)records.push(r);else records[i]=r;commit({...state,records});dirty=false;render();show('today');const past=localDate(when)!==localDate(new Date()),ci=cafInfo(localDate(new Date()));toast(past?localDate(when)+' 기록으로 저장했어요. 커피 기록에서 볼 수 있어요.':ci.mg>CAF_LIMIT?'저장했어요. 오늘 카페인이 하루 한도 '+CAF_LIMIT+'mg을 넘었습니다.':'음료 기록을 저장했어요.')}catch(err){$('entryError').textContent='저장하지 못했어요. 입력은 유지됩니다. '+err.message}finally{busy=false;$('save').disabled=false}};
@@ -478,11 +524,12 @@ function renderDashboard(){
  document.querySelectorAll('[data-water-delete]').forEach(b=>b.onclick=()=>{if(!confirm('이 물 섭취 기록을 삭제할까요?'))return;try{saveWaters(waters.filter(r=>r.id!==b.dataset.waterDelete));renderDashboard()}catch(e){toast('삭제하지 못했어요. '+e.message)}});
 }
 
-function coffeeRows(list){return list.slice().sort((a,b)=>new Date(b.when)-new Date(a.when)).map(r=>`<button class="intake-row" type="button" data-intake-coffee="${esc(r.id)}"><span class="intake-time">${esc(hm(r.when))}</span><span><strong>${esc(r.drink)}</strong><small>${esc(r.portion)}% 섭취 · ${r.dataOrigin!=='user-sheet'?'과거 자료 · 집계 제외':!sheetValid(r)?'카페인 미제공':amount(r.caffeine,r.portion)+'mg'+(r.portion<100?' · 추정':'')}</small></span></button>`).join('')}
+function coffeeRows(list){return list.slice().sort((a,b)=>new Date(b.when)-new Date(a.when)).map(r=>`<div class="intake-line"><button class="intake-row" type="button" data-intake-coffee="${esc(r.id)}"><span class="intake-time">${esc(hm(r.when))}</span><span><strong>${esc(r.drink)}</strong><small>${esc(r.portion)}% 섭취 · ${r.dataOrigin!=='user-sheet'?'과거 자료 · 집계 제외':!sheetValid(r)?'카페인 미제공':amount(r.caffeine,r.portion)+'mg'+(r.portion<100?' · 추정':'')}</small></span></button><button type="button" class="intake-del" data-coffee-delete="${esc(r.id)}" aria-label="${esc(hm(r.when)+' '+r.drink)} 기록 삭제">삭제</button></div>`).join('')}
 function renderIntakes(){
  const days=[...new Set(state.records.map(r=>localDate(r.when)))].sort().reverse();
  $('coffeeDays').innerHTML=days.length?days.map(day=>{const list=state.records.filter(r=>localDate(r.when)===day),valid=list.filter(sheetValid),unknown=list.length-valid.length,total=valid.reduce((s,r)=>s+amount(r.caffeine,r.portion),0);return `<section class="water-day"><h3>${day} · ${valid.length?Number(total.toFixed(1))+'mg':'카페인 미제공'}</h3><p class="help">${list.length}건${unknown?' · 미제공/과거 자료 '+unknown+'건 제외':''}</p>${coffeeRows(list)}</section>`}).join(''):'<p class="empty">아직 저장한 음료가 없어요. 기록하면 날짜별로 쌓입니다.</p>';
- document.querySelectorAll('[data-intake-coffee]').forEach(b=>b.onclick=()=>openEntry(state.records.find(r=>r.id===b.dataset.intakeCoffee),true));
+ document.querySelectorAll('[data-intake-coffee]').forEach(b=>b.onclick=()=>{const r=state.records.find(x=>x.id===b.dataset.intakeCoffee);if(r)openEntry(r,true)});
+ document.querySelectorAll('[data-coffee-delete]').forEach(b=>b.onclick=()=>deleteCoffee(b.dataset.coffeeDelete));
 }
 
 const MACROS=[['carbs','탄수화물',4,'var(--carb)'],['protein','단백질',4,'var(--prot)'],['fat','지방',9,'var(--fat)']];
@@ -506,7 +553,7 @@ function renderMoodWeek(){
  const days=last7(),pick=day=>moods.filter(m=>localDate(m.when)===day&&m.overall).sort((a,b)=>new Date(b.when)-new Date(a.when))[0]||null;
  const vals=days.map(d=>pick(localDate(d))),got=vals.filter(Boolean),mt=vals[6];
  $('moodToday').textContent=mt?'오늘 '+feelingLabels[mt.overall-1]+(mt.body?' · 몸 '+bodyLabels[mt.body-1]:''):'오늘은 아직 기록 전';
- if(!got.length){$('moodWeek').innerHTML='<p class="empty-note">최근 7일 기분 기록이 없습니다. 아래 ‘기분 기록’으로 남기면 그래프가 그려집니다.</p>';$('moodWeekNote').textContent='';return}
+ if(!got.length){$('moodWeek').innerHTML='<p class="empty-note">최근 7일 기분 기록이 없습니다. 위의 ‘기분 기록’으로 남기면 그래프가 그려집니다.</p>';$('moodWeekNote').textContent='';return}
  const y=v=>114-(v-1)*21,segs=[];let cur=[];
  vals.forEach((m,i)=>{if(m)cur.push(wx(i)+','+y(m.overall));else{if(cur.length)segs.push(cur);cur=[]}});if(cur.length)segs.push(cur);
  const grid=[1,2,3,4,5].map(v=>`<line x1="12" x2="308" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" stroke-opacity="${v===1?.25:.08}"/>`).join('');
@@ -521,7 +568,7 @@ function renderSleepWeek(){
  const days=last7(),map=new Map(sleepNights().map(n=>[n.day,n]));
  const items=days.map(d=>{const n=map.get(localDate(d));return n?{n,sc:sleepScore(n).score}:null}),got=items.filter(Boolean),t=items[6];
  $('sleepToday').textContent=t?'오늘 '+t.sc+'점 · '+fmtDur(t.n.asleep):'오늘 수면 기록 없음';
- if(!got.length){$('sleepWeek').innerHTML='<p class="empty-note">최근 7일 수면 기록이 없습니다. 아이폰 앱에서 동기화한 뒤 ‘건강앱 연결’에서 불러와 주세요.</p>';$('sleepWeekNote').textContent='';return}
+ if(!got.length){$('sleepWeek').innerHTML='<p class="empty-note">최근 7일 수면 기록이 없습니다. 위의 ‘동기화’를 눌러 앱에서 동기화한 뒤 이 화면으로 돌아오면 불러옵니다.</p>';$('sleepWeekNote').textContent='';return}
  const bars=items.map((it,i)=>{if(!it)return `<text x="${wx(i)}" y="108" text-anchor="middle" font-size="13" fill="currentColor" opacity=".35">–</text>`;const h=Math.max(4,it.sc/100*84),y=114-h;return `<rect x="${wx(i)-14}" y="${y.toFixed(1)}" width="28" height="${h.toFixed(1)}" rx="7" fill="var(--sleep)"><title>${it.n.day} · ${fmtDur(it.n.asleep)} · 점수 ${it.sc}</title></rect><text x="${wx(i)}" y="${(y-6).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">${it.sc}</text>`}).join('');
  const summary=items.map((it,i)=>it?(i===6?'오늘':DOW[days[i].getDay()])+' '+it.sc+'점':'').filter(Boolean).join(', ');
  $('sleepWeek').innerHTML=`<svg viewBox="0 0 320 150" role="img" aria-label="최근 7일 수면 점수: ${summary}"><line x1="12" x2="308" y1="114" y2="114" stroke="currentColor" stroke-opacity=".25"/>${bars}${weekAxis(days)}</svg>`;
@@ -567,12 +614,21 @@ $('diagCopy').onclick=async()=>{
  try{await navigator.clipboard.writeText(text);$('diagStatus').textContent='복사했습니다. 아래 칸에서 직접 선택해 복사해도 됩니다.'}
  catch(e){$('diagBox').select();$('diagStatus').textContent='자동 복사가 막혔습니다. 아래 칸의 글자를 길게 눌러 복사해 주세요.'}
 };
-$('openSyncApp').onclick=()=>{
- try{window.location.href='gooddayhealth://';$('syncAppStatus').textContent='앱이 열리지 않으면 아이폰에서 good day 앱을 직접 실행하세요.'}
- catch(e){$('syncAppStatus').textContent='이 브라우저에서는 앱을 바로 열 수 없습니다. 아이폰에서 good day 앱을 실행하세요.'}
-};
+// ===== 동기화 앱 열기 (gooddayhealth://) =====
+let syncLaunchedAt=0;
+function openSyncApp(){
+ clearTimeout(toastTimer);$('toast').classList.add('hidden');
+ const at=Date.now();syncLaunchedAt=at;
+ try{window.location.href='gooddayhealth://'}
+ catch(e){syncLaunchedAt=0;toast('이 브라우저에서는 앱을 바로 열 수 없어요. 아이폰에서 good day 앱을 직접 실행해 주세요.');return}
+ $('syncAppStatus').textContent='앱이 열리지 않으면 아이폰에서 good day 앱을 직접 실행하세요.';
+ // 2.5초 뒤에도 이 화면이 보이면 앱이 열리지 않은 것으로 보고 안내합니다.
+ setTimeout(()=>{if(syncLaunchedAt===at&&document.visibilityState==='visible')toast('동기화 앱이 열리지 않으면 아이폰에서 good day 앱을 직접 실행해 주세요.')},2500);
+}
+$('syncOpen').onclick=openSyncApp;
+$('openSyncApp').onclick=()=>{closeHealth();openSyncApp()};
 $('healthAccount').onclick=()=>{closeHealth();switchTab('infoHistory');$('googleLogin').focus()};
-function openFavorites(){clearTimeout(toastTimer);$('toast').classList.add('hidden');render();$('favoriteModal').classList.remove('hidden');document.body.classList.add('modal-open');$('favoritesClose').focus()}
+function openFavorites(){favEdit=false;clearTimeout(toastTimer);$('toast').classList.add('hidden');render();$('favoriteModal').classList.remove('hidden');document.body.classList.add('modal-open');$('favoritesClose').focus()}
 function closeFavorites(){if(!$('favoriteModal').classList.contains('hidden')){$('favoriteModal').classList.add('hidden');document.body.classList.remove('modal-open');$('favoritesOpen').focus()}}
 $('favoritesOpen').onclick=openFavorites;$('favoritesClose').onclick=closeFavorites;
 $('favoriteModal').addEventListener('click',e=>{if(e.target===$('favoriteModal'))closeFavorites()});
@@ -791,9 +847,61 @@ function renderCloudPanels(){
  }
  $('cyclePanel').innerHTML=panel;
 
- // 체성분
+ // 체성분: 체중·체지방률 그래프(각각 따로, 최근 30일) + 측정 기록 목록
  const weights=byKind('weight'),fats=byKind('body_fat');
- $('bodyHistory').innerHTML='<article class="card"><h2>체성분</h2><p class="help">'+logged+' · 체지방은 비율(%)로만 표시합니다.</p>'+[...weights,...fats].sort((a,b)=>new Date(b.start_at)-new Date(a.start_at)).map(r=>'<div class="water-day">'+esc(new Date(r.start_at).toLocaleString('ko-KR'))+' · '+(r.kind==='weight'?'체중 ':'체지방률 ')+esc(r.value)+' '+esc(r.unit)+'</div>').join('')+(!weights.length&&!fats.length?'<p class="empty">아직 받은 측정 기록이 없습니다.</p>':'')+'</article>';
+ renderBody(logged,weights,fats);
+}
+// ===== 체성분 =====
+// 체중은 소수점 2자리까지(측정값 그대로), 체지방률은 소수점 1자리로 표시합니다.
+const fmtWeight=v=>Number(v).toLocaleString('ko-KR',{maximumFractionDigits:2});
+const fmtFat=v=>Number(v).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const BODY=[
+ {kind:'weight',id:'weightChart',name:'체중',unit:'kg',color:'var(--weight)',fmt:fmtWeight,step:0.5},
+ {kind:'body_fat',id:'fatChart',name:'체지방률',unit:'%',color:'var(--bodyfat)',fmt:fmtFat,step:0.5}
+];
+const mdLabel=t=>new Date(t).toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
+// 같은 날 여러 번 측정했으면 그날의 마지막 측정값 하나만 그래프에 씁니다.
+function bodyDaily(rows){
+ const map=new Map();
+ rows.forEach(r=>{const t=new Date(r.start_at).getTime(),v=Number(r.value);if(!Number.isFinite(t)||!Number.isFinite(v))return;const day=localDate(t),cur=map.get(day);if(!cur||t>cur.t)map.set(day,{t,v})});
+ return [...map.values()].sort((a,b)=>a.t-b.t);
+}
+function bodyChart(cfg,daily){
+ const end=new Date();end.setHours(23,59,59,999);const start=new Date(end);start.setDate(start.getDate()-29);start.setHours(0,0,0,0);
+ const t0=start.getTime(),t1=end.getTime(),data=daily.filter(p=>p.t>=t0&&p.t<=t1);
+ if(!data.length)return {svg:'<p class="empty-note">최근 30일 '+cfg.name+' 기록이 없습니다.</p>',read:''};
+ const X0=44,X1=300,Y0=24,Y1=120;
+ const vs=data.map(p=>p.v);let lo=Math.min(...vs),hi=Math.max(...vs);const pad=Math.max((hi-lo)*0.25,cfg.step);lo-=pad;hi+=pad;
+ const x=t=>X0+(t-t0)/(t1-t0)*(X1-X0),y=v=>Y1-(v-lo)/(hi-lo)*(Y1-Y0);
+ const axisN=v=>Number(v).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
+ const grid=[lo,(lo+hi)/2,hi].map((v,i)=>`<line x1="${X0}" x2="${X1}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="currentColor" stroke-opacity="${i===0?.25:.08}"/><text x="${X0-6}" y="${(y(v)+4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${axisN(v)}</text>`).join('');
+ const md=t=>{const d=new Date(t);return (d.getMonth()+1)+'/'+d.getDate()};
+ const xl=[[t0,'start',md(t0)],[t0+(t1-t0)/2,'middle',md(t0+(t1-t0)/2)],[t1,'end','오늘']].map(([t,a,l])=>`<text x="${x(t).toFixed(1)}" y="140" text-anchor="${a}" font-size="11" fill="currentColor" opacity=".65">${l}</text>`).join('');
+ const pts=data.map(p=>[x(p.t),y(p.v)]);
+ const line=pts.length>1?`<polyline points="${pts.map(([a,b])=>a.toFixed(1)+','+b.toFixed(1)).join(' ')}" fill="none" stroke="${cfg.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+ const dots=pts.map(([a,b])=>`<circle cx="${a.toFixed(1)}" cy="${b.toFixed(1)}" r="4" fill="${cfg.color}" stroke="var(--card)" stroke-width="2"/>`).join('');
+ const [lx,ly]=pts[pts.length-1],last=data[data.length-1];
+ // 마지막 값 글자: 선이 위에서 내려오면 점 아래에, 아니면 위에 둡니다. 흰 테두리로 선과 겹쳐도 읽히게 합니다.
+ const below=pts.length>1&&pts[pts.length-2][1]<ly;
+ const lastLabel=`<text x="${(lx>X1-24?lx+4:lx).toFixed(1)}" y="${(below?ly+19:ly-10).toFixed(1)}" text-anchor="${lx>X1-24?'end':'middle'}" font-size="12" font-weight="700" fill="currentColor" stroke="var(--card)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">${esc(cfg.fmt(last.v))}</text>`;
+ // 누르거나 마우스를 올리면 그 날짜의 값을 보여주는 세로 영역
+ const hits=pts.map(([a],i)=>{const l=i?(pts[i-1][0]+a)/2:X0-8,r=i<pts.length-1?(a+pts[i+1][0])/2:X1+8;return `<rect data-body-pt="${cfg.id}" data-x="${a.toFixed(1)}" data-read="${esc(mdLabel(data[i].t)+' · '+cfg.name+' '+cfg.fmt(data[i].v)+' '+cfg.unit)}" x="${l.toFixed(1)}" y="${Y0-14}" width="${Math.max(1,r-l).toFixed(1)}" height="${Y1-Y0+14}" fill="transparent"/>`}).join('');
+ const summary=data.map(p=>md(p.t)+' '+cfg.fmt(p.v)).join(', ');
+ const first=data[0],diff=last.v-first.v;
+ const read='최근 '+mdLabel(last.t)+' · '+cfg.fmt(last.v)+' '+cfg.unit+(data.length>1?' · '+md(first.t)+' 이후 '+(diff>0?'+':diff<0?'−':'±')+cfg.fmt(Math.abs(diff))+' '+cfg.unit:'');
+ return {svg:`<svg viewBox="0 0 320 150" role="img" aria-label="최근 30일 ${cfg.name}(${cfg.unit}): ${esc(summary)}">${grid}${xl}<line class="body-cross" x1="0" x2="0" y1="${Y0-10}" y2="${Y1}" stroke="currentColor" stroke-opacity=".3" visibility="hidden"/>${line}${dots}${lastLabel}${hits}</svg>`,read};
+}
+function renderBody(logged,weights,fats){
+ const rows={weight:weights,body_fat:fats};
+ const charts=BODY.map(cfg=>{const c=bodyChart(cfg,bodyDaily(rows[cfg.kind]));return `<section class="body-sec"><h3>${cfg.name} · 최근 30일</h3><div class="body-chart" id="${cfg.id}">${c.svg}</div><p class="note left" id="${cfg.id}Read" aria-live="polite">${esc(c.read)}</p></section>`}).join('');
+ // 같은 시각(분 단위)에 잰 체중·체지방률은 한 줄로 묶습니다.
+ const groups=new Map();
+ [...weights,...fats].forEach(r=>{const t=new Date(r.start_at).getTime();if(!Number.isFinite(t))return;const key=Math.floor(t/60000);if(!groups.has(key))groups.set(key,{t,weight:null,body_fat:null});const g=groups.get(key);if(g[r.kind]===null)g[r.kind]=Number(r.value)});
+ const list=[...groups.values()].sort((a,b)=>b.t-a.t).map(g=>`<div class="body-log"><span class="body-when">${esc(mdLabel(g.t))} ${esc(hm(g.t))}</span><span class="body-vals">${g.weight!==null?'체중 <b>'+esc(fmtWeight(g.weight))+'</b> kg':''}${g.weight!==null&&g.body_fat!==null?' · ':''}${g.body_fat!==null?'체지방률 <b>'+esc(fmtFat(g.body_fat))+'</b> %':''}</span></div>`).join('');
+ const has=weights.length||fats.length;
+ $('bodyHistory').innerHTML='<article class="card"><h2>체성분</h2><p class="help">'+logged+' · 체지방은 비율(%)로만 표시합니다. 그래프는 하루 마지막 측정값 기준이며, 점을 누르면 그날 값이 보여요.</p>'
+  +(has?charts+'<section class="body-sec"><h3>측정 기록</h3>'+list+'</section>':'<p class="empty">아직 받은 측정 기록이 없습니다.</p>')+'</article>';
+ document.querySelectorAll('[data-body-pt]').forEach(h=>{const pick=()=>{const svg=h.ownerSVGElement,cross=svg.querySelector('.body-cross');cross.setAttribute('x1',h.dataset.x);cross.setAttribute('x2',h.dataset.x);cross.setAttribute('visibility','visible');$(h.dataset.bodyPt+'Read').textContent=h.dataset.read};h.addEventListener('click',pick);h.addEventListener('mouseenter',pick)});
 }
 async function refreshCloud(){
  if(!authClient||!cloudUser){$('cloudStatus').textContent='먼저 구글로 로그인하세요.';return}
@@ -806,7 +914,13 @@ async function refreshCloud(){
  }catch(err){if(epoch===cloudEpoch)$('cloudStatus').textContent='조회 실패 · '+err.message;}finally{$('cloudRefresh').disabled=false}
 }
 $('cloudRefresh').onclick=()=>refreshCloud();
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudUser)refreshCloud()});
+// 앱에서 돌아오면 서버 기록을 다시 불러오고, ‘동기화’로 앱을 열었던 경우엔 결과를 알려줍니다.
+document.addEventListener('visibilitychange',()=>{
+ if(document.visibilityState!=='visible')return;
+ const fromSync=syncLaunchedAt&&Date.now()-syncLaunchedAt<30*60000;syncLaunchedAt=0;
+ if(cloudUser)refreshCloud().then(()=>{if(fromSync)toast($('cloudStatus').textContent)});
+ else if(fromSync)toast('동기화된 기록을 보려면 이 웹에서도 같은 구글 계정으로 로그인해 주세요. 설정 · 백업 → 구글 로그인');
+});
 
 // ===== 로그인 =====
 const AUTH_CONFIG_KEY='good-day-auth-config-v1';let authClient=null,authSubscription=null,authReady=false;
