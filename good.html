@@ -9,22 +9,21 @@
 <link rel="apple-touch-icon" href="good-day-icon.png">
 <link rel="icon" type="image/png" href="good-day-icon.png">
 <meta name="apple-mobile-web-app-title" content="good day">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dongle:wght@300;400;700&display=swap">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <style>
+@font-face{font-family:'YoonChildfundkorea';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.1/YoonChildfundkorea.woff') format('woff');font-weight:normal;font-display:swap}
 :root{
   --bg:#f3f4f7;--card:#ffffff;--ink:#14171f;--muted:#5f6b7c;--line:#e3e6eb;--track:#eceef2;
   /* 포인트 색 3개만 사용(사용자 지정): 그린 #558B2F · 블루 #448AFF · 핑크 #FF80AB (빨강 --bad는 카페인 초과 경고 전용) */
   --p1:#558B2F;--p2:#448AFF;--p3:#FF80AB;--p1-deep:#3F6B22;--p1-tint:#E2EED6;--p1-soft:rgba(85,139,47,.34);
   --caf:var(--p1);--water:var(--p2);--carb:var(--p1);--prot:var(--p3);--fat:var(--p2);--mood:var(--p1);--sleep:var(--p2);--bad:#d92d20;--weight:var(--p1);--bodyfat:var(--p1);--kcal:var(--p1);
   --chart:var(--p1);--chart-soft:var(--p1-soft);--chart-label:var(--p1-deep);--chart-cross:#cfd6c8;
-  /* 글꼴: 동글(Dongle). 글씨가 작게 보이는 글꼴이라 font-size-adjust로 글자 높이를 예전 글꼴과 맞춰 화면 배치를 그대로 둡니다 */
-  --sans:'Dongle',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Segoe UI',system-ui,sans-serif;
+  /* 글꼴: 윤초록우산어린이(OFL, 초록우산 어린이재단 × 윤디자인, 눈누 웹폰트) */
+  --sans:'YoonChildfundkorea',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Segoe UI',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size-adjust:0.5;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all;font-variant-numeric:tabular-nums}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all;font-variant-numeric:tabular-nums}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;background:none;border:0}
 :focus-visible{outline:2px solid var(--water);outline-offset:2px}
