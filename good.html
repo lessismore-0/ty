@@ -24,6 +24,7 @@ button{cursor:pointer;background:none;border:0}
 .head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 12px;margin-bottom:18px}
 .brand{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.02em;grid-column:1;grid-row:1}
 .headbtns{display:flex;gap:8px;grid-column:2;grid-row:1}
+@media(max-width:479px){.headbtns{grid-column:1/-1;grid-row:3;margin-top:12px}.headbtns .ghost{flex:1 1 auto;padding:0 10px}}
 .head h1{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.2;grid-column:1/-1;grid-row:2}
 .ghost{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:14px;font-weight:600;white-space:nowrap}
 .pagebar{margin-bottom:10px}
@@ -70,12 +71,10 @@ button{cursor:pointer;background:none;border:0}
 .menu button{min-height:48px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600}
 @media(min-width:560px){.menu{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .foot{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.55}
-.actions{position:sticky;bottom:0;display:grid;grid-template-columns:1fr;gap:10px;padding:16px 0 calc(env(safe-area-inset-bottom) + 10px);margin-top:6px;background:linear-gradient(to bottom,rgba(243,244,247,0),var(--bg) 32%);z-index:3}
 .primary,.secondary{width:100%;min-height:52px;border-radius:14px;font-size:16px;font-weight:700;padding:0 16px}
 .primary{background:var(--ink);color:#fff}
 .primary:disabled{opacity:.45;cursor:not-allowed}
 .secondary{background:var(--card);border:1px solid var(--line);margin-top:12px}
-.actions .secondary{margin-top:0}
 .danger{width:100%;min-height:48px;border-radius:14px;color:var(--bad);font-size:15px;font-weight:700;margin-top:6px}
 .linkbtn{display:inline-flex;align-items:center;min-height:44px;padding:8px 10px 8px 0;text-decoration:underline;font-size:14px;color:var(--muted)}
 .help{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.55}
@@ -181,7 +180,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
 .modal-sheet h3{font-size:16px;font-weight:700}
 .modal-sheet section{margin-top:22px}
 body.modal-open{overflow:hidden}
-#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 96px);transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:14px;padding:13px 18px;font-size:14.5px;z-index:200;width:max-content;max-width:calc(100% - 32px);line-height:1.45}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:14px;padding:13px 18px;font-size:14.5px;z-index:200;width:max-content;max-width:calc(100% - 32px);line-height:1.45}
 #diagBox{margin-top:12px;min-height:130px;font-size:13px}
 
 @media(max-width:700px){.modal{align-items:flex-end;padding:12px 12px calc(env(safe-area-inset-bottom) + 12px)}}
@@ -194,7 +193,27 @@ body.modal-open{overflow:hidden}
   .week-panel{max-width:640px}
   .card{padding:20px}
   .page{max-width:720px;margin:0 auto}
-  .actions{max-width:520px;margin-left:auto;margin-right:auto}
+}
+/* 듀얼 화면: 두 화면에 걸쳐 열면 왼쪽 = 대시보드, 오른쪽 = 바로가기 버튼 */
+.duo-panel{display:none}
+.duo-btn{width:100%;min-height:76px;border-radius:20px;background:var(--card);border:1px solid var(--line);font-size:21px;font-weight:800;letter-spacing:-.02em}
+@media (horizontal-viewport-segments: 2){
+  .app{max-width:none;margin:0;width:env(viewport-segment-width 0 0)}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile-s{grid-column:auto}.tile-l,.tile-w{grid-column:1/-1}.app{padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 28px)}.card{padding:16px}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .headbtns{display:none}
+  .duo-panel{display:flex;flex-direction:column;justify-content:center;gap:16px;position:fixed;top:0;bottom:0;left:env(viewport-segment-left 1 0);width:env(viewport-segment-width 1 0);padding:calc(env(safe-area-inset-top) + 24px) 28px calc(env(safe-area-inset-bottom) + 24px);background:var(--bg);z-index:50}
+  .duo-panel .brand{text-align:center;margin-bottom:4px}
+  .modal{right:auto;width:env(viewport-segment-width 0 0)}
+  #toast{left:calc(env(viewport-segment-width 0 0) / 2)}
+}
+@media (spanning: single-fold-vertical){
+  .app{max-width:none;margin:0;width:env(fold-left)}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile-s{grid-column:auto}.tile-l,.tile-w{grid-column:1/-1}.app{padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 28px)}.card{padding:16px}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .headbtns{display:none}
+  .duo-panel{display:flex;flex-direction:column;justify-content:center;gap:16px;position:fixed;top:0;bottom:0;left:env(fold-right);right:0;padding:24px 28px;background:var(--bg);z-index:50}
+  .duo-panel .brand{text-align:center;margin-bottom:4px}
+  .modal{right:auto;width:env(fold-left)}
+  #toast{left:calc(env(fold-left) / 2)}
 }
 </style>
 </head>
@@ -206,7 +225,8 @@ body.modal-open{overflow:hidden}
   <header class="head" id="homeHead">
     <p class="brand">good day</p>
     <div class="headbtns">
-      <button class="ghost" id="moodSoon" type="button">기분 기록</button>
+      <button class="ghost" id="moodSoon" type="button" title="기분 기록">Growth Mindset</button>
+      <button class="ghost" id="favoritesOpen" type="button" aria-haspopup="dialog" title="커피 기록">스타벅스</button>
       <button class="ghost" id="syncOpen" type="button" title="good day 동기화 앱 열기">동기화</button>
     </div>
     <h1 id="date"></h1>
@@ -273,9 +293,6 @@ body.modal-open{overflow:hidden}
       <button type="button" data-go="infoHistory">설정 · 백업</button>
     </nav>
     <p class="foot">카페인 한도 400 mg은 성인 일반 권고 기준이며, 임신 중이면 300 mg 이하가 권고됩니다. 이 화면은 기록을 보여줄 뿐 건강 상태를 진단하지 않습니다.</p>
-    <div class="actions">
-      <button class="primary" id="favoritesOpen" type="button" aria-haspopup="dialog">＋ 커피 기록</button>
-    </div>
   </div>
 
   <section id="waterHistory" class="page hidden"><article class="card"><h2>물 기록</h2><p class="help">건강앱 물 기록을 날짜별로 합산합니다. 과거 수동 기록은 보존하되 합계에서 제외합니다.</p><div id="waterDays"></div></article></section>
@@ -419,6 +436,13 @@ body.modal-open{overflow:hidden}
     <div class="savebar"><button type="submit" class="primary" id="moodSave">기분 저장</button></div>
   </form>
 </section>
+<!-- 듀얼 화면(서피스 듀오 등)에서 두 화면에 걸쳐 열면 오른쪽 화면에 표시되는 바로가기 -->
+<aside class="duo-panel" id="duoPanel" aria-label="바로가기">
+  <p class="brand">good day</p>
+  <button class="duo-btn" id="duoSync" type="button">동기화</button>
+  <button class="duo-btn" id="duoStar" type="button" aria-haspopup="dialog">스타벅스</button>
+  <button class="duo-btn" id="duoMood" type="button">Growth Mindset</button>
+</aside>
 </div>
 <div id="toast" class="hidden" role="status"></div>
 
@@ -591,7 +615,7 @@ function renderMoodWeek(){
  const days=last7(),pick=day=>moods.filter(m=>localDate(m.when)===day&&m.overall).sort((a,b)=>new Date(b.when)-new Date(a.when))[0]||null;
  const vals=days.map(d=>pick(localDate(d))),got=vals.filter(Boolean),mt=vals[6];
  $('moodToday').textContent=mt?'오늘 '+feelingLabels[mt.overall-1]+(mt.body?' · 몸 '+bodyLabels[mt.body-1]:''):'오늘은 아직 기록 전';
- if(!got.length){$('moodWeek').innerHTML='<p class="empty-note">최근 7일 기분 기록이 없습니다. 위의 ‘기분 기록’으로 남기면 그래프가 그려집니다.</p>';$('moodWeekNote').textContent='';return}
+ if(!got.length){$('moodWeek').innerHTML='<p class="empty-note">최근 7일 기분 기록이 없습니다. 위의 ‘Growth Mindset’으로 남기면 그래프가 그려집니다.</p>';$('moodWeekNote').textContent='';return}
  const y=v=>114-(v-1)*21,segs=[];let cur=[];
  vals.forEach((m,i)=>{if(m)cur.push(wx(i)+','+y(m.overall));else{if(cur.length)segs.push(cur);cur=[]}});if(cur.length)segs.push(cur);
  const grid=[1,2,3,4,5].map(v=>`<line x1="12" x2="308" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" stroke-opacity="${v===1?.25:.08}"/>`).join('');
@@ -669,6 +693,7 @@ $('healthAccount').onclick=()=>{closeHealth();switchTab('infoHistory');$('google
 function openFavorites(){favEdit=false;clearTimeout(toastTimer);$('toast').classList.add('hidden');render();$('favoriteModal').classList.remove('hidden');document.body.classList.add('modal-open');$('favoritesClose').focus()}
 function closeFavorites(){if(!$('favoriteModal').classList.contains('hidden')){$('favoriteModal').classList.add('hidden');document.body.classList.remove('modal-open');$('favoritesOpen').focus()}}
 $('favoritesOpen').onclick=openFavorites;$('favoritesClose').onclick=closeFavorites;
+$('duoStar').onclick=openFavorites;$('duoSync').onclick=()=>openSyncApp();$('duoMood').onclick=()=>$('moodSoon').click();
 $('favoriteModal').addEventListener('click',e=>{if(e.target===$('favoriteModal'))closeFavorites()});
 $('favoriteModal').addEventListener('keydown',e=>trapFocus($('favoriteModal'),e,closeFavorites));
 window.addEventListener('storage',e=>{if(e.key===WATER_KEY){waterProblem=true;toast('물 기록이 다른 화면에서 바뀌었어요. 새로고침해 주세요.')}});
