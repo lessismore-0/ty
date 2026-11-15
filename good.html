@@ -8,7 +8,7 @@
 <style>
 :root{
   --bg:#f3f4f7;--card:#ffffff;--ink:#14171f;--muted:#5f6b7c;--line:#e3e6eb;--track:#eceef2;
-  --caf:#b4541a;--water:#1e7fd6;--carb:#5b5bd6;--prot:#12a37a;--fat:#e59a12;--mood:#7a4fd8;--sleep:#3b4a7a;--bad:#d92d20;--weight:#00879b;--bodyfat:#c2417a;
+  --caf:#b4541a;--water:#1e7fd6;--carb:#5b5bd6;--prot:#12a37a;--fat:#e59a12;--mood:#7a4fd8;--sleep:#3b4a7a;--bad:#d92d20;--weight:#00879b;--bodyfat:#c2417a;--kcal:#c2410c;--chart:#e0722f;--chart-soft:rgba(224,114,47,.38);--chart-label:#b5622f;--chart-cross:#d6ccbd;
   --sans:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Segoe UI',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -39,6 +39,21 @@ button{cursor:pointer;background:none;border:0}
 .badge[aria-selected="true"]{background:var(--ink);color:#fff}
 .badge[aria-selected="true"] .dot{box-shadow:0 0 0 2px #fff}
 .week-panel{margin-top:10px}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.mode{min-height:42px;border-radius:999px;border:1.5px solid #d4d6db;background:var(--card);font-size:15px;font-weight:600;color:#6b7280}
+.mode[aria-selected="true"]{background:#8a8b8f;border-color:#8a8b8f;color:#fff}
+/* 기간 그래프 (참고 이미지 스타일): 연한 굵은 선 + 진한 점 + 점마다 숫자 + 오른쪽 축 + 선택한 점의 말풍선·점선 */
+.prange{font-size:17px;font-weight:700;color:#4b5563;letter-spacing:-.02em;margin-top:2px}
+.pchart{position:relative;margin-top:10px;background:var(--bg);border-radius:16px;padding:8px 6px 4px}
+.pchart svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.ptip{position:absolute;top:8px;display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:6px 6px 6px 12px;box-shadow:0 1px 3px rgba(15,18,25,.12);white-space:nowrap;font-size:14px;color:#4b5563;z-index:2}
+.ptip b{color:var(--ink);font-weight:700}
+.ptip .pgo{width:28px;height:28px;border-radius:50%;background:var(--bg);color:#9ca3af;font-size:18px;font-weight:700;display:grid;place-items:center}
+.ptip.nogo{padding-right:12px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kcal-hero{display:flex;align-items:baseline;gap:4px;margin-top:6px}
+.kcal-hero b{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.15}
+.kcal-hero span{font-size:15px;font-weight:700;color:var(--muted)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;min-width:0}
 .page>.card+.card{margin-top:12px}
 .cardhead{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:36px}
@@ -48,8 +63,7 @@ button{cursor:pointer;background:none;border:0}
 .more{font-size:13px;font-weight:600;color:var(--muted);min-height:40px;padding:0 0 0 10px;white-space:nowrap}
 .headval{font-size:14px;font-weight:700;color:var(--muted)}
 .ring{max-width:168px;margin:8px auto 0}
-.ring svg,#moodWeek svg,#sleepWeek svg{display:block;width:100%;height:auto}
-#moodWeek svg,#sleepWeek svg{margin-top:6px}
+.ring svg{display:block;width:100%;height:auto}
 .state{font-size:18px;font-weight:800;text-align:center;margin-top:10px;letter-spacing:-.02em}
 .state.bad{color:var(--bad)}
 .note{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.45;text-align:center}
@@ -233,41 +247,33 @@ body.modal-open{overflow:hidden}
         <p class="note" id="waterSub"></p>
       </article>
       <article class="card tile-l">
-        <div class="cardhead"><h2>영양정보</h2><span class="headval" id="macroKcal"></span></div>
+        <div class="cardhead"><h2>영양정보</h2></div>
+        <p class="kcal-hero"><b id="macroKcal">—</b><span>kcal</span></p>
+        <p class="note left" style="margin-top:0">오늘 먹은 총 칼로리 (탄수화물·단백질·지방 기록으로 환산)</p>
         <div class="macro-bar" id="macroBar" role="img" aria-label="영양정보 비율"></div>
         <div class="macros" id="macroLegend"></div>
         <p class="note left" id="macroNote"></p>
       </article>
       <!-- 최근 7일: 배지를 누르면 수면·기분·체중·체지방률 그래프가 바뀝니다 -->
       <article class="card tile-w" id="weekCard">
-        <div class="cardhead"><h2>최근 7일</h2><button class="more" type="button" id="weekMore">기록 ›</button></div>
-        <div class="badges" role="tablist" aria-label="7일 그래프 종류">
-          <button class="badge" type="button" role="tab" data-week="sleep"><i class="dot" style="background:var(--sleep)"></i>수면</button>
-          <button class="badge" type="button" role="tab" data-week="mood"><i class="dot" style="background:var(--mood)"></i>기분</button>
-          <button class="badge" type="button" role="tab" data-week="weight"><i class="dot" style="background:var(--weight)"></i>체중</button>
-          <button class="badge" type="button" role="tab" data-week="fat"><i class="dot" style="background:var(--bodyfat)"></i>체지방률</button>
+        <div class="cardhead"><h2 id="weekTitle">good day</h2><button class="more" type="button" id="weekMore">기록 ›</button></div>
+        <div class="badges" role="tablist" aria-label="그래프 종류">
+          <button class="badge" type="button" role="tab" data-week="sleep">수면</button>
+          <button class="badge" type="button" role="tab" data-week="mood">기분</button>
+          <button class="badge" type="button" role="tab" data-week="diet">식단</button>
+          <button class="badge" type="button" role="tab" data-week="weight">체중</button>
+          <button class="badge" type="button" role="tab" data-week="fat">체지방률</button>
         </div>
-        <div class="week-panel" role="tabpanel" data-week-panel="sleep">
-          <p class="headline" id="sleepToday"></p>
-          <div id="sleepWeek"></div>
-          <p class="note left" id="sleepWeekNote"></p>
+        <div class="week-panel" role="tabpanel" id="periodPanel">
+          <p class="prange" id="periodRange"></p>
+          <div class="pchart" id="periodChart"></div>
+          <p class="sr-only" id="periodChartRead" aria-live="polite"></p>
+          <p class="note left" id="periodRef"></p>
         </div>
-        <div class="week-panel hidden" role="tabpanel" data-week-panel="mood">
-          <p class="headline" id="moodToday"></p>
-          <div id="moodWeek"></div>
-          <p class="note left" id="moodWeekNote"></p>
-        </div>
-        <div class="week-panel hidden" role="tabpanel" data-week-panel="weight">
-          <p class="headline" id="dashWeightToday"></p>
-          <div class="body-chart" id="dashWeight"></div>
-          <p class="note left" id="dashWeightRead" aria-live="polite"></p>
-          <p class="note left" id="dashWeightRef"></p>
-        </div>
-        <div class="week-panel hidden" role="tabpanel" data-week-panel="fat">
-          <p class="headline" id="dashFatToday"></p>
-          <div class="body-chart" id="dashFat"></div>
-          <p class="note left" id="dashFatRead" aria-live="polite"></p>
-          <p class="note left" id="dashFatRef"></p>
+        <div class="modes" role="tablist" aria-label="기간">
+          <button class="mode" type="button" role="tab" data-mode="day">일누적</button>
+          <button class="mode" type="button" role="tab" data-mode="week">주누적</button>
+          <button class="mode" type="button" role="tab" data-mode="month">월누적</button>
         </div>
       </article>
     </div>
@@ -308,8 +314,9 @@ body.modal-open{overflow:hidden}
     </article>
     <article class="card">
       <h2>내 정보</h2>
-      <p class="help">체중·체지방률 그래프의 점선(기준선)을 계산하는 데만 씁니다. 이 브라우저에만 저장되고, 서버·백업 파일에는 들어가지 않습니다.</p>
+      <p class="help">이름은 첫 화면 카드 제목(예: 태영 good day)에, 나머지는 체중·체지방률 그래프의 점선(기준선) 계산에만 씁니다. 이 브라우저에만 저장되고, 서버·백업 파일에는 들어가지 않습니다.</p>
       <form id="profileForm">
+        <div class="field"><label for="profileName">이름</label><input id="profileName" type="text" maxlength="20" autocomplete="off" placeholder="예: 태영"></div>
         <div class="field"><label for="profileHeight">키 (cm)</label><input id="profileHeight" type="number" inputmode="decimal" min="100" max="230" step="0.1" placeholder="예: 160"></div>
         <div class="field"><label for="profileSex">성별</label><select id="profileSex"><option value="">선택 안 함</option><option value="F">여성</option><option value="M">남성</option></select></div>
         <div class="field"><label for="profileBirth">출생연도</label><input id="profileBirth" type="number" inputmode="numeric" min="1920" max="2015" step="1" placeholder="예: 1990"></div>
@@ -561,7 +568,7 @@ function renderDashboard(){
 
  const dates=[...new Set(activeWater().map(r=>localDate(r.when)))].sort().reverse();
  $('waterDays').innerHTML=waterProblem?'<p class="empty">기록을 읽지 못해 덮어쓰기를 막았습니다.</p>':dates.length?dates.map(day=>{const list=byDay(activeWater(),day).sort((a,b)=>new Date(b.when)-new Date(a.when));return `<section class="water-day"><h3>${day} · ${Math.round(sum(list.filter(r=>r.origin==='healthkit')))}mL</h3>${list.map(r=>`<div class="water-row"><span>${esc(hm(r.when))} · ${esc(r.ml)}mL${r.origin==='healthkit'?'':' · 과거 수동 기록(합계 제외)'}</span>${r.cloud?'':`<button type="button" class="linkbtn" data-water-delete="${esc(r.id)}">삭제</button>`}</div>`).join('')}</section>`}).join(''):'<p class="empty">아이폰 앱에서 동기화한 뒤 로그인하면 날짜별로 쌓여요.</p>';
- renderIntakes();renderMacros();renderMoodWeek();renderSleepWeek();renderBodyWeek();
+ renderIntakes();renderMacros();if(typeof weekMode!=='undefined')renderPeriod();
  document.querySelectorAll('[data-water-delete]').forEach(b=>b.onclick=()=>{if(!confirm('이 물 섭취 기록을 삭제할까요?'))return;try{saveWaters(waters.filter(r=>r.id!==b.dataset.waterDelete));renderDashboard()}catch(e){toast('삭제하지 못했어요. '+e.message)}});
 }
 
@@ -579,43 +586,13 @@ function renderMacros(){
  const has=MACROS.some(([k])=>rows.some(r=>r.kind===k));
  const g=MACROS.map(([k])=>rows.filter(r=>r.kind===k).reduce((a,r)=>a+(Number(r.value)||0),0));
  const kc=g.map((v,i)=>v*MACROS[i][2]),tot=kc.reduce((a,b)=>a+b,0);
- $('macroKcal').textContent=tot>0?'약 '+Math.round(tot).toLocaleString()+' kcal':'';
+ $('macroKcal').textContent=has?Math.round(tot).toLocaleString():'—';
  $('macroBar').innerHTML=tot>0?MACROS.map((m,i)=>`<span style="width:${(kc[i]/tot*100).toFixed(1)}%;background:${m[3]}"></span>`).join(''):'';
  $('macroBar').setAttribute('aria-label',tot>0?'열량 비율 탄수화물 '+Math.round(kc[0]/tot*100)+'%, 단백질 '+Math.round(kc[1]/tot*100)+'%, 지방 '+Math.round(kc[2]/tot*100)+'%':'영양정보 기록 없음');
  $('macroLegend').innerHTML=MACROS.map((m,i)=>`<div class="macro"><span class="mname"><i class="dot" style="background:${m[3]}"></i>${m[1]}</span><b>${has?r1(g[i]):'—'}<small>g</small></b><span class="mpct">${tot>0?Math.round(kc[i]/tot*100)+'%':'&nbsp;'}</span></div>`).join('');
  $('macroNote').textContent=!cloudUser?'로그인하면 건강앱 영양 기록을 표시합니다.':cloudRows===null?'서버 기록 조회 전입니다.':has?'건강앱 기록 합계 · 열량과 비율은 탄수화물·단백질 4, 지방 9 kcal/g 환산':'오늘 건강앱에 기록된 탄수화물·단백질·지방이 없습니다.';
 }
 const DOW=['일','월','화','수','목','금','토'];
-function last7(){return Array.from({length:7},(_,i)=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(6-i));return d})}
-const wx=i=>34+i*42;
-function weekAxis(days){return days.map((d,i)=>`<text x="${wx(i)}" y="143" text-anchor="middle" font-size="12" fill="currentColor"${i===6?' font-weight="800"':' opacity=".65"'}>${i===6?'오늘':DOW[d.getDay()]}</text>`).join('')}
-function renderMoodWeek(){
- if(moodProblem){$('moodToday').textContent='';$('moodWeek').innerHTML='<p class="empty-note">기분 기록을 읽지 못했어요.</p>';$('moodWeekNote').textContent='';return}
- const days=last7(),pick=day=>moods.filter(m=>localDate(m.when)===day&&m.overall).sort((a,b)=>new Date(b.when)-new Date(a.when))[0]||null;
- const vals=days.map(d=>pick(localDate(d))),got=vals.filter(Boolean),mt=vals[6];
- $('moodToday').textContent=mt?'오늘 '+feelingLabels[mt.overall-1]+(mt.body?' · 몸 '+bodyLabels[mt.body-1]:''):'오늘은 아직 기록 전';
- if(!got.length){$('moodWeek').innerHTML='<p class="empty-note">최근 7일 기분 기록이 없습니다. 위의 ‘Growth Mindset’으로 남기면 그래프가 그려집니다.</p>';$('moodWeekNote').textContent='';return}
- const y=v=>114-(v-1)*21,segs=[];let cur=[];
- vals.forEach((m,i)=>{if(m)cur.push(wx(i)+','+y(m.overall));else{if(cur.length)segs.push(cur);cur=[]}});if(cur.length)segs.push(cur);
- const grid=[1,2,3,4,5].map(v=>`<line x1="12" x2="308" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" stroke-opacity="${v===1?.25:.08}"/>`).join('');
- const lines=segs.filter(s=>s.length>1).map(s=>`<polyline points="${s.join(' ')}" fill="none" stroke="var(--mood)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`).join('');
- const dots=vals.map((m,i)=>m?`<circle cx="${wx(i)}" cy="${y(m.overall)}" r="5.5" fill="var(--mood)" stroke="var(--card)" stroke-width="2"><title>${localDate(days[i])} · ${esc(feelingLabels[m.overall-1])}</title></circle><text x="${wx(i)}" y="${y(m.overall)-11}" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">${m.overall}</text>`:'').join('');
- const summary=vals.map((m,i)=>m?(i===6?'오늘':DOW[days[i].getDay()])+' '+m.overall:'').filter(Boolean).join(', ');
- $('moodWeek').innerHTML=`<svg viewBox="0 0 320 150" role="img" aria-label="최근 7일 기분 단계: ${summary}">${grid}${lines}${dots}${weekAxis(days)}</svg>`;
- $('moodWeekNote').textContent='평균 '+r1(got.reduce((a,m)=>a+m.overall,0)/got.length)+' / 5 · 기록 '+got.length+'일 · 1 매우 나쁨 ~ 5 매우 좋음 · 날짜별 마지막 기록';
-}
-function renderSleepWeek(){
- if(!cloudUser){$('sleepToday').textContent='';$('sleepWeek').innerHTML='<p class="empty-note">로그인하면 건강앱 수면 기록으로 점수를 표시합니다.</p>';$('sleepWeekNote').textContent='';return}
- const days=last7(),map=new Map(sleepNights().map(n=>[n.day,n]));
- const items=days.map(d=>{const n=map.get(localDate(d));return n?{n,sc:sleepScore(n).score}:null}),got=items.filter(Boolean),t=items[6];
- $('sleepToday').textContent=t?'오늘 '+t.sc+'점 · '+fmtDur(t.n.asleep):'오늘 수면 기록 없음';
- if(!got.length){$('sleepWeek').innerHTML='<p class="empty-note">최근 7일 수면 기록이 없습니다. 위의 ‘동기화’를 눌러 앱에서 동기화한 뒤 이 화면으로 돌아오면 불러옵니다.</p>';$('sleepWeekNote').textContent='';return}
- const bars=items.map((it,i)=>{if(!it)return `<text x="${wx(i)}" y="108" text-anchor="middle" font-size="13" fill="currentColor" opacity=".35">–</text>`;const h=Math.max(4,it.sc/100*84),y=114-h;return `<rect x="${wx(i)-14}" y="${y.toFixed(1)}" width="28" height="${h.toFixed(1)}" rx="7" fill="var(--sleep)"><title>${it.n.day} · ${fmtDur(it.n.asleep)} · 점수 ${it.sc}</title></rect><text x="${wx(i)}" y="${(y-6).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">${it.sc}</text>`}).join('');
- const summary=items.map((it,i)=>it?(i===6?'오늘':DOW[days[i].getDay()])+' '+it.sc+'점':'').filter(Boolean).join(', ');
- $('sleepWeek').innerHTML=`<svg viewBox="0 0 320 150" role="img" aria-label="최근 7일 수면 점수: ${summary}"><line x1="12" x2="308" y1="114" y2="114" stroke="currentColor" stroke-opacity=".25"/>${bars}${weekAxis(days)}</svg>`;
- $('sleepWeekNote').textContent='평균 '+Math.round(got.reduce((a,it)=>a+it.sc,0)/got.length)+'점 · 평균 수면 '+fmtDur(got.reduce((a,it)=>a+it.n.asleep,0)/got.length)+' · 100점 만점 자체 참고 지표';
-}
-
 // ===== 화면 이동 =====
 const PANELS=['dailyDashboard','waterHistory','coffeeHistory','mindHistory','sleepHistory','bodyHistory','cycleHistory','infoHistory'];
 function switchTab(id){PANELS.forEach(p=>$(p).classList.toggle('hidden',p!==id));const home=id==='dailyDashboard';$('homeHead').classList.toggle('hidden',!home);$('pageBar').classList.toggle('hidden',home);renderDashboard();renderMoods();window.scrollTo(0,0)}
@@ -985,46 +962,141 @@ function bodyRefs(weightDaily){
   out.body_fat=[{v:bf,short:'평균 '+fmtFat(bf)},'점선: 키·몸무게(최근 '+fmtWeight(Math.round(w*100)/100)+' kg)·나이·성별이 같은 사람의 평균 체지방률 추정치 '+fmtFat(bf)+' % (참고용)']}
  return out;
 }
-// ===== 첫 화면 ‘최근 7일’ 카드 =====
-function renderBodyWeek(){
- const items=[['weight','dashWeight',BODY[0]],['body_fat','dashFat',BODY[1]]];
- if(!cloudUser){items.forEach(([,id,cfg])=>{$(id+'Today').textContent='';$(id).innerHTML='<p class="empty-note">로그인하면 건강앱 '+cfg.name+' 기록으로 그래프를 표시합니다.</p>';$(id+'Read').textContent='';$(id+'Ref').textContent=''});return}
- const daily={weight:bodyDaily((cloudRows||[]).filter(r=>r.kind==='weight')),body_fat:bodyDaily((cloudRows||[]).filter(r=>r.kind==='body_fat'))},refs=bodyRefs(daily.weight);
- items.forEach(([kind,id,cfg])=>{
-  const d=daily[kind],last=d[d.length-1],[ref,note]=refs[kind],c=bodyChart({...cfg,id},d,ref);
-  $(id+'Today').textContent=last?(localDate(last.t)===localDate(new Date())?'오늘 ':mdLabel(last.t)+' ')+cfg.fmt(last.v)+' '+cfg.unit:'아직 받은 '+cfg.name+' 기록 없음';
-  $(id).innerHTML=c.svg;$(id+'Read').textContent=c.read;$(id+'Ref').textContent=note;
- });
- bindBodyPts();
-}
-const WEEK_TABS=['sleep','mood','weight','fat'],WEEK_MORE={sleep:['sleepHistory','수면 기록 보기'],mood:['mindHistory','마음 기록 보기'],weight:['bodyHistory','체성분 기록 보기'],fat:['bodyHistory','체성분 기록 보기']};
+const WEEK_TABS=['sleep','mood','diet','weight','fat'],WEEK_MORE={sleep:['sleepHistory','수면 기록 보기'],mood:['mindHistory','마음 기록 보기'],diet:null,weight:['bodyHistory','체성분 기록 보기'],fat:['bodyHistory','체성분 기록 보기']};
 let weekTab='sleep';
 try{const v=localStorage.getItem(WEEK_TAB_KEY);if(WEEK_TABS.includes(v))weekTab=v}catch(e){}
+const WEEK_MODE_KEY='good-day-week-mode-v1',WEEK_MODES=['day','week','month'];
+let weekMode='day';
+try{const v=localStorage.getItem(WEEK_MODE_KEY);if(WEEK_MODES.includes(v))weekMode=v}catch(e){}
 function setWeekTab(tab,focus){
  weekTab=tab;
  document.querySelectorAll('[data-week]').forEach(b=>{const on=b.dataset.week===tab;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;if(on&&focus)b.focus()});
- document.querySelectorAll('[data-week-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.weekPanel!==tab));
- $('weekMore').setAttribute('aria-label',WEEK_MORE[tab][1]);
+ const more=WEEK_MORE[tab];$('weekMore').classList.toggle('hidden',!more);if(more)$('weekMore').setAttribute('aria-label',more[1]);
+ modeLabels();periodSel=null;renderPeriod();
  try{localStorage.setItem(WEEK_TAB_KEY,tab)}catch(e){}
 }
+function setWeekMode(mode,focus){
+ weekMode=mode;
+ document.querySelectorAll('[data-mode]').forEach(b=>{const on=b.dataset.mode===mode;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;if(on&&focus)b.focus()});
+ periodSel=null;renderPeriod();
+ try{localStorage.setItem(WEEK_MODE_KEY,mode)}catch(e){}
+}
+// ===== 기간 그래프 (참고 이미지 스타일) =====
+// 식단은 합계(일 누적·주 누적·월 누적), 나머지는 평균(일 평균·주 평균·월 평균). 주는 일요일~토요일.
+// 최근 7일·7주·7개월 중 기록이 있는 칸만 왼쪽부터 찍고, 선택한 칸(처음엔 마지막 칸)에 말풍선과 점선을 그립니다.
+const METRICS={
+ sleep:{name:'수면 점수',unit:'점',sum:false,fmt:v=>String(Math.round(v)),span:20,server:true},
+ mood:{name:'기분',unit:' / 5',sum:false,fmt:v=>Number.isInteger(r1(v))?String(r1(v)):r1(v).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1}),span:2,lo:1,hi:5},
+ diet:{name:'총 칼로리',unit:'kcal',sum:true,fmt:v=>Math.round(v).toLocaleString(),span:200,server:true},
+ weight:{name:'체중',unit:'kg',sum:false,fmt:v=>fmtWeight(Math.round(v*100)/100),lbl:v=>v.toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1}),span:4,server:true},
+ fat:{name:'체지방률',unit:'%',sum:false,fmt:v=>fmtFat(v),span:4,server:true}
+};
+let periodSel=null;
+function modeLabels(){const w=METRICS[weekTab]&&METRICS[weekTab].sum?' 누적':' 평균';document.querySelectorAll('[data-mode]').forEach(b=>b.textContent=({day:'일',week:'주',month:'월'})[b.dataset.mode]+w)}
+// 날짜(YYYY-MM-DD) → 그날 값 (+ 말풍선에 덧붙일 설명)
+function metricDaily(key){
+ const map=new Map(),rows=cloudRows||[];
+ if(key==='sleep')sleepNights().forEach(n=>map.set(n.day,{v:sleepScore(n).score,extra:fmtDur(n.asleep)}));
+ else if(key==='mood'){if(!moodProblem)moods.filter(m=>m.overall).slice().sort((a,b)=>new Date(a.when)-new Date(b.when)).forEach(m=>map.set(localDate(m.when),{v:m.overall,extra:feelingLabels[m.overall-1]}))}
+ else if(key==='diet'){const w={carbs:4,protein:4,fat:9};rows.forEach(r=>{if(!(r.kind in w))return;const v=Number(r.value);if(!Number.isFinite(v))return;const d=localDate(r.start_at),c=map.get(d)||{v:0};c.v+=v*w[r.kind];map.set(d,c)})}
+ else{const kind=key==='fat'?'body_fat':'weight',acc=new Map();rows.forEach(r=>{if(r.kind!==kind)return;const v=Number(r.value),t=new Date(r.start_at).getTime();if(!Number.isFinite(v)||!Number.isFinite(t))return;const d=localDate(t),a=acc.get(d)||[0,0];a[0]+=v;a[1]++;acc.set(d,a)});acc.forEach(([sum,n],d)=>map.set(d,{v:sum/n,extra:n>1?n+'회 측정 평균':''}))}
+ return map;
+}
+const ymd=d=>d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate();
+function sundayOf(t){const d=new Date(t);d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return d}
+function periodSlots(mode){
+ const out=[],today=new Date();today.setHours(0,0,0,0);
+ if(mode==='day'){for(let i=6;i>=0;i--){const s=new Date(today);s.setDate(s.getDate()-i);const e=new Date(s);e.setDate(e.getDate()+1);out.push({s,e,label:[(s.getMonth()+1)+'/'+s.getDate()],tip:ymd(s)})}}
+ else if(mode==='week'){const base=sundayOf(today);for(let i=6;i>=0;i--){const s=new Date(base);s.setDate(s.getDate()-7*i);const e=new Date(s);e.setDate(e.getDate()+7);const last=new Date(e);last.setDate(last.getDate()-1);const first=new Date(s.getFullYear(),s.getMonth(),1),wk=Math.floor((s.getDate()-1+first.getDay())/7)+1;out.push({s,e,label:[(s.getMonth()+1)+'월',wk+'주차'],tip:ymd(s)+' ~ '+(last.getMonth()===s.getMonth()?last.getDate():(last.getMonth()+1)+'/'+last.getDate())})}}
+ else{for(let i=6;i>=0;i--){const s=new Date(today.getFullYear(),today.getMonth()-i,1),e=new Date(s.getFullYear(),s.getMonth()+1,1);out.push({s,e,label:[(s.getMonth()+1)+'월'],tip:s.getFullYear()+'/'+(s.getMonth()+1)})}}
+ return out;
+}
+// 기록이 있는 칸만 남깁니다. 식단은 합계, 나머지는 평균. first/last = 실제 기록 날짜 범위
+function periodItems(map,slots,sum){
+ const items=[];
+ slots.forEach(sl=>{const vals=[];let first=null,last=null,extra='';for(const d=new Date(sl.s);d<sl.e;d.setDate(d.getDate()+1)){const k=localDate(d),x=map.get(k);if(x){vals.push(x.v);if(!first)first=new Date(d);last=new Date(d);extra=x.extra||''}}
+  if(vals.length)items.push({...sl,n:vals.length,first,last,extra,v:sum?vals.reduce((a,b)=>a+b,0):vals.reduce((a,b)=>a+b,0)/vals.length})});
+ return items;
+}
+function rangeText(a,b){const y=d=>d.getFullYear()+'년 ',m=d=>(d.getMonth()+1)+'월 ',dd=d=>d.getDate()+'일';
+ if(+a===+b)return y(a)+m(a)+dd(a);
+ if(a.getFullYear()!==b.getFullYear())return y(a)+m(a)+dd(a)+' ~ '+y(b)+m(b)+dd(b);
+ return y(a)+m(a)+dd(a)+' ~ '+(a.getMonth()!==b.getMonth()?m(b):'')+dd(b)}
+// 보기 좋은 축 눈금 4개
+function niceTicks(lo,hi,minSpan){
+ if(hi-lo<minSpan){const c=(hi+lo)/2;lo=c-minSpan/2;hi=c+minSpan/2}
+ const cands=[];for(let e=-2;e<=6;e++)[1,2,2.5,5].forEach(k=>cands.push(k*Math.pow(10,e)));
+ for(const step of cands){if(step<(hi-lo)/3)continue;const a=Math.floor(lo/step)*step;if(a+3*step>=hi)return [0,1,2,3].map(i=>a+i*step)}
+ return [lo,lo+(hi-lo)/3,lo+2*(hi-lo)/3,hi];
+}
+function periodSvg(items,m,ref,sel){
+ const W=340,X0=8,X1=282,Y0=66,Y1=196,slot=(X1-X0)/7,cx=i=>X0+(i+0.5)*slot,lbl=m.lbl||m.fmt;
+ let ticks;
+ if(m.lo!==undefined)ticks=[1,2,3,4,5];else{const vs=items.map(it=>it.v).concat(ref?[ref.v]:[]);ticks=niceTicks(Math.min(...vs),Math.max(...vs),m.span)}
+ const lo=ticks[0],hi=ticks[ticks.length-1],y=v=>Y1-(v-lo)/(hi-lo)*(Y1-Y0);
+ const tickTxt=v=>m.lo!==undefined?String(Math.round(v)):(Math.abs(ticks[1]-ticks[0])>=1?Math.round(v).toLocaleString():v.toLocaleString('ko-KR',{maximumFractionDigits:1}));
+ const grid=ticks.map(v=>`<line x1="${X0}" x2="${X1}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="#e7e8ec" stroke-width="1"/><text x="${X1+8}" y="${(y(v)+4).toFixed(1)}" font-size="12" fill="#9ca3af">${tickTxt(v)}</text>`).join('');
+ const pts=items.map((it,i)=>[cx(i),y(it.v)]);
+ let refSvg='';
+ if(ref){const ry=y(ref.v);refSvg=`<line x1="${X0}" x2="${X1}" y1="${ry.toFixed(1)}" y2="${ry.toFixed(1)}" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 4"/><text x="${X1-2}" y="${(ry-5).toFixed(1)}" text-anchor="end" font-size="11" font-weight="600" fill="#6b7280" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">${esc(ref.short)}</text>`}
+ const cross=`<line x1="${pts[sel][0].toFixed(1)}" x2="${pts[sel][0].toFixed(1)}" y1="48" y2="${Y1}" stroke="var(--chart-cross)" stroke-width="2.5" stroke-dasharray="7 6"/>`;
+ const line=pts.length>1?`<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="var(--chart-soft)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+ const dots=pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="6.5" fill="var(--chart)"/>`).join('');
+ const below=i=>i>0&&i<pts.length-1&&pts[i][1]>pts[i-1][1]&&pts[i][1]>pts[i+1][1]&&pts[i][1]+24<=Y1+6;
+ const vals=items.map((it,i)=>`<text x="${pts[i][0].toFixed(1)}" y="${(below(i)?pts[i][1]+22:pts[i][1]-12).toFixed(1)}" text-anchor="middle" font-size="12.5" fill="var(--chart-label)" stroke="var(--bg)" stroke-width="4" stroke-linejoin="round" paint-order="stroke">${esc(lbl(it.v))}</text>`).join('');
+ const xl=items.map((it,i)=>it.label.map((t,j)=>`<text x="${cx(i).toFixed(1)}" y="${216+j*14}" text-anchor="middle" font-size="11" fill="#9ca3af">${esc(t)}</text>`).join('')).join('');
+ const hits=items.map((it,i)=>`<rect data-psel="${i}" x="${(cx(i)-slot/2).toFixed(1)}" y="40" width="${slot.toFixed(1)}" height="200" fill="transparent" style="cursor:pointer"/>`).join('');
+ const two=items.some(it=>it.label.length>1),H=two?240:226;
+ const summary=items.map(it=>it.tip+' '+m.fmt(it.v)+m.unit).join(', ');
+ return {svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(m.name)}: ${esc(summary)}">${grid}${refSvg}${cross}${line}${dots}${vals}${xl}${hits}</svg>`,x:pts[sel][0]/W};
+}
+function renderPeriod(){
+ const m=METRICS[weekTab];if(!m)return;
+ const box=$('periodChart');
+ const empty=(msg)=>{$('periodRange').textContent='';box.innerHTML='<p class="empty-note" style="margin:10px 8px 14px">'+msg+'</p>';$('periodChartRead').textContent='';$('periodRef').textContent=''};
+ if(m.server&&!cloudUser)return empty('로그인하면 건강앱 기록으로 '+m.name+' 그래프를 표시합니다.');
+ if(weekTab==='mood'&&moodProblem)return empty('기분 기록을 읽지 못했어요.');
+ const items=periodItems(metricDaily(weekTab),periodSlots(weekMode),m.sum);
+ if(!items.length)return empty('최근 '+({day:'7일',week:'7주',month:'7개월'})[weekMode]+' 동안 '+(weekTab==='diet'?'식단':m.name)+' 기록이 없습니다.');
+ const sel=periodSel===null||periodSel>=items.length?items.length-1:periodSel,it=items[sel];
+ $('periodRange').textContent=rangeText(items[0].first,items[items.length-1].last);
+ let ref=null,refNote='';
+ if(weekTab==='weight'||weekTab==='fat'){const r=bodyRefs(bodyDaily((cloudRows||[]).filter(x=>x.kind==='weight')))[weekTab==='fat'?'body_fat':'weight'];ref=r[0];refNote=r[1]}
+ const g=periodSvg(items,m,ref,sel),more=WEEK_MORE[weekTab];
+ const extra=weekMode==='day'&&it.extra?' · '+it.extra:weekMode!=='day'?' · 기록 '+it.n+'일':'';
+ box.innerHTML=`<div class="ptip${more?'':' nogo'}"><span>${esc(it.tip)}</span><b>${esc(m.fmt(it.v)+m.unit)}</b>${more?'<button class="pgo" type="button" aria-label="'+esc(more[1])+'">›</button>':''}</div>`+g.svg;
+ $('periodChartRead').textContent=it.tip+' '+m.name+' '+m.fmt(it.v)+m.unit+extra;
+ const notes=weekMode==='day'?[it.extra]:['기록 '+it.n+'일',m.sum?'기간 합계':'기간 평균'];
+ if(weekTab==='diet')notes.push('탄·단·지 4·4·9 kcal/g 환산');
+ if(refNote)notes.push(refNote);
+ $('periodRef').textContent=notes.filter(Boolean).join(' · ');
+ // 말풍선을 선택한 점 위에 두되, 칸 밖으로 나가지 않게 맞춥니다.
+ const tip=box.querySelector('.ptip'),cw=box.clientWidth,tw=tip.offsetWidth,px=g.x*(cw-12)+6;
+ tip.style.left=Math.max(4,Math.min(cw-tw-4,px-tw/2))+'px';
+ if(more)tip.querySelector('.pgo').onclick=()=>switchTab(more[0]);
+ box.querySelectorAll('[data-psel]').forEach(r=>{r.onclick=()=>{periodSel=Number(r.dataset.psel);renderPeriod()}});
+}
 document.querySelectorAll('[data-week]').forEach(b=>{b.onclick=()=>setWeekTab(b.dataset.week);b.onkeydown=e=>{const i=WEEK_TABS.indexOf(weekTab);if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();setWeekTab(WEEK_TABS[(i+(e.key==='ArrowRight'?1:WEEK_TABS.length-1))%WEEK_TABS.length],true)}}});
-$('weekMore').onclick=()=>switchTab(WEEK_MORE[weekTab][0]);
-setWeekTab(weekTab);
+document.querySelectorAll('[data-mode]').forEach(b=>{b.onclick=()=>setWeekMode(b.dataset.mode);b.onkeydown=e=>{const i=WEEK_MODES.indexOf(weekMode);if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();setWeekMode(WEEK_MODES[(i+(e.key==='ArrowRight'?1:WEEK_MODES.length-1))%WEEK_MODES.length],true)}}});
+$('weekMore').onclick=()=>{if(WEEK_MORE[weekTab])switchTab(WEEK_MORE[weekTab][0])};
+setWeekTab(weekTab);setWeekMode(weekMode);
+window.addEventListener('resize',()=>{if(current==='today')renderPeriod()});
 // 내 정보 입력란
 // 내 정보의 성별이 남성이면 ‘주기’ 메뉴를 숨깁니다(기록은 그대로 둡니다).
-function applyProfileUI(){const male=validProfile().sex==='M';$('cycleMenu').classList.toggle('hidden',male);$('moreMenu').classList.toggle('three',male)}
+function applyProfileUI(){const male=validProfile().sex==='M';$('cycleMenu').classList.toggle('hidden',male);$('moreMenu').classList.toggle('three',male);const nm=typeof profile.name==='string'?profile.name.trim().slice(0,20):'';$('weekTitle').textContent=(nm?nm+' ':'')+'good day'}
 applyProfileUI();
-$('profileHeight').value=profile.height??'';$('profileSex').value=profile.sex==='F'||profile.sex==='M'?profile.sex:'';$('profileBirth').value=profile.birthYear??'';
+$('profileName').value=typeof profile.name==='string'?profile.name:'';$('profileHeight').value=profile.height??'';$('profileSex').value=profile.sex==='F'||profile.sex==='M'?profile.sex:'';$('profileBirth').value=profile.birthYear??'';
 $('profileForm').onsubmit=e=>{
  e.preventDefault();
  try{
-  const h=$('profileHeight').value.trim(),sx=$('profileSex').value,b=$('profileBirth').value.trim(),next={},max=new Date().getFullYear()-15;
+  const h=$('profileHeight').value.trim(),sx=$('profileSex').value,b=$('profileBirth').value.trim(),nm=$('profileName').value.trim(),next={},max=new Date().getFullYear()-15;
+  if(nm){if(nm.length>20)throw Error('이름은 20자 이내로 입력해 주세요.');next.name=nm}
   if(h){const n=Number(h);if(!(n>=100&&n<=230))throw Error('키는 100~230 cm 사이로 입력해 주세요.');next.height=Math.round(n*10)/10}
   if(sx==='F'||sx==='M')next.sex=sx;
   if(b){const n=Number(b);if(!Number.isInteger(n)||n<1920||n>max)throw Error('출생연도는 1920~'+max+' 사이로 입력해 주세요.');next.birthYear=n}
   const raw=JSON.stringify(next);localStorage.setItem(PROFILE_KEY,raw);if(localStorage.getItem(PROFILE_KEY)!==raw)throw Error('저장을 확인하지 못했어요.');
   profile=next;applyProfileUI();renderDashboard();renderCloudPanels();
-  $('profileStatus').textContent=next.height?'저장했어요. 체중'+(next.sex&&next.birthYear?'·체지방률':'')+' 그래프에 점선이 표시됩니다.':'저장했어요. 키를 입력하면 그래프에 점선이 표시됩니다.';
+  $('profileStatus').textContent=(next.name?'카드 제목이 ‘'+next.name+' good day’로 바뀌었어요. ':'')+(next.height?'저장했어요. 체중'+(next.sex&&next.birthYear?'·체지방률':'')+' 그래프에 점선이 표시됩니다.':'저장했어요. 키를 입력하면 그래프에 점선이 표시됩니다.');
  }catch(err){$('profileStatus').textContent='저장하지 못했어요. '+err.message}
 };
 async function refreshCloud(){
