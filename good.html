@@ -857,7 +857,7 @@ const fmtWeight=v=>Number(v).toLocaleString('ko-KR',{maximumFractionDigits:2});
 const fmtFat=v=>Number(v).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1});
 const BODY=[
  {kind:'weight',id:'weightChart',name:'체중',unit:'kg',color:'var(--weight)',fmt:fmtWeight,step:0.5,days:7},
- {kind:'body_fat',id:'fatChart',name:'체지방률',unit:'%',color:'var(--bodyfat)',fmt:fmtFat,step:0.5,days:30}
+ {kind:'body_fat',id:'fatChart',name:'체지방률',unit:'%',color:'var(--bodyfat)',fmt:fmtFat,step:0.5,days:7}
 ];
 const mdLabel=t=>new Date(t).toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
 // 같은 날 여러 번 측정했으면 그날의 마지막 측정값 하나만 그래프에 씁니다.
