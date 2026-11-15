@@ -32,7 +32,7 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
   display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex:none}
 #timebar{height:6px;margin:2px 16px 6px;background:#24305e;border-radius:3px;overflow:hidden}
 #timefill{height:100%;width:100%;background:var(--good);transition:background .3s}
-#stageWrap{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 16px}
+#stageWrap{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 4px}
 #cv{display:block;image-rendering:pixelated;image-rendering:crisp-edges;border-radius:6px;
   box-shadow:0 0 0 2px #24305e, 0 8px 30px rgba(0,0,0,.4)}
 #overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
@@ -43,28 +43,29 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 #overlay .big{font-size:22px;font-weight:800;color:var(--text)}
 #overlay .go{margin-top:12px;padding:12px 28px;border-radius:12px;border:0;background:var(--accent);color:#2a1a05;
   font-weight:800;font-size:16px}
+#overlay .go.alt{background:transparent;color:var(--accent);border:1px solid var(--accent);margin-top:8px;font-size:14px;padding:10px 18px}
 #banner{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:22px;font-weight:800;
   color:var(--accent);text-shadow:0 2px 0 #000;pointer-events:none;display:none}
-#controls{flex:none;height:200px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 14px;touch-action:none}
-#pad{position:relative;width:170px;height:170px;border-radius:50%;background:var(--panel);border:1px solid var(--btn-line)}
-#pad .d{position:absolute;width:56px;height:56px;border-radius:14px;background:var(--btn);border:1px solid var(--btn-line);
-  display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted)}
+#controls{flex:none;height:156px;display:flex;align-items:center;justify-content:space-between;padding:0 24px 10px;touch-action:none}
+#pad{position:relative;width:136px;height:136px;border-radius:50%;background:var(--panel);border:1px solid var(--btn-line)}
+#pad .d{position:absolute;width:44px;height:44px;border-radius:12px;background:var(--btn);border:1px solid var(--btn-line);
+  display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
 #pad .d.on{background:var(--btn-on);color:#2a1a05;border-color:var(--btn-on)}
-#pad .u{left:57px;top:6px}#pad .dn{left:57px;bottom:6px}#pad .l{left:6px;top:57px}#pad .r{right:6px;top:57px}
-#jump{width:112px;height:112px;border-radius:50%;background:var(--btn);border:2px solid var(--btn-line);
+#pad .u{left:46px;top:4px}#pad .dn{left:46px;bottom:4px}#pad .l{left:4px;top:46px}#pad .r{right:4px;top:46px}
+#jump{width:92px;height:92px;border-radius:50%;background:var(--btn);border:2px solid var(--btn-line);
   display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:18px}
 #jump small{font-size:11px;color:var(--muted);font-weight:600}
 #jump.on{background:var(--btn-on);color:#2a1a05;border-color:var(--btn-on)}
 #jump.on small{color:#2a1a05}
 /* 가로 화면: 버튼을 양옆에 둔다 */
 #app.land #controls{position:absolute;inset:0;height:auto;padding:0;pointer-events:none}
-#app.land #pad{position:absolute;left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));pointer-events:auto;width:150px;height:150px}
-#app.land #pad .d{width:50px;height:50px}
-#app.land #pad .u{left:49px;top:5px}#app.land #pad .dn{left:49px;bottom:5px}#app.land #pad .l{left:5px;top:49px}#app.land #pad .r{right:5px;top:49px}
-#app.land #jump{position:absolute;right:calc(20px + env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom));pointer-events:auto;width:100px;height:100px}
-#app.land #stageWrap{padding:0 180px}
-#app.land #hud{padding-left:180px;padding-right:180px}
-#app.land #timebar{margin-left:180px;margin-right:180px}
+#app.land #pad{position:absolute;left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));pointer-events:auto;width:124px;height:124px}
+#app.land #pad .d{width:40px;height:40px}
+#app.land #pad .u{left:41px;top:4px}#app.land #pad .dn{left:41px;bottom:4px}#app.land #pad .l{left:4px;top:41px}#app.land #pad .r{right:4px;top:41px}
+#app.land #jump{position:absolute;right:calc(20px + env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom));pointer-events:auto;width:88px;height:88px}
+#app.land #stageWrap{padding:0 150px}
+#app.land #hud{padding-left:150px;padding-right:150px}
+#app.land #timebar{margin-left:150px;margin-right:150px}
 </style>
 </head>
 <body>
@@ -95,32 +96,75 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 (() => {
 'use strict';
 // ---------- 기본 설정 ----------
-const T = 8, COLS = 28, ROWS = 26, W = COLS * T, H = ROWS * T, S = 4;
+const T = 8, COLS = 24, ROWS = 26, W = COLS * T, H = ROWS * T, S = 4;
 const FR = [5, 10, 15, 20, 25];            // 발판이 있는 줄(위층 → 아래층)
-const START = { col: 1, floor: 4 };
+const START = { col: COLS - 2, floor: 4 };   // 항상 오른쪽 아래에서 시작
+const MAX_STAGE = 100;
 const TIME_LIMIT = 80;                     // 스테이지 제한 시간(초)
 const WALK = 1.0, CLIMB = 0.75, JUMP_V = -2.9, GRAV = 0.18, MAX_FALL = 4;
-const BEST_KEY = 'daram-jump-best-v1', MUTE_KEY = 'daram-jump-mute-v1';
+const BEST_KEY = 'daram-jump-best-v1', MUTE_KEY = 'daram-jump-mute-v1', STAGE_KEY = 'daram-jump-stage-v1';
 
-// 레벨: ladders [열, 위층번호] = 그 층에서 아래층으로 이어지는 덩굴
-const LEVELS = [
-  { gaps: [], ladders: [[22,3],[5,3],[13,2],[3,1],[24,1],[9,0],[19,0]],
-    thorns: [[10,4],[18,2],[14,0]],
-    items: {4:[8,16,26],3:[2,10,18,26],2:[1,7,21,26],1:[6,14,20],0:[2,15,25]},
-    gold: [0,15], enemies: [[14,3,1],[12,1,-1]], climb: false },
-  { gaps: [[2,10,12],[1,20,21]], ladders: [[3,3],[25,3],[15,2],[8,1],[22,1],[2,0],[17,0]],
-    thorns: [[13,4],[9,3],[19,3],[5,1],[11,0]],
-    items: {4:[7,19,26],3:[1,13,23],2:[4,11,20,26],1:[1,12,26],0:[6,13,24]},
-    gold: [2,11], enemies: [[20,4,-1],[6,2,1],[14,0,1]], climb: true },
-  { gaps: [[3,8,9],[1,4,5],[1,16,17],[0,10,11]], ladders: [[12,3],[26,3],[1,2],[20,2],[10,1],[25,1],[6,0],[18,0]],
-    thorns: [[7,4],[17,4],[15,3],[6,2],[13,1],[22,0]],
-    items: {4:[3,14,22,27],3:[4,9,18,24],2:[3,9,15,27],1:[1,5,12,17,22],0:[2,11,14,26]},
-    gold: [1,17], enemies: [[20,4,-1],[5,3,1],[22,2,-1],[8,0,1]], climb: true },
-  { gaps: [[3,13,14],[2,5,6],[2,21,22],[1,12,13]], ladders: [[2,3],[19,3],[9,2],[25,2],[4,1],[16,1],[11,0],[23,0]],
-    thorns: [[10,4],[23,4],[6,3],[24,3],[15,2],[8,1],[20,1],[17,0]],
-    items: {4:[5,15,27],3:[0,13,21,27],2:[2,6,12,21,27],1:[1,7,12,18,26],0:[3,8,14,20,26]},
-    gold: [2,6], enemies: [[14,4,1],[26,3,-1],[12,2,1],[3,1,1],[20,0,-1]], climb: true },
-];
+// GEN-START
+// 레벨 1~100을 정해진 규칙으로 만든다(같은 스테이지는 항상 같은 모양).
+// ladders [열, 위층번호] = 그 층에서 아래층으로 이어지는 덩굴
+function rng(seed) {
+  let s = (seed >>> 0) || 1;
+  return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
+}
+function genLevel(L) {
+  const R = rng(L * 7919 + 1013), ri = (a, b) => a + Math.floor(R() * (b - a + 1));
+  const near = (arr, c, d) => arr.some(x => Math.abs(x - c) <= d);
+  const lad = [[], [], [], []];
+  for (let f = 0; f < 4; f++) {
+    const k = L <= 15 ? 3 : L <= 50 ? (R() < 0.5 ? 3 : 2) : 2;
+    for (let i = 0; i < k; i++) {
+      const a = Math.floor(i * COLS / k) + 1, b = Math.floor((i + 1) * COLS / k) - 2;
+      for (let t = 0; t < 60; t++) {
+        const c = ri(a, b);
+        if (near(lad[f], c, 4) || (f > 0 && near(lad[f - 1], c, 2))) continue;
+        lad[f].push(c); break;
+      }
+    }
+  }
+  const touch = f => (f < 4 ? lad[f] : []).concat(f > 0 ? lad[f - 1] : []);
+  const gapCols = [[], [], [], [], []], gaps = [];
+  const gN = L < 2 ? 0 : Math.min(6, 1 + Math.floor(L / 8));
+  for (let t = 0; t < 300 && gaps.length < gN; t++) {
+    const f = ri(0, 3), w = L < 10 ? 1 : ri(1, 2), a = ri(2, COLS - 2 - w);
+    const cols = []; for (let c = a; c < a + w; c++) cols.push(c);
+    if (cols.some(c => near(touch(f), c, 1) || near(gapCols[f], c, 4))) continue;
+    gapCols[f].push(...cols); gaps.push([f, a, a + w - 1]);
+  }
+  const thornCols = [[], [], [], [], []], thorns = [];
+  const tN = Math.min(10, 2 + Math.floor(L / 7));
+  for (let t = 0; t < 400 && thorns.length < tN; t++) {
+    const f = ri(0, 4), c = ri(1, COLS - 2);
+    if (near(touch(f), c, 1) || near(gapCols[f], c, 3) || (f > 0 && near(gapCols[f - 1], c, 2))) continue;
+    if (near(thornCols[f], c, 4) || (f === 4 && Math.abs(c - START.col) <= 4)) continue;
+    thornCols[f].push(c); thorns.push([c, f]);
+  }
+  const enemies = [], eN = Math.min(6, 2 + Math.floor((L - 1) / 12));
+  for (let t = 0; t < 300 && enemies.length < eN; t++) {
+    const f = ri(0, 4), c = ri(1, COLS - 2);
+    if (gapCols[f].includes(c) || (f === 4 && Math.abs(c - START.col) < 10)) continue;
+    enemies.push([c, f, R() < 0.5 ? -1 : 1]);
+  }
+  const items = {}, all = [];
+  for (let f = 0; f < 5; f++) {
+    items[f] = [];
+    const n = ri(3, 4);
+    for (let t = 0; t < 200 && items[f].length < n; t++) {
+      const c = ri(0, COLS - 1);
+      if ((f > 0 && lad[f - 1].includes(c)) || (f < 4 && lad[f].includes(c))) continue;
+      if (near(thornCols[f], c, 1) || near(items[f], c, 2) || (f === 4 && Math.abs(c - START.col) < 2)) continue;
+      items[f].push(c); all.push([f, c]);
+    }
+  }
+  const ladders = [];
+  lad.forEach((cs, f) => cs.forEach(c => ladders.push([c, f])));
+  return { gaps, ladders, thorns, items, gold: all[ri(0, all.length - 1)], enemies, climb: L >= 3 };
+}
+// GEN-END
 
 // ---------- 저장(실패해도 게임은 돈다) ----------
 function load(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
@@ -399,7 +443,7 @@ addEventListener('resize', layout);
 addEventListener('orientationchange', () => setTimeout(layout, 200));
 
 // ---------- 게임 상태 ----------
-let grid, items, thorns, enemies, enemySpawn, bgCanvas, level, levelIdx, loopN;
+let grid, items, thorns, enemies, enemySpawn, bgCanvas, level, levelIdx;
 let phase = 'title', phaseT = 0, stageNo = 1, score = 0, lives = 3, timeLeft = TIME_LIMIT, nextLife = 10000;
 let best = parseInt(load(BEST_KEY, '0'), 10) || 0;
 let player, popups = [], jumpId = 0, frame = 0;
@@ -428,8 +472,8 @@ function findLadder(x, y, dir) {
 }
 
 function buildLevel() {
-  levelIdx = (stageNo - 1) % LEVELS.length; loopN = Math.floor((stageNo - 1) / LEVELS.length);
-  level = LEVELS[levelIdx];
+  levelIdx = (stageNo - 1) % 4;
+  level = genLevel(stageNo);
   grid = Array.from({ length: ROWS }, () => Array(COLS).fill('.'));
   FR.forEach(r => { for (let c = 0; c < COLS; c++) grid[r][c] = '='; });
   level.gaps.forEach(([f, a, b]) => { for (let c = a; c <= b; c++) grid[FR[f]][c] = '.'; });
@@ -442,12 +486,12 @@ function buildLevel() {
     items.push({ x: c * T + 4, y: FR[f] * T, k, pts: pts[k], got: false, bob: (c * 7 + +f * 3) % 20 });
   }));
   thorns = level.thorns.map(([c, f]) => ({ x: c * T, y: FR[f] * T - 6 }));
-  const sp = 0.42 + levelIdx * 0.05 + loopN * 0.12;
+  const sp = Math.min(0.95, 0.40 + (stageNo - 1) * 0.0055);
   enemySpawn = level.enemies.map(([c, f, d], i) => ({ x: c * T + 4, y: FR[f] * T, dir: d, speed: sp + (i % 2) * 0.08, red: (i % 2) === 1 }));
   drawBackground();
 }
 function resetActors() {
-  player = { x: START.col * T + 4, y: FR[START.floor] * T, vx: 0, vy: 0, state: 'walk', face: 1, anim: 0, inv: 100, lad: null, jid: 0 };
+  player = { x: START.col * T + 4, y: FR[START.floor] * T, vx: 0, vy: 0, state: 'walk', face: -1, anim: 0, inv: 100, lad: null, jid: 0 };
   enemies = enemySpawn.map(e => Object.assign({ state: 'walk', anim: 0, cool: 60, lad: null, cdir: 0 }, e));
 }
 
@@ -459,13 +503,13 @@ function drawBackground() {
   const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, sk[0]); gr.addColorStop(1, sk[1]);
   g.fillStyle = gr; g.fillRect(0, 0, W, H);
   // 별
-  let seed = 7 + levelIdx * 13;
+  let seed = 7 + stageNo * 13;
   const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
   g.fillStyle = 'rgba(255,255,255,.7)';
   for (let i = 0; i < 60; i++) { const s = rnd() < 0.2 ? 1 : 0.5; g.fillRect(Math.floor(rnd() * W), Math.floor(rnd() * H), s, s); }
   // 달
-  g.fillStyle = '#f6e7a8'; g.beginPath(); g.arc(196, 18, 9, 0, Math.PI * 2); g.fill();
-  g.fillStyle = sk[0]; g.beginPath(); g.arc(200, 15, 8, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#f6e7a8'; g.beginPath(); g.arc(W - 26, 18, 9, 0, Math.PI * 2); g.fill();
+  g.fillStyle = sk[0]; g.beginPath(); g.arc(W - 22, 15, 8, 0, Math.PI * 2); g.fill();
   // 먼 숲 실루엣
   g.fillStyle = 'rgba(0,0,0,.18)';
   for (let x = 0; x < W; x += 12) { const h = 10 + Math.floor(rnd() * 18); g.beginPath(); g.moveTo(x, H); g.lineTo(x + 6, H - h - 30); g.lineTo(x + 12, H); g.fill(); }
@@ -500,7 +544,7 @@ addEventListener('keydown', e => {
   if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(k)) e.preventDefault();
   if (!keys[k] && (k === ' ' || k === 'z' || k === 'Z' || k === 'x' || k === 'X')) jumpEdge = true;
   if (!keys[k] && (k === 'p' || k === 'P' || k === 'Escape')) togglePause();
-  if (!keys[k] && k === 'Enter' && (phase === 'title' || phase === 'over')) startGame();
+  if (!keys[k] && k === 'Enter' && (phase === 'title' || phase === 'over')) startGame(1);
   keys[k] = true;
 });
 addEventListener('keyup', e => { keys[e.key] = false; });
@@ -565,17 +609,27 @@ function titleScreen() {
     '<p>덩굴을 타고 오르내리며<br><b>열매를 모두 모으면</b> 다음 스테이지!</p>' +
     '<p>딱정벌레와 가시는 <b>점프</b>로 넘어가요.<br>벌레를 넘으면 보너스 점수 · 황금 도토리 1000점</p>' +
     '<p>◀ ▶ 이동 · ▲ ▼ 덩굴 타기 · 점프</p>' +
-    '<button class="go" id="goBtn">시작</button>');
-  $('goBtn').addEventListener('click', startGame);
+    startButtons());
+  bindStart();
 }
-function startGame() {
+function savedStage() { return Math.min(MAX_STAGE, Math.max(1, parseInt(load(STAGE_KEY, '1'), 10) || 1)); }
+function startButtons(again) {
+  const n = savedStage();
+  return '<button class="go" id="goBtn">' + (again ? '처음부터' : '시작') + '</button>' +
+    (n > 1 ? '<br><button class="go alt" id="contBtn">스테이지 ' + n + '부터 이어하기</button>' : '');
+}
+function bindStart() {
+  $('goBtn').addEventListener('click', () => startGame(1));
+  const cb = $('contBtn'); if (cb) cb.addEventListener('click', () => startGame(savedStage()));
+}
+function startGame(from) {
   unlockAudio();
-  score = 0; lives = 3; stageNo = 1; nextLife = 10000;
+  score = 0; lives = 3; stageNo = typeof from === 'number' ? from : 1; nextLife = 10000;
   hideCard(); startStage();
 }
 function startStage() {
   buildLevel(); resetActors(); timeLeft = TIME_LIMIT; popups = [];
-  phase = 'ready'; phaseT = 90; showBanner('STAGE ' + stageNo);
+  phase = 'ready'; phaseT = 90; showBanner('STAGE ' + stageNo + ' / ' + MAX_STAGE);
   updateHud();
 }
 let pausedFrom = null;
@@ -687,7 +741,7 @@ function updateEnemies() {
         e.cool = 40;
         const fr = Math.round(e.y / T);
         const up = tile(c, fr - 1) === 'H', dn = tile(c, fr) === 'H';
-        if ((up || dn) && Math.random() < 0.35 + loopN * 0.1) {
+        if ((up || dn) && Math.random() < Math.min(0.6, 0.25 + stageNo * 0.003)) {
           e.state = 'climb'; e.x = center;
           e.cdir = up && dn ? (Math.random() < 0.5 ? -1 : 1) : up ? -1 : 1;
           e.lad = ladderBounds(c, e.cdir < 0 ? fr - 1 : fr);
@@ -718,8 +772,15 @@ function gameOver() {
   const newBest = score >= best && score > 0;
   showCard('<div class="big">GAME OVER</div><p>스테이지 ' + stageNo + '까지 · 점수 <b>' + score.toLocaleString() + '</b></p>' +
     (newBest ? '<p style="color:var(--accent)">최고 기록!</p>' : '<p>최고 ' + best.toLocaleString() + '</p>') +
-    '<button class="go" id="againBtn">다시 하기</button>');
-  $('againBtn').addEventListener('click', startGame);
+    startButtons(true));
+  bindStart();
+}
+function allClear() {
+  phase = 'over'; showBanner('');
+  save(STAGE_KEY, 1);
+  showCard('<h1>축하해요!</h1><div class="big">100 스테이지 모두 클리어</div><p>점수 <b>' + score.toLocaleString() + '</b> · 최고 ' + best.toLocaleString() + '</p>' +
+    '<button class="go" id="goBtn">처음부터</button>');
+  $('goBtn').addEventListener('click', () => startGame(1));
 }
 
 function step() {
@@ -745,7 +806,13 @@ function step() {
       resetActors(); timeLeft = TIME_LIMIT; phase = 'ready'; phaseT = 60; showBanner('READY');
     }
   } else if (phase === 'clear') {
-    if (--phaseT <= 0) { stageNo++; showBanner(''); startStage(); }
+    if (--phaseT <= 0) {
+      showBanner('');
+      if (stageNo >= MAX_STAGE) return allClear();
+      stageNo++;
+      if (stageNo > savedStage()) save(STAGE_KEY, stageNo);
+      startStage();
+    }
   } else { jumpEdge = false; }
   if (frame % 6 === 0) updateTimebar();
 }
