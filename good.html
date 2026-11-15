@@ -8,7 +8,10 @@
 <style>
 :root{
   --bg:#f3f4f7;--card:#ffffff;--ink:#14171f;--muted:#5f6b7c;--line:#e3e6eb;--track:#eceef2;
-  --caf:#b4541a;--water:#1e7fd6;--carb:#5b5bd6;--prot:#12a37a;--fat:#e59a12;--mood:#7a4fd8;--sleep:#3b4a7a;--bad:#d92d20;--weight:#00879b;--bodyfat:#c2417a;--kcal:#c2410c;--chart:#e0722f;--chart-soft:rgba(224,114,47,.38);--chart-label:#b5622f;--chart-cross:#d6ccbd;
+  /* 포인트 색 3개만 사용: 오렌지 · 블루 · 틸 (빨강 --bad는 카페인 초과 경고 전용) */
+  --p1:#DF6A2E;--p2:#4A6FD1;--p3:#2E9E8F;--p1-deep:#B9531F;--p1-tint:#F9DDCC;--p1-soft:rgba(223,106,46,.36);
+  --caf:var(--p1);--water:var(--p2);--carb:var(--p1);--prot:var(--p3);--fat:var(--p2);--mood:var(--p1);--sleep:var(--p2);--bad:#d92d20;--weight:var(--p1);--bodyfat:var(--p1);--kcal:var(--p1);
+  --chart:var(--p1);--chart-soft:var(--p1-soft);--chart-label:var(--p1-deep);--chart-cross:#d6d1ca;
   --sans:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR','Segoe UI',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -136,7 +139,7 @@ details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;f
 .cy-dow span{font-size:12px;color:var(--muted)}
 .cy-day{display:flex;align-items:center;justify-content:center;height:40px;border-radius:12px;font-size:14px}
 .cy-empty{height:40px}
-.cy-logged{background:#f6c6d2;color:#3a121c;font-weight:700}
+.cy-logged{background:var(--p1-tint);color:var(--ink);font-weight:700}
 .cy-pred{border:1px dashed currentColor;background:repeating-linear-gradient(45deg,rgba(0,0,0,.05),rgba(0,0,0,.05) 4px,transparent 4px,transparent 8px)}
 .cy-today{outline:2px solid var(--ink);outline-offset:-2px}
 .cy-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;margin-top:14px}
@@ -172,13 +175,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
 .face-option input{position:absolute;width:1px;height:1px;opacity:0}
 .face-option>span{display:flex;min-height:88px;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid transparent;border-radius:14px;background:var(--track);padding:8px 2px}
 .face-option small{font-size:11.5px;line-height:1.35;text-align:center;letter-spacing:-.4px}
-.face-option input:checked+span{background:#ece6fb;border-color:var(--mood)}
+.face-option input:checked+span{background:var(--p1-tint);border-color:var(--p1)}
 .face-option input:focus-visible+span{outline:2px solid var(--water);outline-offset:2px}
 
 /* 즐겨찾기 */
 .favlist{margin-top:12px;display:grid;gap:8px}
 .favitem{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg);border-radius:14px;padding:12px 14px;min-height:64px}
-.favitem .cup{width:38px;height:38px;border-radius:12px;background:var(--caf);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;flex-shrink:0}
+.favitem .cup{width:38px;height:38px;border-radius:12px;background:var(--p1-deep);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;flex-shrink:0}
 .favitem .txt{flex:1;min-width:0}
 .favitem strong{display:block;font-size:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .favitem .d{display:block;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -860,7 +863,7 @@ function renderCloudPanels(){
      cal+=cycleCalendar(loggedDays,predicted,today,y2,m2);
    }
    panel='<p style="margin-top:12px">'+head+'</p><p class="help">'+meta+'</p>'+cal
-   +'<div class="cy-legend"><span><i class="cy-sw" style="background:#f6c6d2"></i>기록된 월경일</span><span><i class="cy-sw cy-pred"></i>예측 기간</span><span><i class="cy-sw" style="outline:2px solid var(--ink);outline-offset:-2px"></i>오늘</span></div>'
+   +'<div class="cy-legend"><span><i class="cy-sw" style="background:var(--p1-tint)"></i>기록된 월경일</span><span><i class="cy-sw cy-pred"></i>예측 기간</span><span><i class="cy-sw" style="outline:2px solid var(--ink);outline-offset:-2px"></i>오늘</span></div>'
    +'<p class="help" style="margin-top:14px">주기 길이는 월경 시작일 사이의 간격입니다. 15~60일 범위만 평균에 넣고, 최근 6회까지 사용합니다. 건강앱 기록이 부족하면 예측이 틀릴 수 있습니다.</p>';
  }
  $('cyclePanel').innerHTML=panel;
@@ -1023,11 +1026,18 @@ function rangeText(a,b){const y=d=>d.getFullYear()+'년 ',m=d=>(d.getMonth()+1)+
  if(a.getFullYear()!==b.getFullYear())return y(a)+m(a)+dd(a)+' ~ '+y(b)+m(b)+dd(b);
  return y(a)+m(a)+dd(a)+' ~ '+(a.getMonth()!==b.getMonth()?m(b):'')+dd(b)}
 // 보기 좋은 축 눈금 4개
+// 데이터 범위에 딱 맞는 눈금(3~5개). 맨 위·맨 아래에 비어 있는 칸을 만들지 않습니다.
+// minSpan/4 = 눈금 사이 최소 간격(체중 1kg, 식단 50kcal 등)
 function niceTicks(lo,hi,minSpan){
- if(hi-lo<minSpan){const c=(hi+lo)/2;lo=c-minSpan/2;hi=c+minSpan/2}
  const cands=[];for(let e=-2;e<=6;e++)[1,2,2.5,5].forEach(k=>cands.push(k*Math.pow(10,e)));
- for(const step of cands){if(step<(hi-lo)/3)continue;const a=Math.floor(lo/step)*step;if(a+3*step>=hi)return [0,1,2,3].map(i=>a+i*step)}
- return [lo,lo+(hi-lo)/3,lo+2*(hi-lo)/3,hi];
+ for(const step of cands){
+  if(step<minSpan/4)continue;
+  let a=Math.floor(lo/step+1e-9)*step,b=Math.ceil(hi/step-1e-9)*step;
+  if(b-a<2*step-1e-9){if(b===a)b=a+step;a-=step}
+  const n=Math.round((b-a)/step);
+  if(n<=4)return Array.from({length:n+1},(_,i)=>a+i*step);
+ }
+ return [lo,(lo+hi)/2,hi];
 }
 function periodSvg(items,m,ref,sel){
  const W=340,X0=8,X1=282,Y0=66,Y1=196,slot=(X1-X0)/7,cx=i=>X0+(i+0.5)*slot,lbl=m.lbl||m.fmt;
