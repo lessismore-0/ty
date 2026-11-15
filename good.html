@@ -21,7 +21,8 @@ button{cursor:pointer;background:none;border:0}
 .app{max-width:1040px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 28px)}
 
 /* 머리글 */
-.head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 12px;margin-bottom:18px}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 12px;margin:0 -16px 18px;padding:8px 16px 12px;position:sticky;top:0;z-index:20;background:var(--bg);transition:box-shadow .2s}
+.head.stuck{box-shadow:0 1px 0 var(--line),0 6px 16px rgba(15,18,25,.06)}
 .brand{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.02em;grid-column:1;grid-row:1}
 .headbtns{display:flex;gap:8px;grid-column:2;grid-row:1}
 @media(max-width:479px){.headbtns{grid-column:1/-1;grid-row:3;margin-top:12px}.headbtns .ghost{flex:1 1 auto;padding:0 10px}}
@@ -187,6 +188,7 @@ body.modal-open{overflow:hidden}
 @media(min-width:900px){
   .app{padding:36px 28px 48px}
   .head h1{font-size:34px}
+  .head{margin:0 -28px 18px;padding:8px 28px 14px}
   .grid{grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
   .tile-s{grid-column:span 3}
   .tile-l{grid-column:span 6}
@@ -1061,18 +1063,9 @@ $('authRedirect').textContent=location.protocol==='https:'?'등록할 리디렉�
 try{const raw=localStorage.getItem(AUTH_CONFIG_KEY);if(raw){const c=validateAuthConfig(JSON.parse(raw));$('authUrl').value=c.url;$('authPublicKey').value=c.key;startAuth(c).catch(()=>{$('authStatus').textContent='인증 연결 안 됨 · 설정과 네트워크를 확인해 주세요.'})}}catch(e){$('authStatus').textContent='인증 설정을 읽지 못했어요. 다시 설정해 주세요.'}
 
 render();
-// ===== 바로가기 주소 (아이폰 제어 센터·단축어용) =====
-// good.html#starbucks → 커피 기록 창, good.html#mindset → 기분 기록 화면. 연 뒤에는 주소의 #부분을 지워 새로고침 때 다시 열리지 않게 합니다.
-function openFromHash(){
- const h=location.hash.replace('#','').toLowerCase();
- if(h!=='starbucks'&&h!=='mindset')return;
- history.replaceState(null,'',location.pathname+location.search);
- if(current!=='today'||dirty)return; // 작성 중인 화면이 있으면 덮어쓰지 않습니다.
- closeHealth();
- if(h==='starbucks')openFavorites();else $('moodSoon').click();
-}
-window.addEventListener('hashchange',openFromHash);
-openFromHash();
+// 머리글(날짜·버튼)은 위에 고정됩니다. 스크롤하면 아래쪽에 옅은 선과 그림자를 넣어 구분합니다.
+function headShadow(){$('homeHead').classList.toggle('stuck',window.scrollY>4)}
+window.addEventListener('scroll',headShadow,{passive:true});headShadow();
 </script>
 </body>
 </html>
