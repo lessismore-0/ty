@@ -181,6 +181,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
 .modal-sheet h3{font-size:16px;font-weight:700}
 .modal-sheet section{margin-top:22px}
 body.modal-open{overflow:hidden}
+#swipeBack{position:fixed;left:0;top:50%;width:44px;height:44px;margin-top:-22px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:26px;font-weight:700;line-height:1;z-index:300;transform:translateX(-56px);opacity:0;pointer-events:none;transition:transform .18s,opacity .18s,background .12s}
+#swipeBack.dragging{transition:background .12s}
+#swipeBack.ready{background:var(--water)}
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:14px;padding:13px 18px;font-size:14.5px;z-index:200;width:max-content;max-width:calc(100% - 32px);line-height:1.45}
 #diagBox{margin-top:12px;min-height:130px;font-size:13px}
 
@@ -419,6 +422,7 @@ body.modal-open{overflow:hidden}
 </section>
 </div>
 <div id="toast" class="hidden" role="status"></div>
+<div id="swipeBack" aria-hidden="true">‹</div>
 
 <script>
 'use strict';
@@ -1066,6 +1070,30 @@ render();
 // 머리글(날짜·버튼)은 위에 고정됩니다. 스크롤하면 아래쪽에 옅은 선과 그림자를 넣어 구분합니다.
 function headShadow(){$('homeHead').classList.toggle('stuck',window.scrollY>4)}
 window.addEventListener('scroll',headShadow,{passive:true});headShadow();
+// ===== 뒤로가기 제스처 (홈 화면에 추가해 앱처럼 쓸 때) =====
+// 화면 왼쪽 가장자리에서 오른쪽으로 밀면 한 단계 뒤로 갑니다: 열린 창 닫기 → 입력 화면에서 오늘로 → 기록 화면에서 오늘로.
+// 사파리 브라우저에서는 사파리 자체 제스처와 겹치지 않도록 켜지 않습니다.
+const standalone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
+function backTarget(){
+ if(!$('favoriteModal').classList.contains('hidden'))return ()=>closeFavorites();
+ if(!$('healthModal').classList.contains('hidden'))return ()=>closeHealth();
+ if(current!=='today'){const btn=document.querySelector('#'+current+' [data-back]');return btn?()=>btn.click():null}
+ if(!$('pageBar').classList.contains('hidden'))return ()=>switchTab('dailyDashboard');
+ return null;
+}
+if(standalone){
+ const EDGE=24,GO=70,ind=$('swipeBack');let sw=null;
+ const reset=()=>{sw=null;ind.classList.remove('dragging','ready');ind.style.transform='';ind.style.opacity=''};
+ document.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;const t=e.touches[0];if(t.clientX>EDGE||!backTarget())return;sw={x:t.clientX,y:t.clientY,on:false}},{passive:true});
+ document.addEventListener('touchmove',e=>{
+  if(!sw)return;const t=e.touches[0],dx=t.clientX-sw.x,dy=t.clientY-sw.y;
+  if(!sw.on){if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){reset();return}if(dx>10&&dx>Math.abs(dy)*1.5)sw.on=true;else return}
+  e.preventDefault();sw.dx=dx;const d=Math.max(0,Math.min(dx,110));
+  ind.classList.add('dragging');ind.classList.toggle('ready',dx>=GO);ind.style.top=t.clientY+'px';ind.style.transform='translateX('+(-56+d*0.75)+'px)';ind.style.opacity=String(Math.min(1,d/GO));
+ },{passive:false});
+ const end=()=>{const go=sw&&sw.on&&sw.dx>=GO,act=go?backTarget():null;reset();if(act)act()};
+ document.addEventListener('touchend',end);document.addEventListener('touchcancel',reset);
+}
 </script>
 </body>
 </html>
