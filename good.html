@@ -871,9 +871,11 @@ function renderCloudPanels(){
    }
    panel='<p style="margin-top:12px">'+head+'</p><p class="help">'+meta+'</p>'+cal
    +'<div class="cy-legend"><span><i class="cy-sw" style="background:var(--p1-tint)"></i>기록된 월경일</span><span><i class="cy-sw cy-pred"></i>예측 기간</span><span><i class="cy-sw" style="outline:2px solid var(--ink);outline-offset:-2px"></i>오늘</span></div>'
-   +'<p class="help" style="margin-top:14px">주기 길이는 월경 시작일 사이의 간격입니다. 15~60일 범위만 평균에 넣고, 최근 6회까지 사용합니다. 건강앱 기록이 부족하면 예측이 틀릴 수 있습니다.</p>';
+   +'<p class="help" style="margin-top:14px">주기 길이는 월경 시작일 사이의 간격입니다. 15~60일 범위만 평균에 넣고, 최근 6회까지 사용합니다. 건강앱 기록이 부족하면 예측이 틀릴 수 있습니다.</p>'
+   +'<h3 class="cy-head" style="margin-top:22px">최근 1년 생리 주기</h3><div class="pchart" id="cycleChart"></div><p class="note left" id="cycleChartNote"></p>';
  }
  $('cyclePanel').innerHTML=panel;
+ if(cloudUser&&eps.length)renderCycleChart(eps);
 
  // 체성분: 체중·체지방률 그래프(각각 따로, 최근 30일) + 측정 기록 목록
  const weights=byKind('weight'),fats=byKind('body_fat');
@@ -1046,8 +1048,26 @@ function niceTicks(lo,hi,minSpan){
  }
  return [lo,(lo+hi)/2,hi];
 }
+// ===== 주기 화면: 최근 1년 생리 주기(시작일 사이 간격) 그래프 =====
+let cycleSel=null;
+function renderCycleChart(eps){
+ const box=$('cycleChart'),note=$('cycleChartNote');if(!box)return;
+ const yearAgo=new Date();yearAgo.setHours(0,0,0,0);yearAgo.setFullYear(yearAgo.getFullYear()-1);
+ const items=[];
+ for(let i=1;i<eps.length;i++){const a=new Date(eps[i-1].start+'T00:00:00'),b=new Date(eps[i].start+'T00:00:00');if(b<yearAgo)continue;
+  items.push({v:Math.round((b-a)/86400000),label:[(a.getMonth()+1)+'월',a.getDate()+'일'],tip:ymd(a)+' ~ '+(b.getMonth()+1)+'/'+b.getDate()})}
+ if(items.length>7){let prev='';items.forEach(x=>{const mo=x.label[0];x.label=[mo===prev?'':mo];prev=mo})}
+ if(!items.length){box.innerHTML='<p class="empty-note" style="margin:10px 8px 14px">최근 1년 안에 월경 시작일이 두 번 이상 기록되면 주기 그래프가 그려집니다.</p>';note.textContent='';return}
+ const m={name:'생리 주기',unit:'일',fmt:v=>String(Math.round(v)),span:8};
+ const sel=cycleSel===null||cycleSel>=items.length?items.length-1:cycleSel,it=items[sel],g=periodSvg(items,m,null,sel);
+ box.innerHTML=`<div class="ptip nogo"><span>${esc(it.tip)}</span><b>${it.v}일</b></div>`+g.svg;
+ const vs=items.map(x=>x.v);
+ note.textContent='최근 1년 '+items.length+'번 · 평균 '+Math.round(vs.reduce((a,b)=>a+b,0)/vs.length)+'일 · 가장 짧게 '+Math.min(...vs)+'일 · 가장 길게 '+Math.max(...vs)+'일 · 점을 누르면 그 주기의 날짜가 보여요';
+ const tip=box.querySelector('.ptip'),cw=box.clientWidth,tw=tip.offsetWidth,px=g.x*(cw-12)+6;tip.style.left=Math.max(4,Math.min(cw-tw-4,px-tw/2))+'px';
+ box.querySelectorAll('[data-psel]').forEach(r=>{r.onclick=()=>{cycleSel=Number(r.dataset.psel);renderCycleChart(eps)}});
+}
 function periodSvg(items,m,ref,sel){
- const W=340,X0=8,X1=282,Y0=66,Y1=196,slot=(X1-X0)/7,cx=i=>X0+(i+0.5)*slot,lbl=m.lbl||m.fmt;
+ const W=340,X0=8,X1=282,Y0=66,Y1=196,slot=(X1-X0)/Math.max(7,items.length),cx=i=>X0+(i+0.5)*slot,lbl=m.lbl||m.fmt;
  let ticks;
  if(m.lo!==undefined)ticks=[1,2,3,4,5];else{const vs=items.map(it=>it.v).concat(ref?[ref.v]:[]);ticks=niceTicks(Math.min(...vs),Math.max(...vs),m.span)}
  const lo=ticks[0],hi=ticks[ticks.length-1],y=v=>Y1-(v-lo)/(hi-lo)*(Y1-Y0);
