@@ -71,6 +71,7 @@ button{cursor:pointer;background:none;border:0}
 .menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
 .menu button{min-height:48px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600}
 @media(min-width:560px){.menu{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.menu.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .foot{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.55}
 .primary,.secondary{width:100%;min-height:52px;border-radius:14px;font-size:16px;font-weight:700;padding:0 16px}
 .primary{background:var(--ink);color:#fff}
@@ -270,9 +271,9 @@ body.modal-open{overflow:hidden}
         </div>
       </article>
     </div>
-    <nav class="menu" aria-label="더 보기">
+    <nav class="menu" id="moreMenu" aria-label="더 보기">
       <button type="button" data-go="bodyHistory">체성분</button>
-      <button type="button" data-go="cycleHistory">주기</button>
+      <button type="button" id="cycleMenu" data-go="cycleHistory">주기</button>
       <button type="button" id="healthOpen" aria-haspopup="dialog">동기화 상태</button>
       <button type="button" data-go="infoHistory">설정 · 백업</button>
     </nav>
@@ -1010,6 +1011,9 @@ document.querySelectorAll('[data-week]').forEach(b=>{b.onclick=()=>setWeekTab(b.
 $('weekMore').onclick=()=>switchTab(WEEK_MORE[weekTab][0]);
 setWeekTab(weekTab);
 // 내 정보 입력란
+// 내 정보의 성별이 남성이면 ‘주기’ 메뉴를 숨깁니다(기록은 그대로 둡니다).
+function applyProfileUI(){const male=validProfile().sex==='M';$('cycleMenu').classList.toggle('hidden',male);$('moreMenu').classList.toggle('three',male)}
+applyProfileUI();
 $('profileHeight').value=profile.height??'';$('profileSex').value=profile.sex==='F'||profile.sex==='M'?profile.sex:'';$('profileBirth').value=profile.birthYear??'';
 $('profileForm').onsubmit=e=>{
  e.preventDefault();
@@ -1019,7 +1023,7 @@ $('profileForm').onsubmit=e=>{
   if(sx==='F'||sx==='M')next.sex=sx;
   if(b){const n=Number(b);if(!Number.isInteger(n)||n<1920||n>max)throw Error('출생연도는 1920~'+max+' 사이로 입력해 주세요.');next.birthYear=n}
   const raw=JSON.stringify(next);localStorage.setItem(PROFILE_KEY,raw);if(localStorage.getItem(PROFILE_KEY)!==raw)throw Error('저장을 확인하지 못했어요.');
-  profile=next;renderDashboard();renderCloudPanels();
+  profile=next;applyProfileUI();renderDashboard();renderCloudPanels();
   $('profileStatus').textContent=next.height?'저장했어요. 체중'+(next.sex&&next.birthYear?'·체지방률':'')+' 그래프에 점선이 표시됩니다.':'저장했어요. 키를 입력하면 그래프에 점선이 표시됩니다.';
  }catch(err){$('profileStatus').textContent='저장하지 못했어요. '+err.message}
 };
