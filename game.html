@@ -300,12 +300,49 @@ IMG.bugRed2 = makeSprite(SPR.bug2, Object.assign({}, PAL, { B:'#d9423a', S:'#ffd
 
 // ---------- 소리 ----------
 let ac = null, muted = load(MUTE_KEY, '0') === '1';
-function unlockAudio() {
-  try {
-    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
-    if (ac.state === 'suspended') ac.resume();
-  } catch (e) { ac = null; }
+let master = null, primed = false, silentEl = null;
+// 아이폰은 무음 스위치가 켜져 있으면 웹 소리를 막는다.
+// 소리 없는 <audio>를 반복 재생해 두면 '음악 재생'으로 취급돼 게임 소리가 난다.
+function silentWavUrl() {
+  const rate = 8000, n = rate / 2, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  w(36, 'data'); v.setUint32(40, n * 2, true);
+  return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
 }
+function keepAudioSession() {
+  try {
+    if (!silentEl) {
+      silentEl = document.createElement('audio');
+      silentEl.setAttribute('x-webkit-airplay', 'deny');
+      silentEl.setAttribute('playsinline', '');
+      silentEl.loop = true; silentEl.preload = 'auto'; silentEl.src = silentWavUrl();
+    }
+    if (muted || document.hidden) { silentEl.pause(); return; }
+    if (silentEl.paused) { const pr = silentEl.play(); if (pr && pr.catch) pr.catch(() => {}); }
+  } catch (e) {}
+}
+function unlockAudio() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+  try {
+    if (!ac) {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      const comp = ac.createDynamicsCompressor();
+      master = ac.createGain(); master.gain.value = 2.4;
+      master.connect(comp); comp.connect(ac.destination);
+    }
+    if (ac.state !== 'running') ac.resume();
+    if (!primed) {   // 아이폰 소리 잠금 풀기용 아주 짧은 무음
+      const s = ac.createBufferSource(); s.buffer = ac.createBuffer(1, 1, 22050);
+      s.connect(ac.destination); s.start(0); primed = true;
+    }
+  } catch (e) { ac = null; }
+  keepAudioSession();
+}
+// 화면 어디든 손을 떼거나 누르면 소리를 깨운다(아이폰은 손을 뗄 때만 허용하는 경우가 있음)
+['touchend', 'click', 'keydown'].forEach(t => document.addEventListener(t, unlockAudio, { capture: true, passive: true }));
 function tone(f, dur, type, vol, slide, delay) {
   if (!ac || muted) return;
   const t0 = ac.currentTime + (delay || 0);
@@ -313,7 +350,7 @@ function tone(f, dur, type, vol, slide, delay) {
   o.type = type || 'square'; o.frequency.setValueAtTime(f, t0);
   if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + dur);
   g.gain.setValueAtTime(vol || 0.06, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-  o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + dur + 0.02);
+  o.connect(g); g.connect(master || ac.destination); o.start(t0); o.stop(t0 + dur + 0.02);
 }
 const sfx = {
   jump() { tone(320, 0.16, 'square', 0.05, 760); },
@@ -508,9 +545,15 @@ $('stageWrap').addEventListener('touchmove', e => e.preventDefault(), { passive:
 
 $('pauseBtn').addEventListener('click', () => { unlockAudio(); togglePause(); });
 function setSoundIcon() { $('soundBtn').textContent = muted ? '🔇' : '🔊'; }
-$('soundBtn').addEventListener('click', () => { unlockAudio(); muted = !muted; save(MUTE_KEY, muted ? '1' : '0'); setSoundIcon(); });
+$('soundBtn').addEventListener('click', () => {
+  muted = !muted; save(MUTE_KEY, muted ? '1' : '0'); setSoundIcon(); unlockAudio();
+  if (!muted) tone(988, 0.08, 'square', 0.05);   // 켜졌는지 바로 들리게
+});
 setSoundIcon();
-document.addEventListener('visibilitychange', () => { if (document.hidden && phase === 'play') togglePause(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && phase === 'play') togglePause();
+  if (silentEl) { if (document.hidden) silentEl.pause(); else if (!muted) keepAudioSession(); }
+});
 
 // ---------- 화면 메시지 ----------
 function showCard(html) { overlay.innerHTML = '<div class="card">' + html + '</div>'; }
@@ -584,13 +627,13 @@ function updatePlayer() {
         p.state = 'climb'; p.x = lad.c * T + 4; p.lad = ladderBounds(lad.c, lad.r);
       } else {
         p.x = Math.max(4, Math.min(W - 4, p.x + dir * WALK));
-        if (dir) { p.face = dir; p.anim++; }
+        if (dir) { p.face = dir; p.anim++; if (p.anim % 12 === 0) tone(170, 0.035, 'triangle', 0.035); }
         if (!standable(p.x, p.y)) { p.state = 'air'; p.vy = 0.2; p.vx = dir * 0.5; p.jid = 0; }
       }
     }
   } else if (p.state === 'climb') {
     const dy = (i.D ? 1 : 0) - (i.U ? 1 : 0);
-    if (dy) { p.y = Math.max(p.lad.topY, Math.min(p.lad.botY, p.y + dy * CLIMB)); p.anim++; }
+    if (dy) { p.y = Math.max(p.lad.topY, Math.min(p.lad.botY, p.y + dy * CLIMB)); p.anim++; if (p.anim % 12 === 0) tone(p.anim % 24 ? 520 : 440, 0.03, 'triangle', 0.03); }
     const atEnd = p.y === p.lad.topY || p.y === p.lad.botY;
     if (atEnd && dir && !dy && standable(p.x, p.y)) { p.state = 'walk'; p.face = dir; p.lad = null; }
     else if (atEnd && wantJump && standable(p.x, p.y)) { p.state = 'air'; p.vy = JUMP_V; p.vx = dir * WALK; p.jid = ++jumpId; p.lad = null; sfx.jump(); }
@@ -769,7 +812,7 @@ function loop(now) {
 stageNo = 1; buildLevel(); resetActors(); player.inv = 0;
 layout(); updateHud(); updateTimebar(); titleScreen();
 requestAnimationFrame(loop);
-window.__game = { get phase() { return phase; }, get player() { return player; }, get items() { return items; }, get score() { return score; }, get lives() { return lives; }, get enemies() { return enemies; }, grid: () => grid };
+window.__game = { get phase() { return phase; }, get player() { return player; }, get items() { return items; }, get score() { return score; }, get lives() { return lives; }, get enemies() { return enemies; }, get audio() { return ac ? ac.state : 'none'; }, get silent() { return silentEl ? !silentEl.paused : false; }, grid: () => grid };
 })();
 </script>
 </body>
