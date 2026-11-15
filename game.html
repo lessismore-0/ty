@@ -75,7 +75,7 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
     <div class="stat"><small>최고</small><b id="best">0</b></div>
     <div class="stat"><small>스테이지</small><b id="stage">1</b></div>
     <div class="spacer"></div>
-    <div id="lives">♥♥♥</div>
+    <div id="lives">♥ × 10</div>
     <button class="iconbtn" id="soundBtn" aria-label="소리">🔊</button>
     <button class="iconbtn" id="pauseBtn" aria-label="일시정지">⏸</button>
   </div>
@@ -100,6 +100,7 @@ const T = 8, COLS = 24, ROWS = 26, W = COLS * T, H = ROWS * T, S = 4;
 const FR = [5, 10, 15, 20, 25];            // 발판이 있는 줄(위층 → 아래층)
 const START = { col: COLS - 2, floor: 4 };   // 항상 오른쪽 아래에서 시작
 const MAX_STAGE = 100;
+const START_LIVES = 10, MAX_LIVES = 10;   // 목숨 10개
 const TIME_LIMIT = 80;                     // 스테이지 제한 시간(초)
 const WALK = 1.0, CLIMB = 0.75, JUMP_V = -2.9, GRAV = 0.18, MAX_FALL = 4;
 const BEST_KEY = 'daram-jump-best-v1', MUTE_KEY = 'daram-jump-mute-v1', STAGE_KEY = 'daram-jump-stage-v1';
@@ -444,7 +445,7 @@ addEventListener('orientationchange', () => setTimeout(layout, 200));
 
 // ---------- 게임 상태 ----------
 let grid, items, thorns, enemies, enemySpawn, bgCanvas, level, levelIdx;
-let phase = 'title', phaseT = 0, stageNo = 1, score = 0, lives = 3, timeLeft = TIME_LIMIT, nextLife = 10000;
+let phase = 'title', phaseT = 0, stageNo = 1, score = 0, lives = START_LIVES, timeLeft = TIME_LIMIT, nextLife = 10000;
 let best = parseInt(load(BEST_KEY, '0'), 10) || 0;
 let player, popups = [], jumpId = 0, frame = 0;
 
@@ -624,7 +625,7 @@ function bindStart() {
 }
 function startGame(from) {
   unlockAudio();
-  score = 0; lives = 3; stageNo = typeof from === 'number' ? from : 1; nextLife = 10000;
+  score = 0; lives = START_LIVES; stageNo = typeof from === 'number' ? from : 1; nextLife = 10000;
   hideCard(); startStage();
 }
 function startStage() {
@@ -643,7 +644,7 @@ function togglePause() {
 function addScore(n, x, y) {
   score += n;
   if (x != null) popups.push({ x, y, t: 50, text: String(n) });
-  if (score >= nextLife) { lives = Math.min(lives + 1, 6); nextLife += 10000; sfx.oneup(); popups.push({ x: player.x, y: player.y - 20, t: 70, text: '1UP' }); }
+  if (score >= nextLife) { lives = Math.min(lives + 1, MAX_LIVES); nextLife += 10000; sfx.oneup(); popups.push({ x: player.x, y: player.y - 20, t: 70, text: '1UP' }); }
   if (score > best) { best = score; save(BEST_KEY, best); }
   updateHud();
 }
@@ -651,7 +652,7 @@ function updateHud() {
   $('score').textContent = score.toLocaleString();
   $('best').textContent = best.toLocaleString();
   $('stage').textContent = stageNo;
-  $('lives').textContent = lives > 0 ? '♥'.repeat(lives) : '–';
+  $('lives').textContent = '♥ × ' + Math.max(0, lives);
 }
 function updateTimebar() {
   const p = Math.max(0, timeLeft / TIME_LIMIT);
