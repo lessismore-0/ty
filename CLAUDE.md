@@ -35,7 +35,7 @@
 - 음료 DB: 사용자 음료정보 시트 2026-11-08 저장본, 169개 항목, 톨 사이즈 고정, `EXCLUDED_ROWS = Set([22,152,158,161])`. 142번째 "얼 그레이 티"는 이름이 추정값이라 확인 필요
   시트: https://docs.google.com/spreadsheets/d/1tX59YaFx8BHiXkOkoKdA7W7fok30VFH13VaRBInu3kE/edit?usp=sharing
 - 상단 버튼(2026-11-15): [Growth Mindset](기분 기록) [스타벅스](커피 기록 창) [동기화](앱 열기). 하단 고정 버튼은 없음. 폭 480px 미만에서는 버튼 줄이 날짜 아래로 내려감
-- 듀얼 화면(서피스 듀오 등)에서 두 화면에 걸쳐 열면 왼쪽 = 대시보드(휴대폰 배치), 오른쪽 = 동기화·스타벅스·Growth Mindset 큰 버튼. CSS `horizontal-viewport-segments: 2`(+ 예전 `spanning`) 사용. 테스트는 CDP `Emulation.setDeviceMetricsOverride`의 `displayFeature`로 하고, 스크린샷은 `Page.captureScreenshot`으로 찍는다(Playwright 스크린샷은 에뮬레이션을 풀어버림)
+- 아이폰 제어 센터 버튼(2026-11-15): 사용자가 단축어 앱의 ‘URL 열기’ 단축어 3개를 만들어 제어 센터에 추가하는 방식. 동기화 = `gooddayhealth://`, 스타벅스 = `good.html#starbucks`(커피 기록 창), Growth Mindset = `good.html#mindset`(기분 기록 화면). 이 #주소는 바꾸지 않는다. 듀얼 화면 배치는 오해였어서 삭제함
 - 첫 화면: 카페인·수분 링, ‘영양정보’(탄수화물·단백질·지방) 카드, ‘최근 7일’ 카드 하나. 7일 카드는 배지(수면·기분·체중·체지방률)를 누르면 그래프가 바뀜(2026-11-15)
 - 기준선(점선): 체중 = 키 기준 표준체중(BMI 22), 체지방률 = 같은 BMI·나이·성별의 평균 체지방률 추정치(Deurenberg 식: 1.2×BMI + 0.23×나이 − 10.8×성별(남 1, 여 0) − 5.4, BMI는 최근 7일 평균 체중). 키·성별·출생연도는 설정 · 백업의 ‘내 정보’에서 입력
 - 추가 저장 키(백업에 넣지 않음): `good-day-profile-v1`(키·성별·출생연도), `good-day-week-tab-v1`(마지막으로 고른 7일 배지). 사용자의 키 등 실제 값은 저장소에 쓰지 않는다

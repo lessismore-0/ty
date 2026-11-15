@@ -194,27 +194,6 @@ body.modal-open{overflow:hidden}
   .card{padding:20px}
   .page{max-width:720px;margin:0 auto}
 }
-/* 듀얼 화면: 두 화면에 걸쳐 열면 왼쪽 = 대시보드, 오른쪽 = 바로가기 버튼 */
-.duo-panel{display:none}
-.duo-btn{width:100%;min-height:76px;border-radius:20px;background:var(--card);border:1px solid var(--line);font-size:21px;font-weight:800;letter-spacing:-.02em}
-@media (horizontal-viewport-segments: 2){
-  .app{max-width:none;margin:0;width:env(viewport-segment-width 0 0)}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile-s{grid-column:auto}.tile-l,.tile-w{grid-column:1/-1}.app{padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 28px)}.card{padding:16px}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .headbtns{display:none}
-  .duo-panel{display:flex;flex-direction:column;justify-content:center;gap:16px;position:fixed;top:0;bottom:0;left:env(viewport-segment-left 1 0);width:env(viewport-segment-width 1 0);padding:calc(env(safe-area-inset-top) + 24px) 28px calc(env(safe-area-inset-bottom) + 24px);background:var(--bg);z-index:50}
-  .duo-panel .brand{text-align:center;margin-bottom:4px}
-  .modal{right:auto;width:env(viewport-segment-width 0 0)}
-  #toast{left:calc(env(viewport-segment-width 0 0) / 2)}
-}
-@media (spanning: single-fold-vertical){
-  .app{max-width:none;margin:0;width:env(fold-left)}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile-s{grid-column:auto}.tile-l,.tile-w{grid-column:1/-1}.app{padding:calc(env(safe-area-inset-top) + 20px) 16px calc(env(safe-area-inset-bottom) + 28px)}.card{padding:16px}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .headbtns{display:none}
-  .duo-panel{display:flex;flex-direction:column;justify-content:center;gap:16px;position:fixed;top:0;bottom:0;left:env(fold-right);right:0;padding:24px 28px;background:var(--bg);z-index:50}
-  .duo-panel .brand{text-align:center;margin-bottom:4px}
-  .modal{right:auto;width:env(fold-left)}
-  #toast{left:calc(env(fold-left) / 2)}
-}
 </style>
 </head>
 <body>
@@ -436,13 +415,6 @@ body.modal-open{overflow:hidden}
     <div class="savebar"><button type="submit" class="primary" id="moodSave">기분 저장</button></div>
   </form>
 </section>
-<!-- 듀얼 화면(서피스 듀오 등)에서 두 화면에 걸쳐 열면 오른쪽 화면에 표시되는 바로가기 -->
-<aside class="duo-panel" id="duoPanel" aria-label="바로가기">
-  <p class="brand">good day</p>
-  <button class="duo-btn" id="duoSync" type="button">동기화</button>
-  <button class="duo-btn" id="duoStar" type="button" aria-haspopup="dialog">스타벅스</button>
-  <button class="duo-btn" id="duoMood" type="button">Growth Mindset</button>
-</aside>
 </div>
 <div id="toast" class="hidden" role="status"></div>
 
@@ -693,7 +665,6 @@ $('healthAccount').onclick=()=>{closeHealth();switchTab('infoHistory');$('google
 function openFavorites(){favEdit=false;clearTimeout(toastTimer);$('toast').classList.add('hidden');render();$('favoriteModal').classList.remove('hidden');document.body.classList.add('modal-open');$('favoritesClose').focus()}
 function closeFavorites(){if(!$('favoriteModal').classList.contains('hidden')){$('favoriteModal').classList.add('hidden');document.body.classList.remove('modal-open');$('favoritesOpen').focus()}}
 $('favoritesOpen').onclick=openFavorites;$('favoritesClose').onclick=closeFavorites;
-$('duoStar').onclick=openFavorites;$('duoSync').onclick=()=>openSyncApp();$('duoMood').onclick=()=>$('moodSoon').click();
 $('favoriteModal').addEventListener('click',e=>{if(e.target===$('favoriteModal'))closeFavorites()});
 $('favoriteModal').addEventListener('keydown',e=>trapFocus($('favoriteModal'),e,closeFavorites));
 window.addEventListener('storage',e=>{if(e.key===WATER_KEY){waterProblem=true;toast('물 기록이 다른 화면에서 바뀌었어요. 새로고침해 주세요.')}});
@@ -1090,6 +1061,18 @@ $('authRedirect').textContent=location.protocol==='https:'?'등록할 리디렉�
 try{const raw=localStorage.getItem(AUTH_CONFIG_KEY);if(raw){const c=validateAuthConfig(JSON.parse(raw));$('authUrl').value=c.url;$('authPublicKey').value=c.key;startAuth(c).catch(()=>{$('authStatus').textContent='인증 연결 안 됨 · 설정과 네트워크를 확인해 주세요.'})}}catch(e){$('authStatus').textContent='인증 설정을 읽지 못했어요. 다시 설정해 주세요.'}
 
 render();
+// ===== 바로가기 주소 (아이폰 제어 센터·단축어용) =====
+// good.html#starbucks → 커피 기록 창, good.html#mindset → 기분 기록 화면. 연 뒤에는 주소의 #부분을 지워 새로고침 때 다시 열리지 않게 합니다.
+function openFromHash(){
+ const h=location.hash.replace('#','').toLowerCase();
+ if(h!=='starbucks'&&h!=='mindset')return;
+ history.replaceState(null,'',location.pathname+location.search);
+ if(current!=='today'||dirty)return; // 작성 중인 화면이 있으면 덮어쓰지 않습니다.
+ closeHealth();
+ if(h==='starbucks')openFavorites();else $('moodSoon').click();
+}
+window.addEventListener('hashchange',openFromHash);
+openFromHash();
 </script>
 </body>
 </html>
