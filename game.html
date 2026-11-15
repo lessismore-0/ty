@@ -32,7 +32,7 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
   display:flex;align-items:center;justify-content:center;font-size:16px;padding:0;flex:none}
 #timebar{height:6px;margin:2px 16px 6px;background:#24305e;border-radius:3px;overflow:hidden}
 #timefill{height:100%;width:100%;background:var(--good);transition:background .3s}
-#stageWrap{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 4px}
+#stageWrap{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 16px}
 #cv{display:block;image-rendering:pixelated;image-rendering:crisp-edges;border-radius:6px;
   box-shadow:0 0 0 2px #24305e, 0 8px 30px rgba(0,0,0,.4)}
 #overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
@@ -46,26 +46,37 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 #overlay .go.alt{background:transparent;color:var(--accent);border:1px solid var(--accent);margin-top:8px;font-size:14px;padding:10px 18px}
 #banner{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:22px;font-weight:800;
   color:var(--accent);text-shadow:0 2px 0 #000;pointer-events:none;display:none}
-#controls{flex:none;height:156px;display:flex;align-items:center;justify-content:space-between;padding:0 24px 10px;touch-action:none}
-#pad{position:relative;width:136px;height:136px;border-radius:50%;background:var(--panel);border:1px solid var(--btn-line)}
-#pad .d{position:absolute;width:44px;height:44px;border-radius:12px;background:var(--btn);border:1px solid var(--btn-line);
-  display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
+/* 화면 크기에 맞춰 버튼 크기가 자동으로 바뀐다(반응형) */
+:root{--pad:clamp(118px, min(38vw, 19vh), 160px); --jumpS:calc(var(--pad) * .74); --side:0px}
+#controls{flex:none;height:calc(var(--pad) + 24px);display:flex;align-items:center;justify-content:space-between;
+  padding:0 max(16px, 5vw) 10px;touch-action:none}
+#pad{position:relative;width:var(--pad);height:var(--pad);border-radius:50%;background:var(--panel);border:1px solid var(--btn-line);
+  --d:calc(var(--pad) * .333); --c:calc((var(--pad) - var(--d)) / 2 - 1px); --e:calc(var(--pad) * .03)}
+#pad .d{position:absolute;width:var(--d);height:var(--d);border-radius:calc(var(--d) * .26);background:var(--btn);border:1px solid var(--btn-line);
+  display:flex;align-items:center;justify-content:center;font-size:calc(var(--d) * .36);color:var(--muted)}
 #pad .d.on{background:var(--btn-on);color:#2a1a05;border-color:var(--btn-on)}
-#pad .u{left:46px;top:4px}#pad .dn{left:46px;bottom:4px}#pad .l{left:4px;top:46px}#pad .r{right:4px;top:46px}
-#jump{width:92px;height:92px;border-radius:50%;background:var(--btn);border:2px solid var(--btn-line);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:18px}
-#jump small{font-size:11px;color:var(--muted);font-weight:600}
+#pad .u{left:var(--c);top:var(--e)}#pad .dn{left:var(--c);bottom:var(--e)}#pad .l{left:var(--e);top:var(--c)}#pad .r{right:var(--e);top:var(--c)}
+#jump{width:var(--jumpS);height:var(--jumpS);border-radius:50%;background:var(--btn);border:2px solid var(--btn-line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:calc(var(--jumpS) * .16)}
+#jump small{font-size:calc(var(--jumpS) * .1);color:var(--muted);font-weight:600}
 #jump.on{background:var(--btn-on);color:#2a1a05;border-color:var(--btn-on)}
 #jump.on small{color:#2a1a05}
 /* 가로 화면: 버튼을 양옆에 둔다 */
+#app.land{--pad:clamp(110px, min(20vw, 38vh), 160px); --side:calc(var(--pad) + 28px)}
 #app.land #controls{position:absolute;inset:0;height:auto;padding:0;pointer-events:none}
-#app.land #pad{position:absolute;left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));pointer-events:auto;width:124px;height:124px}
-#app.land #pad .d{width:40px;height:40px}
-#app.land #pad .u{left:41px;top:4px}#app.land #pad .dn{left:41px;bottom:4px}#app.land #pad .l{left:4px;top:41px}#app.land #pad .r{right:4px;top:41px}
-#app.land #jump{position:absolute;right:calc(20px + env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom));pointer-events:auto;width:88px;height:88px}
-#app.land #stageWrap{padding:0 150px}
-#app.land #hud{padding-left:150px;padding-right:150px}
-#app.land #timebar{margin-left:150px;margin-right:150px}
+#app.land #pad{position:absolute;left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));pointer-events:auto}
+#app.land #jump{position:absolute;right:calc(18px + env(safe-area-inset-right));bottom:calc(22px + env(safe-area-inset-bottom));pointer-events:auto}
+#app.land #stageWrap{padding:0 var(--side)}
+#app.land #hud{padding-left:var(--side);padding-right:var(--side)}
+#app.land #timebar{margin-left:var(--side);margin-right:var(--side)}
+/* 컴퓨터(마우스·키보드)에서는 터치 버튼을 숨기고 키보드 안내를 보여준다 */
+#keyhint{display:none;text-align:center;font-size:12px;color:var(--muted);padding:8px 0 12px}
+@media (hover:hover) and (pointer:fine){
+  #controls{display:none} #keyhint{display:block}
+  #app.land #stageWrap,#app.land #hud{padding-left:16px;padding-right:16px}
+  #app.land #timebar{margin-left:16px;margin-right:16px}
+}
+#app{max-width:900px;margin:0 auto}
 </style>
 </head>
 <body>
@@ -91,12 +102,13 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
     </div>
     <div id="jump">점프<small>JUMP</small></div>
   </div>
+  <div id="keyhint">← → 이동 · ↑ ↓ 덩굴 타기 · 스페이스 점프 · P 일시정지</div>
 </div>
 <script>
 (() => {
 'use strict';
 // ---------- 기본 설정 ----------
-const T = 8, COLS = 24, ROWS = 26, W = COLS * T, H = ROWS * T, S = 4;
+const T = 8, COLS = 28, ROWS = 26, W = COLS * T, H = ROWS * T, S = 4;
 const FR = [5, 10, 15, 20, 25];            // 발판이 있는 줄(위층 → 아래층)
 const START = { col: COLS - 2, floor: 4 };   // 항상 오른쪽 아래에서 시작
 const MAX_STAGE = 100;
