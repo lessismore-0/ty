@@ -5,7 +5,7 @@
 
 ## 1. 구성
 - 웹: `good.html` 한 파일(HTML/CSS/JS). GitHub Pages로 배포: https://lessismore-0.github.io/ty/good.html
-- 아이폰 동기화 앱(Xcode, HealthKit 읽기 전용 → Supabase 업로드). 이 저장소에는 없음
+- 아이폰 동기화 앱(Xcode, HealthKit 읽기 전용 → Supabase 업로드). 이 저장소에는 없음. 비공개 저장소 `lessismore-0/gooddayhealth-ios`(2026-11-16 연결). 사용자 맥에서 작업할 때는 Claude가 직접 고치고 빌드·아이폰 설치·커밋·push까지 함(복구 지점 태그 `backup-날짜`)
 - Supabase: `public.health_samples`, `public.health_sync_runs` (RLS 적용)
 
 ## 2. 작업 방식 (중요)
@@ -56,3 +56,6 @@
 - 조회 기간: 수면 9일, 체중·체지방·수분·카페인·탄단지 30일, 월경 1년(365일, 2026-11-15에 90일에서 변경. HealthKitReader.swift·NativeSyncController.swift 전체 파일 전달)
 - 업로드 동의 버전 3(월경 1년으로 범위가 바뀌어 2→3, 사용자가 동의를 다시 켜야 함), 문구 "아홉 종류". `ExportModels.swift`는 건드리지 않음
 - 빌드 경고 8개(iOS 버전별 이름 변경 안내)는 동작에 문제없음
+- 월경 조회 끝은 '지금'이 아니라 내일 0시(2026-11-16). 건강앱은 생리 기록을 그날 낮 12시로 저장해서, 끝을 '지금'으로 두면 정오 전에는 오늘 기록이 빠짐
+- 월경량은 기록하지 않음(사용자는 건강앱 주기 추적에서 '생리'만 체크 → '생리량 있음' = 값 1 지정 안 함). 업로드 시 '없음'(2)이 아닌 기록은 모두 '보통'(4)으로 통일(2026-11-16, HealthSyncModels.swift). 웹은 값 1·3·4·5를 생리일로, 2는 제외
+- 주기 추적 화면의 연한 표시는 건강앱의 예정일이며 데이터로 저장되지 않음. 실제 기록(진한 빨강)만 앱이 읽음
